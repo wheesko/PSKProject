@@ -22,7 +22,7 @@ const LandingPage: React.FunctionComponent<{}> = () => {
 };
 
 const handleClick = (): void => {
-	console.log('click');
+	fetch('/hello'); // Simple call to backend
 };
 
 export default LandingPage;
