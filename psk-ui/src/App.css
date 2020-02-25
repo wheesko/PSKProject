@@ -36,3 +36,23 @@
     transform: rotate(360deg);
   }
 }
+#sider {
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+}
+#root-layout {
+  height: 100vh;
+}
+
+#main-content-layout {
+  margin-left: 200px;
+}
+#main-content-layout > .ant-layout-content {
+  margin: 24px 16px 0px;
+  overflow: initial;
+}
+footer {
+  text-align: center;
+}
