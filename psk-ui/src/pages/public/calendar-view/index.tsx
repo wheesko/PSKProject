@@ -1,13 +1,13 @@
 import React, { useState } from "react";
+
 import { Calendar, Badge } from "antd";
 import * as moment from "moment";
+import { StatusType } from "../../../models/status-type-model";
+
 import "./CalendarStyles.css";
-interface StatusType {
-  type: "warning" | "success" | "error" | "default" | "processing" | undefined;
-  content: string;
-}
 
 const CalendarView: React.FunctionComponent<{}> = () => {
+  // onSelect will display a modal to add event or open specific day
   const handleOnSelect = (): void => {};
 
   return (
@@ -19,9 +19,14 @@ const CalendarView: React.FunctionComponent<{}> = () => {
   );
 };
 
+// in the future, using this function, we will fetch data from the backend
+// and return result in a listData type
 const getListData = (value: moment.Moment) => {
-  let listData: StatusType[] = [];
+  // fetch by year, month, day (or any arguments based on backend requirements)
+  // console.log(value.year(), value.month(), value.date())
 
+  // example data:
+  let listData: StatusType[] = [];
   switch (value.date()) {
     case 8:
       listData = [
@@ -48,12 +53,16 @@ const getListData = (value: moment.Moment) => {
       break;
     default:
   }
-  return listData || [];
+  return listData;
 };
 
-const dateCellRender = (value: moment.Moment) => {
+// responsible for displaying items in each cell
+const dateCellRender = (value: moment.Moment): React.ReactNode => {
+  // value is the specific day
+  // get data from backend about each day
   const listData = getListData(value);
 
+  // and display
   return (
     <ul className="events">
       {listData.map(item => (
