@@ -45,3 +45,8 @@ src/main/resources/application.properties
 Once you connect, you should be able to see a `TEST_ENTITY` table
 
 You can test out the api calls via postman, `PUT` and `GET` methods should be working properly.
+
+# Swagger UI
+
+You can access swagger UI and see implemented endpoints at
+```localhost:8080/swagger-ui.html```
