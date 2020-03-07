@@ -1,5 +1,8 @@
 package com.VU.PSKProject.Config;
 
+import com.VU.PSKProject.Handler.CustomAccessDeniedHandler;
+import com.VU.PSKProject.Handler.CustomAuthFailureHandler;
+import com.VU.PSKProject.Handler.CustomLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
@@ -21,7 +25,6 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //TODO: finish configurating auth
         auth.inMemoryAuthentication()
                 .withUser("worker1").password(passwordEncoder().encode("u1psswd")).roles("WORKER")
                 .and()
@@ -30,7 +33,6 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //TODO: finish configurating http
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/lead/**").hasRole("LEAD")
@@ -52,13 +54,16 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private LogoutSuccessHandler logoutSuccessHandler() {
-        //TODO: implement?
-        return null;
+       return new CustomLogoutSuccessHandler();
     }
 
     private AuthenticationFailureHandler authenticationFailureHandler() {
-        //TODO: implement?
-        return null;
+        return new CustomAuthFailureHandler();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new CustomAccessDeniedHandler();
     }
 
     @Bean
