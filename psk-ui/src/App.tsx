@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Layout, Menu, Icon } from "antd";
+import { Layout, Menu } from "antd";
+import {UserOutlined, CalendarOutlined } from '@ant-design/icons'
 import { Route, Link, Switch } from "react-router-dom";
 import { TEAM_NAME, CALENDAR_ITEM_NAME, USER_ITEM_NAME } from "./Constants";
 
@@ -20,13 +21,13 @@ const App: React.FunctionComponent<{}> = () => {
           <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
             <Menu.Item key="1">
               <Link to="/profile">
-                <Icon type="user" />
+                <UserOutlined />
                 <span className="nav-text">{USER_ITEM_NAME}</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="2">
               <Link to="/calendar">
-                <Icon type="calendar" />
+                <CalendarOutlined />
                 <span className="nav-text">{CALENDAR_ITEM_NAME}</span>
               </Link>
             </Menu.Item>

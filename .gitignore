@@ -1,2 +1,4 @@
 /psk-ui/node_modules/*
 /.idea/*
+/.mvn/*
+/target/*

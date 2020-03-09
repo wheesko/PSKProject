@@ -5,12 +5,12 @@ import { Button, Row, Col } from 'antd';
 const LandingPage: React.FunctionComponent<{}> = () => {
 	return (
 		<div className="LandingPage" >
-			<Row gutter={[48, 48]} type='flex' justify='center'>
+			<Row gutter={[48, 48]}  justify='center'>
 				<Col xs={12}>
 					Initial test page
 				</Col>
 			</Row>
-			<Row gutter={[48, 48]} type='flex' justify='center'>
+			<Row gutter={[48, 48]} justify='center'>
 				<Col xs={12}>
 					<Button onClick={handleClick} type='primary' block={true}>
 						clicker
