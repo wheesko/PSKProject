@@ -1,8 +1,5 @@
 package com.VU.PSKProject.Config;
 
-import com.VU.PSKProject.Handler.CustomAccessDeniedHandler;
-import com.VU.PSKProject.Handler.CustomAuthFailureHandler;
-import com.VU.PSKProject.Handler.CustomLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,39 +28,17 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("lead1").password(passwordEncoder().encode("u2psswd")).roles("WORKER", "LEAD");
     }
 
+    // Configure basic auth
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .httpBasic()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/lead/**").hasRole("LEAD")
-                .antMatchers("/anonymous*/").anonymous()
-                .antMatchers("/login*").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login.html") // let's say it's login.html
-                .loginProcessingUrl("/perform_login")
-                .defaultSuccessUrl("/homepage.html") // let's say it's homepage.html
-                .failureHandler(authenticationFailureHandler())
-                .and()
-                .logout()
-                .logoutUrl("/perform_logout")
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessHandler(logoutSuccessHandler());
+                .antMatchers("/secure/**").hasRole("WORKER")
+                .antMatchers("/login*").permitAll();
         super.configure(http);
-    }
-
-    private LogoutSuccessHandler logoutSuccessHandler() {
-       return new CustomLogoutSuccessHandler();
-    }
-
-    private AuthenticationFailureHandler authenticationFailureHandler() {
-        return new CustomAuthFailureHandler();
-    }
-
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler(){
-        return new CustomAccessDeniedHandler();
     }
 
     @Bean
