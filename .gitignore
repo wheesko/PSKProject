@@ -66,13 +66,6 @@ buildNumber.properties
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-<<<<<<< HEAD
-/psk-ui/node_modules/*
-/.idea/*
-<<<<<<< HEAD
 /.mvn/*
 /target/*
-=======
-=======
->>>>>>> 526262977ee550b8f2b52b9143e537615528e4bb
->>>>>>> master
+/src/main/psk-ui/node_modules/**
