@@ -1,35 +1,71 @@
-import React, {useState} from 'react';
-import {Form, Input, Button, TimePicker, Card} from 'antd';
-import * as moment from 'moment';
+import React, { useState } from "react";
+import { Form, Input, Button, TimePicker, Card, Tooltip } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import * as moment from "moment";
+import "./EventFormStyles.css";
 
-const {RangePicker} = TimePicker;
+const { RangePicker } = TimePicker;
 const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 6},
-};
-const formTailLayout = {
-    labelCol: {span: 4},
-    wrapperCol: {span: 8, offset: 4},
-};
-const layout = {
-    labelCol: {span: 10},
-    wrapperCol: {span: 10},
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 }
+  }
 };
 const EventForm: React.FunctionComponent<{}> = () => {
-    return <Card title="Add new learning event"><Form  {...layout}
-                                              initialValues={{remember: true}}
-                                              name="learning-event-form">
-        <Form.Item
-            label="Event Name"
-            name="learning-event-name"
-            rules={[{required: true, message: 'Input event name'}]}
+  const [form] = Form.useForm();
+  return (
+    <Card title="Add new learning event">
+      <Form.Provider
+       onFormFinish={name => {
+           console.log(form.getFieldsValue())
+        if (name === 'form1') {
+          // Do something...
+        }
+      }}
+    >
+        <Form
+          form={form}
+          {...formItemLayout}
+          initialValues={{ remember: true }}
+          name="learningEventForm"
         >
-            <Input/>
-        </Form.Item>
-        <Form.Item name="learning-event-time" label="Choose time">
-            <RangePicker
-                format="hh:mm" picker={'time'} minuteStep={15}/>
-        </Form.Item>
-    </Form></Card>
-}
+          <Form.Item
+            label="Event Name"
+            name="learningEventName"
+            rules={[{ required: true, message: "Input event name" }]}
+          >
+            <Input allowClear />
+          </Form.Item>
+          <Form.Item name="learningEventTime" label="Choose time"   rules={[{ required: true, message: "Event time is required!" }]}>
+            <RangePicker format="hh:mm" picker={"time"} minuteStep={15} />
+          </Form.Item>
+          <Form.Item label="Comment" name="learningEventComment">
+            <Input.TextArea
+              placeholder="Add learning event comment"
+              allowClear
+            />
+          </Form.Item>
+          <Form.Item
+            wrapperCol={{
+              xs: { span: 24, offset: 0 },
+              sm: { span: 16, offset: 8 }
+            }}
+          >
+            <Button
+              className="event-form-buttons success"
+              type="primary"
+              htmlType="submit"
+            >
+              Save learning event
+            </Button>
+          </Form.Item>
+        </Form>
+      </Form.Provider>
+    </Card>
+  );
+};
 export default EventForm;
