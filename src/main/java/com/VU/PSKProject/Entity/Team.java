@@ -20,7 +20,7 @@ public class Team {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Worker> teamMembers = new ArrayList<>();
+    private List<Worker> teamMembers;
 
 
 

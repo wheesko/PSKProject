@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "Worker")
 public class Worker {
@@ -15,9 +16,11 @@ public class Worker {
     private int consecutiveLearningDayLimit;
     // private Role role;
     // private List<WorkerGoals> workerGoals;
-    // private List<LearningDays> learningDays;
 
-    // complete assigning CORRECT relationships to other entities
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<LearningEvent> learningEvents;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker manager;
 
