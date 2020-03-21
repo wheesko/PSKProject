@@ -3,6 +3,12 @@ import { Form, Input, Button, TimePicker, Card, Tooltip } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import * as moment from "moment";
 import "./EventFormStyles.css";
+import {
+    ADD_LEARNING_EVENT_COMMENT, ADD_NEW_LEARNING_EVENT,
+    CHOOSE_TIME, COMMENT, EVENT_NAME, INPUT_EVENT_NAME,
+    SAVE_LEARNING_EVENT,
+    WARNING_EVENT_TIME_IS_REQUIRED
+} from "../../../Constants";
 
 const { RangePicker } = TimePicker;
 const formItemLayout = {
@@ -18,7 +24,7 @@ const formItemLayout = {
 const EventForm: React.FunctionComponent<{}> = () => {
   const [form] = Form.useForm();
   return (
-    <Card title="Add new learning event">
+    <Card title={ADD_NEW_LEARNING_EVENT}>
       <Form.Provider
        onFormFinish={name => {
            console.log(form.getFieldsValue())
@@ -34,18 +40,18 @@ const EventForm: React.FunctionComponent<{}> = () => {
           name="learningEventForm"
         >
           <Form.Item
-            label="Event Name"
+            label={EVENT_NAME}
             name="learningEventName"
-            rules={[{ required: true, message: "Input event name" }]}
+            rules={[{ required: true, message: INPUT_EVENT_NAME }]}
           >
             <Input allowClear />
           </Form.Item>
-          <Form.Item name="learningEventTime" label="Choose time"   rules={[{ required: true, message: "Event time is required!" }]}>
+          <Form.Item name="learningEventTime" label={CHOOSE_TIME}  rules={[{ required: true, message:  WARNING_EVENT_TIME_IS_REQUIRED }]}>
             <RangePicker format="hh:mm" picker={"time"} minuteStep={15} />
           </Form.Item>
-          <Form.Item label="Comment" name="learningEventComment">
+          <Form.Item label={COMMENT} name="learningEventComment">
             <Input.TextArea
-              placeholder="Add learning event comment"
+              placeholder={ADD_LEARNING_EVENT_COMMENT}
               allowClear
             />
           </Form.Item>
@@ -60,7 +66,7 @@ const EventForm: React.FunctionComponent<{}> = () => {
               type="primary"
               htmlType="submit"
             >
-              Save learning event
+              {SAVE_LEARNING_EVENT}
             </Button>
           </Form.Item>
         </Form>
