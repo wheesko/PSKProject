@@ -17,3 +17,6 @@
   .notes-month section {
     font-size: 28px;
   }
+  .myCalendarTitle {
+      text-align: start;
+  }
