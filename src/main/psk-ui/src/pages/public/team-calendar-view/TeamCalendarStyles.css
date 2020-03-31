@@ -5,3 +5,6 @@
 .teamCalendar {
     height: 100%;
 }
+.employee-learning-event-item {
+    padding: 4px 0px 4px 0px !important;
+}

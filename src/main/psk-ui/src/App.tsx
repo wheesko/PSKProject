@@ -1,7 +1,16 @@
 import React, {useState} from 'react';
 
 import {Layout, Menu} from 'antd';
-import {UserOutlined, CalendarOutlined, TeamOutlined, InfoCircleOutlined, SolutionOutlined} from '@ant-design/icons';
+import {
+	UserOutlined,
+	CalendarOutlined,
+	TeamOutlined,
+	InfoCircleOutlined,
+	SolutionOutlined,
+	TagsOutlined,
+	DeploymentUnitOutlined,
+	PlusOutlined
+} from '@ant-design/icons';
 import {Route, Link, Switch} from 'react-router-dom';
 import {
 	TEAM_NAME,
@@ -10,7 +19,20 @@ import {
 	INFO_MENU_ITEM_NAME,
 	TEAMS_MENU_ITEM_NAME,
 	MY_TEAM_CALENDAR_MENU_ITEM_NAME,
-	TEAM_MEMBERS_MENU_ITEM_NAME, KEY_TEAMS, KEY_CALENDAR, KEY_MEMBERS, KEY_INFO, KEY_MY_CALENDAR, KEY_PROFILE, KEY_TEAM
+	TEAM_MEMBERS_MENU_ITEM_NAME,
+	KEY_TEAMS,
+	KEY_CALENDAR,
+	KEY_MEMBERS,
+	KEY_INFO,
+	KEY_MY_CALENDAR,
+	KEY_PROFILE,
+	KEY_TEAM,
+	KEY_TOPICS,
+	TOPICS_MENU_ITEM_NAME,
+	KEY_TOPIC_TREE,
+	TOPIC_TREE_MENU_ITEM_NAME,
+	KEY_NEW_TOPIC,
+	CREATE_NEW_TOPIC_MENU_ITEM_NAME
 } from './Constants';
 
 import history from "./history";
@@ -22,6 +44,9 @@ import './App.css';
 import InfoView from './pages/public/info-view';
 import TeamCalendarView from './pages/public/team-calendar-view';
 import TeamMembersView from "./pages/public/team-members-view";
+import TopicTreeView from "./pages/public/topic-tree-view";
+import NewTopicView from "./pages/public/new-topic-view";
+import ProfileView from "./pages/public/profile-view";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -78,6 +103,29 @@ const App: React.FunctionComponent<{}> = () => {
 								</Link>
 							</Menu.Item>
 						</SubMenu>
+						<SubMenu
+							key={KEY_TOPICS}
+							title={
+								<span>
+									<TagsOutlined/>
+									<span className="nav-text">{TOPICS_MENU_ITEM_NAME}</span>
+								</span>
+							}
+						>
+
+							<Menu.Item key={KEY_TOPIC_TREE}>
+								<Link to={`/${KEY_TOPICS}/${KEY_TOPIC_TREE}`}>
+									<DeploymentUnitOutlined/>
+									<span className="nav-text">{TOPIC_TREE_MENU_ITEM_NAME}</span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key={KEY_NEW_TOPIC}>
+								<Link to={`/${KEY_TOPICS}/${KEY_NEW_TOPIC}`}>
+									<PlusOutlined/>
+									<span className="nav-text">{CREATE_NEW_TOPIC_MENU_ITEM_NAME}</span>
+								</Link>
+							</Menu.Item>
+						</SubMenu>
 					</Menu>
 				</Sider>
 				< Layout
@@ -96,13 +144,15 @@ const App: React.FunctionComponent<{}> = () => {
 							< Route
 								exact
 								path={`/${KEY_PROFILE}`}
-								component={LandingPage}
+								component={ProfileView}
 							/>
 							<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`} component={TeamCalendarView}/>
 
 							<Route exact path={`/${KEY_TEAMS}/${KEY_MEMBERS}`} component={TeamMembersView}/>
 							<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`}/>
 							<Route exact path={`/${KEY_TEAMS}/${KEY_INFO}`} component={InfoView}/>
+							<Route exact path={`/${KEY_TOPICS}/${KEY_TOPIC_TREE}`} component={TopicTreeView}/>
+							<Route exact path={`/${KEY_TOPICS}/${KEY_NEW_TOPIC}`} component={NewTopicView}/>
 
 						</Switch>
 					</Content>

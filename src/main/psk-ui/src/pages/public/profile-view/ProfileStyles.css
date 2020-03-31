@@ -1,0 +1,9 @@
+.learning-timeline-card * {
+    align-items: start !important;
+}
+.learning-timeline-card ul {
+    width: max-content;
+}
+.learning-timeline-card {
+    display: flex;
+}

@@ -4,14 +4,13 @@ import {Calendar, Typography} from 'antd';
 import {UserOutlined} from '@ant-design/icons';
 import {List, Avatar, Badge} from 'antd';
 import './TeamCalendarStyles.css'
-import {MY_TEAM_CALENDAR} from "../../../Constants";
+import {MY_TEAM_CALENDAR, N_LEARNING_EVENTS} from "../../../Constants";
 import * as moment from "moment";
-import {StatusType} from "../../../models/status-type-model";
 import {Link} from "react-router-dom";
 
 const {Title} = Typography;
 const TeamCalendarView: React.FunctionComponent<{}> = () => {
-		const data = [
+		const eventData = [
 			{
 				title: 'Java basics (10:00-12:00)',
 			},
@@ -34,13 +33,13 @@ const TeamCalendarView: React.FunctionComponent<{}> = () => {
 		const getListData = (value: moment.Moment) => {
 			const DataList = () => {
 				return <>
-					<Badge count={"4 learning events"}  className="site-badge-count-4"
+					<Badge count={N_LEARNING_EVENTS(eventData.length)} className="site-badge-count-4"
 					/>
 					<List
 						itemLayout="horizontal"
-						dataSource={data}
+						dataSource={eventData}
 						renderItem={item => (
-							<List.Item>
+							<List.Item className={'employee-learning-event-item'}>
 								<List.Item.Meta
 									avatar={Math.floor(Math.random() * 10) > 5 ?
 										<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/> :
@@ -59,6 +58,7 @@ const TeamCalendarView: React.FunctionComponent<{}> = () => {
 				case 10:
 					return <DataList/>
 				case 15:
+					return <DataList/>
 				default:
 					return null;
 			}
