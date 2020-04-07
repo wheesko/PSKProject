@@ -1,18 +1,19 @@
 import React from 'react';
 
 import { Button, Row, Col } from 'antd';
+import authenticationService from '../../../api/authentication-service';
 
 const LandingPage: React.FunctionComponent<{}> = () => {
 	return (
 		<div className="LandingPage" >
-			<Row gutter={[48, 48]} type='flex' justify='center'>
+			<Row gutter={[48, 48]} type="flex" justify="center">
 				<Col xs={12}>
 					Initial test page
 				</Col>
 			</Row>
-			<Row gutter={[48, 48]} type='flex' justify='center'>
+			<Row gutter={[48, 48]} type="flex" justify="center">
 				<Col xs={12}>
-					<Button onClick={handleClick} type='primary' block={true}>
+					<Button onClick={handleClick} type="primary" block={true}>
 						clicker
 					</Button>
 				</Col>
@@ -22,7 +23,7 @@ const LandingPage: React.FunctionComponent<{}> = () => {
 };
 
 const handleClick = (): void => {
-	console.log('click');
-};
+	authenticationService.login({ userName: 'admin', password: 'admin' });
+}; //TODO: Remove this
 
 export default LandingPage;
