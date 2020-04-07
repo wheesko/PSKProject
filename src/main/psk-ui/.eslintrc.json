@@ -49,6 +49,12 @@
             "warn",
             "always"
         ],
-        "array-bracket-spacing": "warn"
+        "no-unused-vars": "warn",
+        "array-bracket-spacing": "warn",
+        "no-mixed-spaces-and-tabs": "off",
+        "jsx-quotes": [
+            "warn",
+            "prefer-double"
+        ]
     }
 }
