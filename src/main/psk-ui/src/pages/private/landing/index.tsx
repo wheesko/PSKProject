@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Button, Row, Col } from 'antd';
+import authenticationService from '../../../api/authentication-service';
 
 const LandingPage: React.FunctionComponent<{}> = () => {
 	return (
@@ -22,7 +23,7 @@ const LandingPage: React.FunctionComponent<{}> = () => {
 };
 
 const handleClick = (): void => {
-	console.log('click');
+	authenticationService.getSession().then(data => console.log(data));
 };
 
 export default LandingPage;
