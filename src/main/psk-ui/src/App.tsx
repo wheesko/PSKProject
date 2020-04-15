@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 import {Layout, Menu} from 'antd';
 import {
@@ -37,16 +37,16 @@ import {
 
 import history from "./history";
 
-import CalendarView from './pages/public/calendar-view';
-import LandingPage from './pages/public/landing';
+import CalendarView from './pages/private/calendar-view';
+import LandingPage from './pages/private/landing';
 
 import './App.css';
-import InfoView from './pages/public/info-view';
-import TeamCalendarView from './pages/public/team-calendar-view';
-import TeamMembersView from "./pages/public/team-members-view";
-import TopicTreeView from "./pages/public/topic-tree-view";
-import NewTopicView from "./pages/public/new-topic-view";
-import ProfileView from "./pages/public/profile-view";
+import InfoView from './pages/private/info-view';
+import TeamCalendarView from './pages/private/team-calendar-view';
+import TeamMembersView from "./pages/private/team-members-view";
+import TopicTreeView from "./pages/private/topic-tree-view";
+import NewTopicView from "./pages/private/new-topic-view";
+import ProfileView from "./pages/private/profile-view";
 
 const {Content, Footer, Sider} = Layout;
 
