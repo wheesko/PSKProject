@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Table, Typography, Dropdown, Button, Menu,} from 'antd';
 import {FilterOutlined} from '@ant-design/icons';
 import './InfoStyles.css'
-import {TopicFilter} from "../../../models/topic-filter-model";
+import {TopicFilter} from "../../../models/topicFilter";
 
 const {Title} = Typography;
 const InfoView: React.FunctionComponent<{}> = () => {
