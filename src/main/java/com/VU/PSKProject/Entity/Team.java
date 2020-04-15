@@ -21,6 +21,13 @@ public class Team {
             orphanRemoval = true
     )
     private List<Worker> teamMembers;
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "team"
+    )
+    private List<TeamGoal> teamGoals;
+
 
 
 
