@@ -5,6 +5,12 @@ import java.util.List;
 
 @Entity(name = "Worker")
 public class Worker {
+    public Worker(){
+
+    }
+    public Worker(String name){
+        this.name = name;
+    }
     @Id
     @GeneratedValue
     private Long id;
@@ -23,6 +29,13 @@ public class Worker {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker manager;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "worker"
+    )
+    private List<WorkerGoal> workerGoals;
 
 
     public Long getId() {
