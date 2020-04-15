@@ -5,15 +5,13 @@ import { ColumnProps } from 'antd/es/table';
 import useFetch from 'use-http';
 
 import { Worker } from '../../../models/worker';
-// import {getWorkersFromApi} from "../../../api/workerApi";
 import './TeamMembersStyles.css';
-import TagFilter from './TagFilter';
 import { YOUR_EMPLOYEES } from '../../../Constants';
 import { workerList } from '../../../tools/mockData';
 
 const { Title } = Typography;
 const TeamMembersView: React.FunctionComponent<{}> = () => {
-	const workersRequest = useFetch('http://localhost:3001/workers/', []);
+	const workersRequest = useFetch('http://localhost:3000/workers/', []);
 	const workers = workersRequest.data;
 
 	console.log('loading: ', workersRequest.loading);
@@ -72,8 +70,6 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 
 	return <>
 		<Title level={2} className={'teamMembersTitle'}>{YOUR_EMPLOYEES}</Title>
-		{/*tag filter is breaking currently*/}
-		{/*<TagFilter/>*/}
 		<Table<Worker> size={'large'}
 			// we will use fetched data when available
 			// dataSource={workersRequest.loading === true ? [] : workers}
@@ -82,4 +78,5 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 		/>
 	</>;
 };
+
 export default TeamMembersView;

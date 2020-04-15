@@ -1,10 +1,10 @@
 import React from 'react';
-import {Card, Timeline, Typography} from 'antd';
-import './ProfileStyles.css'
+import { Card, Timeline, Typography } from 'antd';
+import './ProfileStyles.css';
 // this is for "My Profile"
 // But may(?) be used for viewing individual profiles of employees
 // conditionally render editable fields = if you're the account "holder", you should be access editing the profile.
-const {Title} = Typography;
+const { Title } = Typography;
 const ProfileView: React.FunctionComponent<{}> = () => {
 
 	return <>
@@ -18,6 +18,7 @@ const ProfileView: React.FunctionComponent<{}> = () => {
 				<Timeline.Item label="2020-02-24 (13:00-17:00)">Advanced SQL statements</Timeline.Item>
 			</Timeline>
 		</Card>
-	</>
+	</>;
 };
+
 export default ProfileView;

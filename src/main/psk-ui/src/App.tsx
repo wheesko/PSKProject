@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Layout, Menu} from 'antd';
+import { Layout, Menu } from 'antd';
 import {
 	UserOutlined,
 	CalendarOutlined,
@@ -11,7 +11,7 @@ import {
 	DeploymentUnitOutlined,
 	PlusOutlined
 } from '@ant-design/icons';
-import {Route, Link, Switch} from 'react-router-dom';
+import { Route, Link, Switch } from 'react-router-dom';
 import {
 	TEAM_NAME,
 	USER_MENU_ITEM_NAME,
@@ -35,7 +35,7 @@ import {
 	CREATE_NEW_TOPIC_MENU_ITEM_NAME
 } from './Constants';
 
-import history from "./history";
+import history from './history';
 
 import CalendarView from './pages/private/calendar-view';
 import LandingPage from './pages/private/landing';
@@ -43,14 +43,14 @@ import LandingPage from './pages/private/landing';
 import './App.css';
 import InfoView from './pages/private/info-view';
 import TeamCalendarView from './pages/private/team-calendar-view';
-import TeamMembersView from "./pages/private/team-members-view";
-import TopicTreeView from "./pages/private/topic-tree-view";
-import NewTopicView from "./pages/private/new-topic-view";
-import ProfileView from "./pages/private/profile-view";
+import TeamMembersView from './pages/private/team-members-view';
+import TopicTreeView from './pages/private/topic-tree-view';
+import NewTopicView from './pages/private/new-topic-view';
+import ProfileView from './pages/private/profile-view';
 
-const {Content, Footer, Sider} = Layout;
+const { Content, Footer, Sider } = Layout;
 
-const {SubMenu} = Menu;
+const { SubMenu } = Menu;
 const App: React.FunctionComponent<{}> = () => {
 	return (
 		<div className="App">
@@ -60,7 +60,7 @@ const App: React.FunctionComponent<{}> = () => {
 					<Menu theme="dark" mode="inline"
 						  defaultSelectedKeys={history.location.pathname.split('/')}
 						  defaultOpenKeys={history.location.pathname.split('/')}
-						  className={"menuList"}
+						  className={'menuList'}
 					>
 						<Menu.Item key={KEY_PROFILE}>
 							<Link to={`/${KEY_PROFILE}`}>

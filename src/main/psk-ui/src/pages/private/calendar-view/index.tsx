@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Calendar, Badge, Modal, Form, Input, Button, TimePicker, Typography, Tag, Divider } from 'antd';
+import { Calendar, Modal, Button, Typography, Tag, Divider } from 'antd';
 import * as moment from 'moment';
 
 import './CalendarStyles.css';
@@ -14,7 +14,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	// onSelect will display a modal to add event or open specific day
 	const [modalVisibility, setModalVisibility] = useState<boolean>(false);
 	const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
-	const [modalDate, setModalDate] = useState<moment.Moment | undefined>(
+	const [selectedDate, setSelectedDate] = useState<moment.Moment | undefined>(
 		undefined
 	);
 	// status type is our example entity
@@ -29,7 +29,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	};
 	const handleSelect = (date?: moment.Moment | undefined): void => {
 		console.log(date);
-		setModalDate(date);
+		setSelectedDate(date);
 		setModalVisibility(true);
 		if (date !== undefined) setModalListData(getListData(date));
 	};
@@ -60,11 +60,11 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 			/>
 			<Modal
 				title={
-					modalDate === undefined
+					selectedDate === undefined
 						? null
-						: `${modalDate.get('year')}-${modalDate.get(
+						: `${selectedDate.get('year')}-${selectedDate.get(
 							'month'
-						)}-${modalDate.get('date')}`
+						)}-${selectedDate.get('date')}`
 				}
 				visible={modalVisibility}
 				onOk={handleOnOk}
@@ -81,7 +81,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 							<Divider/>
 						</>
 					))}
-				{modalDate === undefined ? null : getListData(modalDate).length === 0 ? (
+				{selectedDate === undefined ? null : getListData(selectedDate).length === 0 ? (
 					<p>{DAY_EVENT_LIST_EMPTY}</p>
 				) : null}
 				{isFormVisible ? null : (

@@ -2,5 +2,5 @@ export interface Goal {
 	id: number ,
 	name: string,
 	description: string,
-	color: string | null,
+	color: string,
 }

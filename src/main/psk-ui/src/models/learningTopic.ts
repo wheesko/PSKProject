@@ -4,5 +4,5 @@ export interface LearningTopic {
 	description: string,
 	color: string | undefined,
 	parentTopic: LearningTopic | null,
-	createdBy: number | null,
+	createdBy: number,
 }

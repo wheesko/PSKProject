@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'antd/dist/antd.css';
 import { Router } from 'react-router-dom';
-import history from "./history";
+import history from './history';
 
 ReactDOM.render(
 	<Router history={history}>

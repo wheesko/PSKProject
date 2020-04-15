@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, { useState } from 'react';
 
-import { Typography, Form, Input, Button, Card, Tooltip, Checkbox, Select, Row, Col} from 'antd';
-import {QuestionCircleOutlined} from '@ant-design/icons';
+import { Typography, Form, Input, Button, Card, Tooltip, Checkbox, Select, Row, Col } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import {
 	ADD_A_DESCRIPTION,
 	DESCRIPTION,
@@ -9,35 +9,36 @@ import {
 	INPUT_TOPIC_NAME, IS_THIS_A_SUBTOPIC,
 	NEW_TOPIC_SUBTITLE,
 	NEW_TOPIC_TITLE, SUBMIT, SUBTOPIC_EXPLAINER, TOPIC_NAME
-} from "../../../Constants";
+} from '../../../Constants';
 import './NewTopicStyles.css';
 
-const {Title} = Typography;
-const {Option} = Select;
+const { Title } = Typography;
+const { Option } = Select;
 
 const formItemLayout = {
 	labelCol: {
-		xs: {span: 24},
-		sm: {span: 8}
+		xs: { span: 24 },
+		sm: { span: 8 }
 	},
 	wrapperCol: {
-		xs: {span: 24},
-		sm: {span: 16}
+		xs: { span: 24 },
+		sm: { span: 16 }
 	}
 };
 const NewTopicView: React.FunctionComponent<{}> = () => {
 	const [isSubtopic, setIsSubtopic] = useState<boolean>(false);
 	const handleCheckboxChange = () => {
 		setIsSubtopic(!isSubtopic);
-	}
+	};
 	const [form] = Form.useForm();
+
 	return <>
 		<Title level={1} className={'newTopicTitle'}>{NEW_TOPIC_TITLE}</Title>
 		<p className={'newTopicSubtitle'}>{NEW_TOPIC_SUBTITLE}</p>
 		<Card className="newTopicCard">
 			<Form.Provider
 				onFormFinish={name => {
-					console.log(form.getFieldsValue())
+					console.log(form.getFieldsValue());
 					if (name === 'form1') {
 						// Do something...
 					}
@@ -46,13 +47,13 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 				<Form
 					form={form}
 					{...formItemLayout}
-					initialValues={{remember: true}}
+					initialValues={{ remember: true }}
 					name="newTopicForm"
 				>
 					<Form.Item
 						label={TOPIC_NAME}
 						name="topicName"
-						rules={[{required: true, message: INPUT_TOPIC_NAME}]}
+						rules={[{ required: true, message: INPUT_TOPIC_NAME }]}
 					>
 						<Input allowClear/>
 					</Form.Item>
@@ -60,7 +61,7 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 							   label={<>
 								   {IS_THIS_A_SUBTOPIC}
 								   <Tooltip title={SUBTOPIC_EXPLAINER}>
-									   <QuestionCircleOutlined style={{paddingLeft: '4px'}}/>
+									   <QuestionCircleOutlined style={{ paddingLeft: '4px' }}/>
 								   </Tooltip>
 							   </>} colon={false}>
 						<Row gutter={[12, 12]} justify="start" align="middle">
@@ -80,8 +81,8 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 					</Form.Item>
 					<Form.Item
 						wrapperCol={{
-							xs: {span: 24, offset: 0},
-							sm: {span: 16, offset: 8}
+							xs: { span: 24, offset: 0 },
+							sm: { span: 16, offset: 8 }
 						}}
 					>
 						<Button
@@ -95,6 +96,7 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 				</Form>
 			</Form.Provider>
 		</Card>
-	</>
-}
+	</>;
+};
+
 export default NewTopicView;

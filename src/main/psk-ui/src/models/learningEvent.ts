@@ -8,6 +8,6 @@ export interface LearningEvent {
 	description: string,
 	timeFrom: Moment | null,
 	timeTo: Moment | null,
-	learningTopic: LearningTopic | undefined,
+	learningTopic: LearningTopic,
 	assignedWorker: Worker | null,
 }

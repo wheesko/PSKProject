@@ -119,3 +119,16 @@ export const learningEvents: LearningEvent[] = [
 
 	}
 ];
+
+export const teams = [{
+	teamName: 'Alpha',
+	manager: 'Fictional Manager1',
+	employeeAmount: 3,
+	planningAmount: 4,
+},
+{
+	teamName: 'Beta',
+	manager: 'Fictional Manager1',
+	employeeAmount: 5,
+	planningAmount: 7,
+}];
