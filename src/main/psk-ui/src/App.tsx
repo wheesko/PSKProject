@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Layout, Menu } from 'antd';
 import {
 	UserOutlined,
@@ -153,7 +152,6 @@ const App: React.FunctionComponent<{}> = () => {
 							<Route exact path={`/${KEY_TEAMS}/${KEY_INFO}`} component={InfoView}/>
 							<Route exact path={`/${KEY_TOPICS}/${KEY_TOPIC_TREE}`} component={TopicTreeView}/>
 							<Route exact path={`/${KEY_TOPICS}/${KEY_NEW_TOPIC}`} component={NewTopicView}/>
-
 						</Switch>
 					</Content>
 					<Footer>Powered By: {TEAM_NAME}</Footer>
