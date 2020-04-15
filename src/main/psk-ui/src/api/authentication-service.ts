@@ -21,6 +21,9 @@ class AuthenticationService {
     		    return response.headers.authorization;
     		});
     };
+	public getSession = (): Promise<void> => {
+		return this.restService.get<void>('/account').then(response => response.data);
+	}
 }
 
 const authenticationService = new AuthenticationService();
