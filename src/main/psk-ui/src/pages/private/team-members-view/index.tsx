@@ -1,18 +1,21 @@
 import React from 'react';
 
+import './TeamMembersStyles.css';
 import { Table, Tag, Typography } from 'antd';
 import { ColumnProps } from 'antd/es/table';
-import useFetch from 'use-http';
 
+import useFetch from 'use-http';
 import { Worker } from '../../../models/worker';
-import './TeamMembersStyles.css';
 import { YOUR_EMPLOYEES } from '../../../Constants';
+import { Role } from '../../../models/role';
+import { Goal } from '../../../models/goal';
+
 import { workerList } from '../../../tools/mockData';
 
 const { Title } = Typography;
+
 const TeamMembersView: React.FunctionComponent<{}> = () => {
 	const workersRequest = useFetch('http://localhost:3000/workers/', []);
-	const workers = workersRequest.data;
 
 	console.log('loading: ', workersRequest.loading);
 
@@ -36,7 +39,7 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			title: 'Role',
 			dataIndex: 'role',
 			key: 'role',
-			render: role => {
+			render: (role: Role): React.ReactNode => {
 				return (
 					<Tag color={role.color} key={role.title}>
 						{role.title.toUpperCase()}
@@ -49,17 +52,18 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			title: 'Goals',
 			key: 'goals',
 			dataIndex: 'goals',
-			render: goals => (
+			render: (goals: Goal[]): React.ReactNode => (
 				<span>
-					{goals.map((goal: string) => {
-						let color = goal.length > 5 ? 'geekblue' : 'green';
+					{goals.map((goal: Goal) => {
+						let color = goals.length > 5 ? 'geekblue' : 'green';
 
-						if (goal === 'loser') {
+						if (goal.name === 'loser') {
 							color = 'volcano';
 						}
+
 						return (
-							<Tag color={color} key={goal}>
-								{goal.toUpperCase()}
+							<Tag color={color} key={goal.id}>
+								{goal.name.toUpperCase()}
 							</Tag>
 						);
 					})}
@@ -79,4 +83,4 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 	</>;
 };
 
-export default TeamMembersView;
+export { TeamMembersView };

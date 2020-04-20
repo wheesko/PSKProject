@@ -1,4 +1,4 @@
 export interface TopicFilter {
-	text: string,
-	value: string
+	text: string;
+	value: string;
 }

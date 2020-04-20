@@ -10,7 +10,9 @@ import {
 	DeploymentUnitOutlined,
 	PlusOutlined
 } from '@ant-design/icons';
+
 import { Route, Link, Switch } from 'react-router-dom';
+
 import {
 	TEAM_NAME,
 	USER_MENU_ITEM_NAME,
@@ -36,16 +38,16 @@ import {
 
 import history from './history';
 
-import CalendarView from './pages/private/calendar-view';
-import LandingPage from './pages/private/landing';
+import { CalendarView } from './pages/private/calendar-view';
+import { LandingPage } from './pages/private/landing';
 
 import './App.css';
-import InfoView from './pages/private/info-view';
-import TeamCalendarView from './pages/private/team-calendar-view';
-import TeamMembersView from './pages/private/team-members-view';
-import TopicTreeView from './pages/private/topic-tree-view';
-import NewTopicView from './pages/private/new-topic-view';
-import ProfileView from './pages/private/profile-view';
+import { InfoView } from './pages/private/info-view';
+import { TeamCalendarView } from './pages/private/team-calendar-view';
+import { TeamMembersView } from './pages/private/team-members-view';
+import { TopicTreeView } from './pages/private/topic-tree-view';
+import { NewTopicView } from './pages/private/new-topic-view';
+import { ProfileView } from './pages/private/profile-view';
 
 const { Content, Footer, Sider } = Layout;
 
@@ -161,4 +163,4 @@ const App: React.FunctionComponent<{}> = () => {
 	);
 };
 
-export default App;
+export { App };

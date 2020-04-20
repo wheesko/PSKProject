@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, TimePicker, Card, Tooltip } from 'antd';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import * as moment from 'moment';
-import './EventFormStyles.css';
+import React from 'react';
+
+import { Form, Input, Button, TimePicker, Card } from 'antd';
 import {
 	ADD_LEARNING_EVENT_COMMENT, ADD_NEW_LEARNING_EVENT,
 	CHOOSE_TIME, COMMENT, EVENT_NAME, INPUT_EVENT_NAME,
@@ -10,7 +8,10 @@ import {
 	WARNING_EVENT_TIME_IS_REQUIRED
 } from '../../../Constants';
 
+import './EventFormStyles.css';
+
 const { RangePicker } = TimePicker;
+
 const formItemLayout = {
 	labelCol: {
 		xs: { span: 24 },
@@ -21,6 +22,7 @@ const formItemLayout = {
 		sm: { span: 16 }
 	}
 };
+
 const EventForm: React.FunctionComponent<{}> = () => {
 	const [form] = Form.useForm();
 
@@ -76,4 +78,4 @@ const EventForm: React.FunctionComponent<{}> = () => {
 	);
 };
 
-export default EventForm;
+export { EventForm };
