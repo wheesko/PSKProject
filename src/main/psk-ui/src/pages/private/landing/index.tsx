@@ -23,7 +23,7 @@ const LandingPage: React.FunctionComponent<{}> = () => {
 };
 
 const handleClick = (): void => {
-	authenticationService.getSession().then(data => console.log(data));
+	authenticationService.login({userName: "admin", password: "admin"}).then(data => console.log(data));
 };
 
 export { LandingPage };

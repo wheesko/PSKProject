@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 public class AuthenticationService {
-    static final long EXPIRATIONTIME = 864_000_00;
+    static final long EXPIRATIONTIME = 900000;
     static final String SIGNINGKEY = "signingKey";
     static final String BEARER_PREFIX = "Bearer";
 

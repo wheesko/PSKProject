@@ -9,7 +9,7 @@ PSK komandinis projektas
 # Setup
 Start frontend (skip npm install if not first time):
 ```
-cd psk-ui
+cd src/main/psk-ui
 npm install
 npm start
 ```
@@ -42,7 +42,7 @@ In this window your JDBC URL field should look like the one in the field `spring
 src/main/resources/application.properties
 ```
 
-Once you connect, you should be able to see a `TEST_ENTITY` table
+Once you connect, you should be able to see entity tables
 
 You can test out the api calls via postman, `PUT` and `GET` methods should be working properly.
 
