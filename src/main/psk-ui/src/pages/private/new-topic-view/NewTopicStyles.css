@@ -1,13 +1,16 @@
 .newTopicTitle {
     text-align: start;
 }
+
 .newTopicSubtitle {
     text-align: start;
     font-size: 20px;
 }
-.newTopicCard *{
+
+.newTopicCard * {
     align-items: start ;
 }
+
 #subtopic-item-container {
     display: flex;
     justify-content: space-between;

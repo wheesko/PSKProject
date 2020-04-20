@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+
 import { Table, Typography } from 'antd';
-import './InfoStyles.css';
 import { TopicFilter } from '../../../models/topicFilter';
 import { teams } from '../../../tools/mockData';
 
+import './InfoStyles.css';
+
 const { Title } = Typography;
+
 const InfoView: React.FunctionComponent<{}> = () => {
 	// set topic filters from api
 	const [topicFilters, setTopicFilters] = useState<TopicFilter[]>([{ text: 'Java', value: 'java' }, {
@@ -13,6 +16,7 @@ const InfoView: React.FunctionComponent<{}> = () => {
 	}]);
 	// handle selected topic filters from table
 	const [selectedTopicFilters, setSelectedTopicFilters] = useState<TopicFilter[]>([]);
+
 	const columns = [{
 		title: 'Team',
 		dataIndex: 'teamName',
@@ -40,8 +44,8 @@ const InfoView: React.FunctionComponent<{}> = () => {
 			{/*TODO: maybe this title will be a reminder or a helper text in the future*/}
 			Here you can view team data by learned topic
 		</Title>
-		<Table columns={columns} dataSource={teams}></Table>
+		<Table columns={columns} dataSource={teams}/>
 	</>;
 };
 
-export default InfoView;
+export { InfoView };

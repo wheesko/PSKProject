@@ -1,10 +1,12 @@
 import React from 'react';
 import { Card, Timeline, Typography } from 'antd';
-import './ProfileStyles.css';
 // this is for "My Profile"
 // But may(?) be used for viewing individual profiles of employees
+import './ProfileStyles.css';
+
 // conditionally render editable fields = if you're the account "holder", you should be access editing the profile.
 const { Title } = Typography;
+
 const ProfileView: React.FunctionComponent<{}> = () => {
 
 	return <>
@@ -21,4 +23,4 @@ const ProfileView: React.FunctionComponent<{}> = () => {
 	</>;
 };
 
-export default ProfileView;
+export { ProfileView };

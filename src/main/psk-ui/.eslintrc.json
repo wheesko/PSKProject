@@ -5,8 +5,9 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:@typescript-eslint/eslint-recommended"
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -55,6 +56,14 @@
         "jsx-quotes": [
             "warn",
             "prefer-double"
-        ]
+        ],
+        "react/display-name": "off",
+        "@typescript-eslint/explicit-function-return-type": [
+            "off",
+            {
+                "allowExpressions": true
+            }
+        ],
+        "@typescript-eslint/no-use-before-define": "off"
     }
 }

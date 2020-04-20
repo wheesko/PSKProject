@@ -26,4 +26,4 @@ const handleClick = (): void => {
 	authenticationService.getSession().then(data => console.log(data));
 };
 
-export default LandingPage;
+export { LandingPage };

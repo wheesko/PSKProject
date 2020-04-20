@@ -10,6 +10,7 @@ import {
 	NEW_TOPIC_SUBTITLE,
 	NEW_TOPIC_TITLE, SUBMIT, SUBTOPIC_EXPLAINER, TOPIC_NAME
 } from '../../../Constants';
+
 import './NewTopicStyles.css';
 
 const { Title } = Typography;
@@ -25,11 +26,14 @@ const formItemLayout = {
 		sm: { span: 16 }
 	}
 };
+
 const NewTopicView: React.FunctionComponent<{}> = () => {
 	const [isSubtopic, setIsSubtopic] = useState<boolean>(false);
+
 	const handleCheckboxChange = () => {
 		setIsSubtopic(!isSubtopic);
 	};
+
 	const [form] = Form.useForm();
 
 	return <>
@@ -99,4 +103,4 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 	</>;
 };
 
-export default NewTopicView;
+export { NewTopicView };
