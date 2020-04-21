@@ -99,24 +99,8 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		</div>
 	);
 };
-const getMonthData = (value: moment.Moment) => {
-	if (value.month() === 8) {
-		return 1394;
-	}
-};
 
-const monthCellRender = (value: moment.Moment): React.ReactNode => {
-	const num = getMonthData(value);
 
-	return num ? (
-		<div className="notes-month">
-			<section>{num}</section>
-			<span>Backlog number</span>
-		</div>
-	) : null;
-};
-// this method will be changed into a get request
-  
 const getListData = (value: moment.Moment) => {
 	// fetch by year, month, day (or any arguments based on backend requirements)
 	// console.log(value.year(), value.month(), value.date())
@@ -138,24 +122,6 @@ const getListData = (value: moment.Moment) => {
 	default:
 	}
 	return listData;
-};
-
-// responsible for displaying items in each cell
-const dateCellRender = (value: moment.Moment): React.ReactNode => {
-	// value is the specific day
-	// get data from backend about each day
-	const listData = getListData(value);
-
-	// and display
-	return (
-		<ul className='events'>
-			{listData.map(item => (
-				<li key={item.content}>
-					<Badge status={item.type} text={item.content} />
-				</li>
-			))}
-		</ul>
-	);
 };
 
 const getMonthData = (value: moment.Moment) => {
