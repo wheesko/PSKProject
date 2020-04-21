@@ -90,4 +90,4 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 	</>;
 };
 
-export default LoginPage;
+export { LoginPage };

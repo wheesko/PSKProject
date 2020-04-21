@@ -10,6 +10,7 @@ export const roles: Role[] = [
 	{ id: 4, description: '', title: 'Front-end engineer', color: 'volcano' },
 	{ id: 5, description: '', title: 'Back-end engineer', color: 'lime' },
 	{ id: 6, description: '', title: 'Database engineer', color: 'geekblue' }];
+
 export const workerList: Worker[] = [
 	{
 		id: 1,

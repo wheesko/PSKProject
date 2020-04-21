@@ -12,6 +12,4 @@ public class AuthenticationController {
         //Empty endpoint to use for authentication, if thrown error - means that login is not valid.
         //No additional checks required, just call this endpoint and it will if JWT is valid or not.
     }
-
-    //TODO: Logout endpoint
 }

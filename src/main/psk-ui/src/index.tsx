@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import './index.css';
-import App from './App';
+import { App } from './App';
 import * as serviceWorker from './serviceWorker';
-import 'antd/dist/antd.css';
 import { Router } from 'react-router-dom';
 import history from './history';
 import configureStore from './redux';
+import 'antd/dist/antd.css';
+import './index.css';
 
 const store = configureStore();
 
