@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, Col, Form, Input, Layout, Row, Typography } from 'antd';
+import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
 import { TEAM_NAME } from '../../../Constants';
 import { useDispatch } from 'react-redux';
 import { thunkLogin } from '../../../thunks';
@@ -13,6 +13,7 @@ const tailLayout = {
 };
 const { Content, Footer } = Layout;
 const { Title } = Typography;
+
 const LoginPage: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 	const [form] = Form.useForm();
@@ -81,7 +82,6 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 								</Form.Item>
 							</Col>
 						</Row>
-
 					</Form>
 				</Form.Provider>
 			</Content>

@@ -13,8 +13,13 @@ class AuthenticationService {
 	public login = (loginRequest: LoginRequest): Promise<AxiosResponse | null> => {
 		return this.restService.post<string>('/login', loginRequest, { baseURL: '' });
 	};
+
 	public getSession = (): Promise<void> => {
 		return this.restService.get<void>('/account').then(response => response.data);
+	};
+
+	public logout = (): Promise<void> => {
+		return Promise.resolve();
 	}
 }
 

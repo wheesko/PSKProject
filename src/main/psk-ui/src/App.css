@@ -36,12 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
 #sider {
   overflow: auto;
   height: 100vh;
   position: fixed;
   left: 0;
 }
+
+#sider div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 #root-layout {
   height: 100vh;
 }
@@ -61,4 +69,17 @@ footer {
 
 .menuList {
     text-align: start;
+}
+
+.ant-btn.logout-button {
+  background-color: rgb(0, 21, 41);
+  color: rgba(255, 255, 255, 0.65);
+  border: none;
+  margin-bottom: 12px;
+}
+
+.ant-btn.logout-button:hover {
+  background-color: rgb(0, 21, 41);
+  color: rgba(255, 255, 255, 1);
+  border: none;
 }
