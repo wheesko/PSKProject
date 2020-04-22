@@ -8,18 +8,24 @@ import history from './history';
 import configureStore from './redux';
 import 'antd/dist/antd.css';
 import './index.css';
+import { PersistGate } from 'redux-persist/integration/react';
 
-const store = configureStore();
+const {
+	store,
+	persistedStore
+} = configureStore();
+
 
 ReactDOM.render(
 	<Provider store={store}>
-		<Router history={history}>
-			<App/>
-		</Router>
+		<PersistGate persistor={persistedStore}>
+			<Router history={history}>
+				<App/>
+			</Router>
+		</PersistGate>
 	</Provider>,
 	document.getElementById('root')
-)
-;
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -1,4 +1,4 @@
-import { UPDATE_SESSION, USER_LOGIN, UserActionTypes, UserState } from './types';
+import { UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, UserActionTypes, UserState } from './types';
 
 const initialState: UserState = {
 	loggedIn: false,
@@ -18,6 +18,12 @@ export function userReducer(
 		};
 	}
 	case USER_LOGIN: {
+		return {
+			...state,
+			...action.payload
+		};
+	}
+	case USER_LOGOUT: {
 		return {
 			...state,
 			...action.payload
