@@ -106,7 +106,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	);
 };
 // this method will be changed into a get request
-  
+
 function getListData(value: moment.Moment): LearningEvent[] {
 	// fetch by year, month, day (or any arguments based on backend requirements)
 	// console.log(value.year(), value.month(), value.date())

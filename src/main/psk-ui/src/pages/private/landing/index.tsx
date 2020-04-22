@@ -5,8 +5,8 @@ import authenticationService from '../../../api/authentication-service';
 
 const LandingPage: React.FunctionComponent<{}> = () => {
 	return (
-		<div className="LandingPage" >
-			<Row gutter={[48, 48]}  justify="center">
+		<div className="LandingPage">
+			<Row gutter={[48, 48]} justify="center">
 				<Col xs={12}>
 					Initial test page
 				</Col>
@@ -23,7 +23,7 @@ const LandingPage: React.FunctionComponent<{}> = () => {
 };
 
 const handleClick = (): void => {
-	authenticationService.getSession().then(data => console.log(data));
+	authenticationService.login({userName: "admin", password: "admin"}).then(data => console.log(data));
 };
 
 export { LandingPage };
