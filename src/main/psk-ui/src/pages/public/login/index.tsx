@@ -3,13 +3,14 @@ import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
 import { TEAM_NAME } from '../../../Constants';
 import { useDispatch } from 'react-redux';
 import { thunkLogin } from '../../../thunks';
+import '../../../App.css';
 
 const layout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 },
+	labelCol: { span: 24 },
+	wrapperCol: { span: 24 },
 };
 const tailLayout = {
-	wrapperCol: { offset: 8, span: 16 },
+	wrapperCol: { offset: 0, span: 16 },
 };
 const { Content, Footer } = Layout;
 const { Title } = Typography;
@@ -29,61 +30,59 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 		console.log('Failed:');
 	};
 
+	function renderLoginForm(): React.ReactNode {
+		return (
+			<Form.Provider onFormFinish={onFinish}>
+				<Form
+					form={form}
+					{...layout}
+					name="basic"
+					// onFinish={onFinish}
+					onFinishFailed={onFinishFailed}
+				>
+					<Form.Item
+						label="Username"
+						name="username"
+						rules={[{ required: true, message: 'Please input your username!' }]}
+					>
+						<Input/>
+					</Form.Item>
+					<Form.Item
+						label="Password"
+						name="password"
+						rules={[{ required: true, message: 'Please input your password!' }]}
+					>
+						<Input.Password/>
+					</Form.Item>
+					<Form.Item {...tailLayout}>
+						<Button type="primary" htmlType="submit">
+									Submit
+						</Button>
+					</Form.Item>
+				</Form>
+			</Form.Provider>
+		);
+	}
+
 	//TODO: layout is a little bid too wide and to high
 	return <>
 		<Layout id="root-layout">
-			<Content>
-				<Row gutter={[48, 48]} justify="center">
+			<Content id="login-wrapper">
+				<Row gutter={[0, 48]} justify="center">
 					<Col xs={12}>
 						<Title>Welcome to PSK_123 Calendar app!</Title>
 					</Col>
 				</Row>
-				<Row gutter={[48, 48]} justify="center">
+				<Row gutter={[0, 48]} justify="center">
 					<Col xs={12}>
 						<Title level={2}>Please log in to continue</Title>
 					</Col>
 				</Row>
-				<Form.Provider onFormFinish={onFinish}>
-					<Form
-						form={form}
-						{...layout}
-						name="basic"
-						// onFinish={onFinish}
-						onFinishFailed={onFinishFailed}
-					>
-						<Row gutter={[48, 12]} justify="center">
-							<Col xs={12}>
-								<Form.Item
-									label="Username"
-									name="username"
-									rules={[{ required: true, message: 'Please input your username!' }]}
-								>
-									<Input/>
-								</Form.Item>
-							</Col>
-						</Row>
-						<Row gutter={[48, 12]} justify="center">
-							<Col xs={12}>
-								<Form.Item
-									label="Password"
-									name="password"
-									rules={[{ required: true, message: 'Please input your password!' }]}
-								>
-									<Input.Password/>
-								</Form.Item>
-							</Col>
-						</Row>
-						<Row gutter={[48, 12]} justify="center">
-							<Col xs={12}>
-								<Form.Item {...tailLayout}>
-									<Button type="primary" htmlType="submit">
-										Submit
-									</Button>
-								</Form.Item>
-							</Col>
-						</Row>
-					</Form>
-				</Form.Provider>
+				<Row justify="center">
+					<Col xs={12}>
+						{renderLoginForm()}
+					</Col>
+				</Row>
 			</Content>
 			<Footer>Powered By: {TEAM_NAME}</Footer>
 		</Layout>

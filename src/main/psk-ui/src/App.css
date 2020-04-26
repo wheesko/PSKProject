@@ -83,3 +83,7 @@ footer {
   color: rgba(255, 255, 255, 1);
   border: none;
 }
+
+#login-wrapper {
+    max-width: 100vw;
+}
