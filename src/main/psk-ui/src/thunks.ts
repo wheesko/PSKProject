@@ -21,11 +21,7 @@ export const thunkLogin = (
 
 export const thunkLogout = (): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
 	authenticationService.logout().then(() => {
-		dispatch(userLogout({
-			email: '',
-			loggedIn: false,
-			token: ''
-		}));
+		dispatch(userLogout());
 	}).catch((error: any) => {
 		console.log(error);
 	});

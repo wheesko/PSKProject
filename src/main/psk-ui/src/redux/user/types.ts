@@ -22,7 +22,6 @@ interface LoginAction {
 
 interface LogoutAction {
 	type: typeof USER_LOGOUT;
-	payload: UserState;
 }
 
 export type UserActionTypes = UpdateSessionAction | LoginAction | LogoutAction;

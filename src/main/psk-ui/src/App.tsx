@@ -22,11 +22,7 @@ const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 
 	const logout = () => {
-		dispatch(userLogout({
-			email: '',
-			loggedIn: false,
-			token: ''
-		}));
+		dispatch(userLogout());
 	};
 	
 	return (

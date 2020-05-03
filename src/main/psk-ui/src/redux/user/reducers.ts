@@ -24,10 +24,7 @@ export function userReducer(
 		};
 	}
 	case USER_LOGOUT: {
-		return {
-			...state,
-			...action.payload
-		};
+		return initialState;
 	}
 	default:
 		return state;
