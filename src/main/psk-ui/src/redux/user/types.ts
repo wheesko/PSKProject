@@ -1,7 +1,7 @@
 // Describing the shape of the system's slice of state
 export interface UserState {
 	loggedIn: boolean;
-	userName: string;
+	email: string;
 	token: string;
 }
 

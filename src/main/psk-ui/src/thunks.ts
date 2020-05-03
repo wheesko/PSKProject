@@ -10,7 +10,7 @@ export const thunkLogin = (
 	loginRequest: LoginRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
 	authenticationService.login(loginRequest).then(response => {
 		dispatch(userLogin({
-			userName: loginRequest.userName,
+			email: loginRequest.email,
 			loggedIn: true,
 			token: response?.headers.authorization.replace('Bearer ', '')
 		}));
@@ -22,7 +22,7 @@ export const thunkLogin = (
 export const thunkLogout = (): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
 	authenticationService.logout().then(() => {
 		dispatch(userLogout({
-			userName: '',
+			email: '',
 			loggedIn: false,
 			token: ''
 		}));

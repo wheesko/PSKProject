@@ -2,7 +2,7 @@ import { UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, UserActionTypes, UserState } f
 
 const initialState: UserState = {
 	loggedIn: false,
-	userName: '',
+	email: '',
 	token: '',
 };
 

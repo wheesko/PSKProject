@@ -49,4 +49,11 @@ You can test out the api calls via postman, `PUT` and `GET` methods should be wo
 # Swagger UI
 
 You can access swagger UI and see implemented endpoints at
-```localhost:8080/swagger-ui.html```
+```
+localhost:8080/swagger-ui.html
+```
+Click authorize and insert JWT in format (get it from postman or frontend)
+```
+Bearer <YOUR_JWT_VALUE>
+```
+You should now be able to call them, provided your JWT was correct and not expired

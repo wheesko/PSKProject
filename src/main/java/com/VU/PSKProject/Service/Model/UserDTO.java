@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDTO {
-    private String userName;
+    private String email; //TODO: add email regex
     private String password;
     private UserRole userRole;
 }
