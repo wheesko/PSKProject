@@ -1,7 +1,7 @@
 // Describing the shape of the system's slice of state
 export interface UserState {
 	loggedIn: boolean;
-	userName: string;
+	email: string;
 	token: string;
 }
 
@@ -22,7 +22,6 @@ interface LoginAction {
 
 interface LogoutAction {
 	type: typeof USER_LOGOUT;
-	payload: UserState;
 }
 
 export type UserActionTypes = UpdateSessionAction | LoginAction | LogoutAction;

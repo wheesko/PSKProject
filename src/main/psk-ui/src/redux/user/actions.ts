@@ -14,9 +14,8 @@ export function userLogin(newState: UserState) {
 	};
 }
 
-export function userLogout(newState: UserState) {
+export function userLogout() {
 	return {
-		type: USER_LOGOUT,
-		payload: newState
+		type: USER_LOGOUT
 	};
 }

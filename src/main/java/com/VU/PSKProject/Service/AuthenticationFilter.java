@@ -16,10 +16,14 @@ public class AuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
-            Authentication authentication = AuthenticationService.getAuthentication((HttpServletRequest) request);
 
-            if (authentication == null) throw new RuntimeException("No authentication");
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(request, response);
+        Authentication authentication = AuthenticationService.getAuthentication((HttpServletRequest) request);
+
+        //Check if no authentication and url not public
+        if (authentication == null)
+            throw new RuntimeException(((HttpServletRequest) request).getRequestURI() + "No authentication");
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        filterChain.doFilter(request, response);
     }
 }

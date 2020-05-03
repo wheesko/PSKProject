@@ -1,5 +1,6 @@
 package com.VU.PSKProject.Config;
 
+import com.VU.PSKProject.Constants.WebConstants;
 import com.VU.PSKProject.Service.AuthenticationFilter;
 import com.VU.PSKProject.Service.LoginFilter;
 import com.VU.PSKProject.Service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,8 +41,6 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors().and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/createTest").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new LoginFilter("/login", authenticationManager()),
@@ -53,6 +53,11 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();
 
         super.configure(http);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(WebConstants.AUTH_WHITELIST);
     }
 
     @Bean

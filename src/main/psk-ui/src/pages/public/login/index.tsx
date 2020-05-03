@@ -20,7 +20,7 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 	const [form] = Form.useForm();
 	const onFinish = () => {
 		dispatch(thunkLogin({
-			userName: form.getFieldValue('username'),
+			email: form.getFieldValue('email'),
 			password: form.getFieldValue('password')
 		}));
 	};
@@ -41,9 +41,9 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 					onFinishFailed={onFinishFailed}
 				>
 					<Form.Item
-						label="Username"
-						name="username"
-						rules={[{ required: true, message: 'Please input your username!' }]}
+						label="Email"
+						name="email"
+						rules={[{ required: true, message: 'Please input your email!' }]}
 					>
 						<Input/>
 					</Form.Item>
