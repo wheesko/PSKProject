@@ -20,8 +20,7 @@ public class Worker {
     private Team team;
     private int quarterLearningDayLimit;
     private int consecutiveLearningDayLimit;
-    // private Role role;
-    // private List<WorkerGoals> workerGoals;
+    //private List<WorkerGoal> workerGoals;
 
     @OneToMany(cascade = CascadeType.ALL,
             orphanRemoval = true)
@@ -36,7 +35,6 @@ public class Worker {
             mappedBy = "worker"
     )
     private List<WorkerGoal> workerGoals;
-
 
     public Long getId() {
         return id;

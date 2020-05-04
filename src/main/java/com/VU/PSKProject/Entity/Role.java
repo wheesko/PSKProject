@@ -3,7 +3,7 @@ package com.VU.PSKProject.Entity;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name = "Role")
 public class Role {
 
     @Id

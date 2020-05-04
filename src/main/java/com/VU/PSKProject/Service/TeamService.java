@@ -22,7 +22,7 @@ public class TeamService {
     }
 
     public void updateTeam(Long id, Team team){
-        if(teamRepository.findById(id) != null) teamRepository.save(team);
+        if(teamRepository.findById(id).isPresent()) teamRepository.save(team);
     }
 
     public void deleteTeam(Long id){

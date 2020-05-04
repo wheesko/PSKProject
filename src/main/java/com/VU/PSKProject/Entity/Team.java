@@ -10,26 +10,16 @@ public class Team {
     @GeneratedValue
     private Long id;
     private String name;
-    // private List<TeamGoals> teamGoals;
-
-    // team probably does not need a Manager reference
-    // you could just search for all team members, who are managers to get the object reference
-
 
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            mappedBy = "team"
     )
     private List<Worker> teamMembers;
+
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
             mappedBy = "team"
     )
     private List<TeamGoal> teamGoals;
-
-
-
 
     public String getName() {
         return name;

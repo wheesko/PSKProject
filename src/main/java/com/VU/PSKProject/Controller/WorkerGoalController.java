@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("workerGoals")
-public class WorkerGoalController {
+public class  WorkerGoalController {
     @Autowired
     private WorkerGoalService workerGoalService;
 
