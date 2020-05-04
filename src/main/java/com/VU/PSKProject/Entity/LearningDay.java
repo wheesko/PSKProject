@@ -3,7 +3,7 @@ package com.VU.PSKProject.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 @Entity
-public class LearningEvent {
+public class LearningDay {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

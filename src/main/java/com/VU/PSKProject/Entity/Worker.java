@@ -24,7 +24,7 @@ public class Worker {
 
     @OneToMany(cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<LearningEvent> learningEvents;
+    private List<LearningDay> learningDays;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker manager;
