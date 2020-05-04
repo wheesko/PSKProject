@@ -1,7 +1,6 @@
 package com.VU.PSKProject.Service;
 
-import com.VU.PSKProject.Entity.LearningEvent;
-import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Repository.LearningEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,19 +13,19 @@ public class LearningEventService {
     @Autowired
     private LearningEventRepository learningEventRepository;
 
-    public List<LearningEvent> getAllLearningEventsByWorkerId(Long workerId) {
+    public List<LearningDay> getAllLearningEventsByWorkerId(Long workerId) {
         return learningEventRepository.findAllLearningEventsByWorkerId(workerId);
     }
 
-    public void createLearningEvent(LearningEvent learningEvent) {
-        learningEventRepository.save(learningEvent);
+    public void createLearningEvent(LearningDay learningDay) {
+        learningEventRepository.save(learningDay);
     }
 
-    public void updateLearningEvent(LearningEvent learningEvent, Long learningEventId) {
+    public void updateLearningEvent(LearningDay learningDay, Long learningEventId) {
         // calling save() on an object with predefined id will update the corresponding database record
         // rather than inserting a new one
         if (learningEventRepository.findAllById(Collections.singleton(learningEventId)) != null)
-            learningEventRepository.save(learningEvent);
+            learningEventRepository.save(learningDay);
     }
 
     public void deleteLearningEvent(Long id) {
