@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("teams")
+@RequestMapping("/api/teams")
 public class TeamController {
     @Autowired
     private TeamService teamService;

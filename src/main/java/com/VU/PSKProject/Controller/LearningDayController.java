@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("learningDays")
+@RequestMapping("/api/learningDays")
 public class LearningDayController {
 
     @Autowired

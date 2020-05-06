@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("roleGoals")
+@RequestMapping("/api/roleGoals")
 public class RoleGoalController {
     @Autowired
     private RoleGoalService roleGoalService;

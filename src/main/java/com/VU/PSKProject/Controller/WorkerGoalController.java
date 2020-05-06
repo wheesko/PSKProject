@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("workerGoals")
+@RequestMapping("/api/workerGoals")
 public class  WorkerGoalController {
     @Autowired
     private WorkerGoalService workerGoalService;
