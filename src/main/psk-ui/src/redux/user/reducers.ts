@@ -1,9 +1,12 @@
 import { UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, UserActionTypes, UserState } from './types';
+import { Authority } from '../../models/authority';
 
 const initialState: UserState = {
 	loggedIn: false,
 	email: '',
 	token: '',
+	role: { title: '', color: '' },
+	authority: Authority.UNASSIGNED,
 };
 
 export function userReducer(

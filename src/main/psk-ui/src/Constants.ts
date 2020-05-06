@@ -1,3 +1,5 @@
+// TODO: refactor into several constant files so it would be more tidy
+
 export const TEAM_NAME = 'PSK_123';
 
 export const DAY_EVENT_LIST_EMPTY = 'No events for this day';
@@ -22,8 +24,7 @@ export const ADD_LEARNING_EVENT_COMMENT = 'Add learning event comment';
 export const SAVE_LEARNING_EVENT = 'Save learning event';
 export const LEARNING_EVENT_SAVED = (eventName: string): string => {
 	return `Learning event ${eventName} saved!`;
-}
-;
+};
 export const N_LEARNING_EVENTS = (eventAmount: number): string => {
 	return eventAmount === 1 ? '1 learning event' : `${eventAmount} learning events`;
 };
@@ -39,11 +40,14 @@ export const IS_THIS_A_SUBTOPIC = 'Is this a subtopic ?';
 export const ADD_A_DESCRIPTION = 'Add some key info about the topic...';
 export const INPUT_TOPIC_NAME = 'Input topic name';
 export const SUBTOPIC_EXPLAINER = 'If this is a subtopic, it should be assigned to a parent topic';
+export const TEAM_MEMBERS_OF_TEAM = 'Team members of team ';
+export const DONE = 'Done';
 // KEYS
 export const KEY_TEAMS = 'teams';
 export const KEY_CALENDAR = 'calendar';
 export const KEY_MY_CALENDAR = 'my-calendar';
 export const KEY_MEMBERS = 'members';
+export const KEY_MY_EMPLOYEES= 'my-employees';
 export const KEY_TEAM = 'team';
 export const KEY_PROFILE = 'profile';
 export const KEY_INFO = 'info';

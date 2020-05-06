@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Timeline, Typography } from 'antd';
+import {Button, Card, Timeline, Typography} from 'antd';
 // this is for "My Profile"
 // But may(?) be used for viewing individual profiles of employees
 import './ProfileStyles.css';

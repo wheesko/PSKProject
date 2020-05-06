@@ -11,7 +11,8 @@ import { RootState } from './redux';
 import { LoginPage } from './pages/public/login';
 import { SideMenu } from './components/side-menu/side-menu';
 import { Routes } from './routes/routes';
-import { userLogout } from './redux/user/actions';
+import { thunkLogout } from './thunks';
+import history from './history';
 
 const { Content, Footer, Sider } = Layout;
 
@@ -22,7 +23,9 @@ const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 
 	const logout = () => {
-		dispatch(userLogout());
+		dispatch(thunkLogout());
+		// when logging out, change current url to '/'
+		history.push('/');
 	};
 	
 	return (

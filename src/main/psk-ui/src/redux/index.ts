@@ -10,14 +10,17 @@ import {
 } from 'redux-state-sync';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import storage from 'redux-persist/lib/storage';
+import { myEmployeesReducer } from './my-employees/reducers';
+import { MyEmployeesState } from './my-employees/types'; // defaults to localStorage for web
 
 export interface RootState {
 	user: UserState;
+	myEmployees: MyEmployeesState;
 }
 
 // with more reducers, we will combine them together into one store
-const combinedReducers: any = combineReducers({ user: userReducer });
+const combinedReducers: any = combineReducers({ user: userReducer, myEmployees: myEmployeesReducer });
 const rootReducer = withReduxStateSync(combinedReducers);
 
 const persistedReducers: any = persistReducer({ key: 'root', storage }, rootReducer);
@@ -38,6 +41,6 @@ export default function configureStore() {
 	const persistedStore = persistStore(store);
 
 	initStateWithPrevTab(store);
-	
+
 	return { store, persistedStore };
 }

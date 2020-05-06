@@ -3,35 +3,53 @@ import history from '../../history';
 import { Menu } from 'antd';
 
 import {
-	CALENDAR_MENU_ITEM_NAME, CREATE_NEW_TOPIC_MENU_ITEM_NAME, INFO_MENU_ITEM_NAME, KEY_CALENDAR, KEY_INFO, KEY_MEMBERS,
-	KEY_MY_CALENDAR, KEY_NEW_TOPIC,
+	CALENDAR_MENU_ITEM_NAME,
+	CREATE_NEW_TOPIC_MENU_ITEM_NAME,
+	INFO_MENU_ITEM_NAME,
+	KEY_CALENDAR,
+	KEY_INFO,
+	KEY_MEMBERS,
+	KEY_MY_CALENDAR, KEY_MY_EMPLOYEES,
+	KEY_NEW_TOPIC,
 	KEY_PROFILE,
-	KEY_TEAMS, KEY_TOPIC_TREE, KEY_TOPICS, MY_TEAM_CALENDAR_MENU_ITEM_NAME, TEAM_MEMBERS_MENU_ITEM_NAME,
-	TEAMS_MENU_ITEM_NAME, TOPIC_TREE_MENU_ITEM_NAME, TOPICS_MENU_ITEM_NAME,
-	USER_MENU_ITEM_NAME
+	KEY_TEAMS,
+	KEY_TOPIC_TREE,
+	KEY_TOPICS,
+	MY_TEAM_CALENDAR_MENU_ITEM_NAME,
+	TEAM_MEMBERS_MENU_ITEM_NAME,
+	TEAMS_MENU_ITEM_NAME,
+	TOPIC_TREE_MENU_ITEM_NAME,
+	TOPICS_MENU_ITEM_NAME,
+	USER_MENU_ITEM_NAME,
 } from '../../Constants';
 
 import {
-	UserOutlined,
 	CalendarOutlined,
-	TeamOutlined,
+	DeploymentUnitOutlined,
 	InfoCircleOutlined,
+	PlusOutlined,
 	SolutionOutlined,
 	TagsOutlined,
-	DeploymentUnitOutlined,
-	PlusOutlined
+	TeamOutlined,
+	UserOutlined,
+	TableOutlined,
+	PartitionOutlined
 } from '@ant-design/icons';
 
 import { Link } from 'react-router-dom';
 import SubMenu from 'antd/lib/menu/SubMenu';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
+import { Authority } from '../../models/authority';
 
 const SideMenu: React.FunctionComponent<{}> = () => {
+	const user = useSelector((state: RootState) => state.user);
 
 	return (
 		<Menu theme="dark" mode="inline"
-			defaultSelectedKeys={history.location.pathname.split('/')}
-			defaultOpenKeys={history.location.pathname.split('/')}
-			className={'menuList'}
+			  defaultSelectedKeys={history.location.pathname.split('/')}
+			  defaultOpenKeys={history.location.pathname.split('/')}
+			  className={'menuList'}
 		>
 			<Menu.Item key={KEY_PROFILE}>
 				<Link to={`/${KEY_PROFILE}`}>
@@ -56,7 +74,7 @@ const SideMenu: React.FunctionComponent<{}> = () => {
 			>
 				<Menu.Item key={KEY_CALENDAR}>
 					<Link to={`/${KEY_TEAMS}/${KEY_CALENDAR}`}>
-						<TeamOutlined/>
+						<TableOutlined />
 						<span className="nav-text">{MY_TEAM_CALENDAR_MENU_ITEM_NAME}</span>
 					</Link>
 				</Menu.Item>
@@ -66,13 +84,17 @@ const SideMenu: React.FunctionComponent<{}> = () => {
 						<span className="nav-text">{TEAM_MEMBERS_MENU_ITEM_NAME}</span>
 					</Link>
 				</Menu.Item>
-				<Menu.Item key={KEY_INFO}>
-					<Link to={`/${KEY_TEAMS}/${KEY_INFO}`}>
-						<InfoCircleOutlined/>
-						<span className="nav-text">{INFO_MENU_ITEM_NAME}</span>
-					</Link>
-				</Menu.Item>
+
+				{/*only the team lead gets to find out what topics did his team members have learned*/}
+				{user.authority === Authority.LEAD ?
+					<Menu.Item key={KEY_INFO}>
+						<Link to={`/${KEY_TEAMS}/${KEY_INFO}`}>
+							<InfoCircleOutlined/>
+							<span className="nav-text">{INFO_MENU_ITEM_NAME}</span>
+						</Link>
+					</Menu.Item> : null}
 			</SubMenu>
+
 			<SubMenu
 				key={KEY_TOPICS}
 				title={

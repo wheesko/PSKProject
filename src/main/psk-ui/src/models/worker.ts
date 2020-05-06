@@ -2,6 +2,7 @@ import { Goal } from './goal';
 import { LearningTopic } from './learningTopic';
 import { LearningEvent } from './learningEvent';
 import { Role } from './role';
+import {Authority} from "./authority";
 
 export interface Worker {
 	id: number | null;
@@ -15,4 +16,5 @@ export interface Worker {
 	learningEvents: LearningEvent[];
 	manager: string;
 	icon: number | null;
+	authority: Authority;
 }
