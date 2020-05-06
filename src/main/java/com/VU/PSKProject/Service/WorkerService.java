@@ -29,8 +29,10 @@ public class WorkerService {
     public void updateWorker(Long id, Worker worker) {
         // calling save() on an object with predefined id will update the corresponding database record
         // rather than inserting a new one
-        if (workerRepository.findById(id).isPresent())
+        if (workerRepository.findById(id).isPresent()){
+            worker.setId(id);
             workerRepository.save(worker);
+        }
     }
 
     public void deleteWorker(Long id) {

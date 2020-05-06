@@ -20,7 +20,10 @@ public class RoleGoalService {
     }
 
     public void updateRoleGoal(Long id, RoleGoal roleGoal) {
-        if (roleGoalRepository.findById(id) != null) roleGoalRepository.save(roleGoal);
+        if (roleGoalRepository.findById(id).isPresent()){
+            roleGoal.setId(id);
+            roleGoalRepository.save(roleGoal);
+        }
     }
 
     public void deleteRoleGoal(Long id) {

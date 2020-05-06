@@ -22,7 +22,10 @@ public class WorkerGoalService {
     }
 
     public void updateWorkerGoal(Long id, WorkerGoal workerGoal) {
-        if (workerGoalRepository.findById(id) != null) workerGoalRepository.save(workerGoal);
+        if (workerGoalRepository.findById(id).isPresent()){
+            workerGoal.setId(id);
+            workerGoalRepository.save(workerGoal);
+        }
     }
 
     public void deleteWorkerGoal(Long id) {

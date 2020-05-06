@@ -23,7 +23,10 @@ public class TeamGoalService {
     }
 
     public void updateTeamGoal(Long id, TeamGoal teamGoal) {
-        if (teamGoalRepository.findById(id) != null) teamGoalRepository.save(teamGoal);
+        if (teamGoalRepository.findById(id).isPresent()){
+            teamGoal.setId(id);
+            teamGoalRepository.save(teamGoal);
+        }
     }
 
     public void deleteTeamGoal(Long id) {

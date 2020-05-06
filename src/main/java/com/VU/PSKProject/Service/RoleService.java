@@ -21,9 +21,11 @@ public class RoleService {
     }
 
     public void updateRole(Long id, Role role) {
-        if (roleRepository.findById(id) != null) roleRepository.save(role);
+        if (roleRepository.findById(id).isPresent()){
+            role.setId(id);
+            roleRepository.save(role);
+        }
     }
-
     public void deleteRole(Long id) {
         roleRepository.deleteById(id);
     }

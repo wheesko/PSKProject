@@ -24,7 +24,10 @@ public class TopicService {
     public void updateTopic(Long id, Topic topic) {
         // calling save() on an object with predefined id will update the corresponding database record
         // rather than inserting a new one
-        if (topicRepository.findById(id) != null) topicRepository.save(topic);
+        if (topicRepository.findById(id).isPresent()){
+            topic.setId(id);
+            topicRepository.save(topic);
+        }
     }
 
     public void deleteTopic(Long id) {

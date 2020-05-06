@@ -22,10 +22,8 @@ public class LearningDayService {
     }
 
     public void updateLearningDay(LearningDay learningDay, Long learningDayId) {
-        // calling save() on an object with predefined id will update the corresponding database record
-        // rather than inserting a new one
-        if (learningDayRepository.findAllById(Collections.singleton(learningDayId)) != null)
-            learningDayRepository.save(learningDay);
+        learningDay.setId(learningDayId);
+        learningDayRepository.save(learningDay);
     }
 
     public void deleteLearningDay(Long id) {
