@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface LearningEventRepository extends JpaRepository<LearningDay, Long> {
-    @Query("select le from LearningDay le where le.assignedWorker.id = :workerId")
-    List<LearningDay> findAllLearningEventsByWorkerId(@Param("workerId") Long workerId);
+public interface LearningDayRepository extends JpaRepository<LearningDay, Long> {
+    @Query("select le from learning_day le where le.assignee.id = :workerId")
+    List<LearningDay> findAllLearningDaysByWorkerId(@Param("workerId") Long workerId);
 }
