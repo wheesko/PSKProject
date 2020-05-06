@@ -37,4 +37,12 @@ public class WorkerService {
         if (id != null)
             workerRepository.deleteById(id);
     }
+
+    public Optional<Worker> findByManagedTeamId(Long id) {
+        return workerRepository.findByManagedTeamId(id);
+    }
+
+    public List<Worker> findByWorkingTeamId(Long id) {
+        return workerRepository.findByWorkingTeamId(id);
+    }
 }
