@@ -1,9 +1,14 @@
 package com.VU.PSKProject.Entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Setter
+@Getter
 public class TeamGoal {
     @Id
     @GeneratedValue
@@ -13,19 +18,4 @@ public class TeamGoal {
     @ManyToOne
     private Topic topic;
 
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public Topic getTopic() {
-        return topic;
-    }
-
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
 }

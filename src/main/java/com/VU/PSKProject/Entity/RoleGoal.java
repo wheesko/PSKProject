@@ -1,11 +1,16 @@
 package com.VU.PSKProject.Entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
+@Setter
+@Getter
 public class RoleGoal {
     @Id
     @GeneratedValue
@@ -14,20 +19,4 @@ public class RoleGoal {
     private Role role;
     @ManyToOne
     private Topic topic;
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Topic getTopic() {
-        return topic;
-    }
-
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
 }

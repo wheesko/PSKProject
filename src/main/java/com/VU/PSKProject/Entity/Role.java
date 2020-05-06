@@ -1,9 +1,14 @@
 package com.VU.PSKProject.Entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "Role")
+@Setter
+@Getter
 public class Role {
 
     @Id
@@ -18,25 +23,5 @@ public class Role {
     private List<RoleGoal> roleGoals;
 
     public Role(){
-
-    }
-    public Role(String name) {
-        this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
