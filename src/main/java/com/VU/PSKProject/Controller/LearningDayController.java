@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("learningEvents")
 public class LearningDayController {
+
     @Autowired
     private LearningEventService learningEventService;
 

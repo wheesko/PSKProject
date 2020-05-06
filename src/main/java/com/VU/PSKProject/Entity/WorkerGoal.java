@@ -1,32 +1,22 @@
 package com.VU.PSKProject.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+
 @Entity
+@Setter
+@Getter
 public class WorkerGoal {
+
     @Id
     @GeneratedValue
     private long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Topic topic;
-
-    public Worker getWorker() {
-        return worker;
-    }
-
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-    }
-
-    public Topic getTopic() {
-        return topic;
-    }
-
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
 }
