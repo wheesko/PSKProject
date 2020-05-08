@@ -31,13 +31,13 @@ public class LearningDayController {
         BeanUtils.copyProperties(learningDayDto, learningDay);
         workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
         learningDayService.createLearningDay(learningDay);
-
     }
 
     @PutMapping("/update/{id}")
     public void updateLearningEvent(@RequestBody LearningDayDTO learningDayDto, @PathVariable Long id) {
         LearningDay learningDay = new LearningDay();
         BeanUtils.copyProperties(learningDayDto, learningDay);
+        workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
         learningDayService.updateLearningDay(learningDay, id);
     }
     @DeleteMapping("/delete/{id}")
