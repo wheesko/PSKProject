@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class TeamGoal {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     @ManyToOne
     private Team team;
     @ManyToOne

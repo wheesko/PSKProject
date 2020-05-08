@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 public class RoleGoal {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     @ManyToOne
     private Role role;
     @ManyToOne
