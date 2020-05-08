@@ -22,10 +22,7 @@ public class RoleGoalService {
     }
 
     public void updateRoleGoal(Long id, RoleGoal roleGoal) {
-        if (roleGoalRepository.findById(id).isPresent()){
-            roleGoal.setId(id);
-            roleGoalRepository.save(roleGoal);
-        }
+        roleGoalRepository.findById(id).ifPresent(r -> roleGoalRepository.save(r));
     }
 
     public void deleteRoleGoal(Long id) {
