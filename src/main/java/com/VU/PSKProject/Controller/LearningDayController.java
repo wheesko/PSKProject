@@ -27,12 +27,6 @@ public class LearningDayController {
         BeanUtils.copyProperties(learningDayDto, learningDay);
         learningDayService.createLearningDay(learningDay);
     }
-    @PostMapping("/createe")
-    public void createLearningEventForWorkere(@RequestBody LearningDay learningDayDto) {
-        /*LearningDay learningDay = new LearningDay();
-        BeanUtils.copyProperties(learningDayDto, learningDay)*/;
-        learningDayService.createLearningDay(learningDayDto);
-    }
 
     @PutMapping("/update/{id}")
     public void updateLearningEvent(@RequestBody LearningDayDTO learningDayDto, @PathVariable Long id) {
