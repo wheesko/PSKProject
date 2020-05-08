@@ -14,26 +14,26 @@ public class RoleGoalController {
     @Autowired
     private RoleGoalService roleGoalService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<RoleGoal> getRoleGoals(){
         return roleGoalService.getAllRoleGoals();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get/{id}")
     public Optional<RoleGoal> getRoleGoal(@PathVariable Long id){
         return roleGoalService.getRoleGoal(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public void createRoleGoal(@RequestBody RoleGoal roleGoal){
         roleGoalService.createRoleGoal(roleGoal);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/update/{id}")
     public void updateRoleGoal(@RequestBody RoleGoal roleGoal, @PathVariable Long id){
         roleGoalService.updateRoleGoal(id, roleGoal);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteRoleGoal(@PathVariable Long id){
         roleGoalService.deleteRoleGoal(id);
     }

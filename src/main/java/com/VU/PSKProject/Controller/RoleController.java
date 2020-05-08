@@ -13,24 +13,26 @@ import java.util.Optional;
 public class RoleController {
     @Autowired
     private RoleService roleService;
-    @GetMapping
+
+    @GetMapping("/getAll")
     public List<Role> getRoles() {
         return roleService.getAllRoles();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get/{id}")
     public Optional<Role> getRole(@PathVariable Long id) {
         return roleService.getRole(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public void createRole(@RequestBody Role role) {
         roleService.createRole(role);
     }
-    @PutMapping("{id}")
-    public void updateRole(@RequestBody Role role, @PathVariable Long id){ roleService.updateRole(id, role);
-    }
-    @DeleteMapping("{id}")
+
+    @PutMapping("/update/{id}")
+    public void updateRole(@RequestBody Role role, @PathVariable Long id){ roleService.updateRole(id, role); }
+
+    @DeleteMapping("/delete/{id}")
     public void deleteRole(@PathVariable Long id){
         roleService.deleteRole(id);
     }

@@ -14,27 +14,27 @@ public class TeamController {
     @Autowired
     private TeamService teamService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<Team> getTeams(){
         return teamService.getAllTeams();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get/{id}")
     public Optional<Team> getTeam(@PathVariable Long id){
         return teamService.getTeam(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public void createTeam(@RequestBody Team team){
         teamService.createTeam(team);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/update/{id}")
     public void updateTeam(@RequestBody Team team, @PathVariable Long id){
         teamService.updateTeam(id, team);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteTeam(@PathVariable Long id){
         teamService.deleteTeam(id);
     }

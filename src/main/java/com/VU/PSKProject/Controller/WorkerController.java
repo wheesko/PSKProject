@@ -16,40 +16,40 @@ public class WorkerController {
     @Autowired
     private WorkerService workerService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<Worker>> getWorkers() {
         return ResponseEntity.ok(workerService.getAllWorkers());
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<Worker> getWorker(@PathVariable Long id) {
         Optional<Worker> worker = workerService.getWorker(id);
         return worker.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public void createWorker(@RequestBody Worker worker) {
         workerService.createWorker(worker);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/update/{id}")
     public void updateWorker(@RequestBody Worker worker, @PathVariable Long id) {
         workerService.updateWorker(id, worker);
     }
 
     // cascading needs to be fixed
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteWorker(@PathVariable Long id) {
         workerService.deleteWorker(id);
     }
 
-    @GetMapping("managed-teams/{id}")
+    @GetMapping("managedTeams/{id}")
     public ResponseEntity<Worker> getWokerByManagedTeam(@PathVariable Long id) {
         Optional<Worker> worker = workerService.findByManagedTeamId(id);
         return worker.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("working-teams/{id}")
+    @GetMapping("workingTeams/{id}")
     public ResponseEntity<List<Worker>> getWorkersByWorkingTeam(@PathVariable Long id) {
         return ResponseEntity.ok(workerService.findByWorkingTeamId(id));
     }

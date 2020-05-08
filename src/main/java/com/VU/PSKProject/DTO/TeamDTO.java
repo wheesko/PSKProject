@@ -1,8 +1,8 @@
 package com.VU.PSKProject.DTO;
 
-import com.sun.tools.javac.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 @Getter
 @Setter

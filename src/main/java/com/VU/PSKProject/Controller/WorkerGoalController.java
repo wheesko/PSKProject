@@ -14,26 +14,26 @@ public class  WorkerGoalController {
     @Autowired
     private WorkerGoalService workerGoalService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<WorkerGoal> getWorkerGoals(){
         return workerGoalService.getAllWorkerGoals();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get/{id}")
     public Optional<WorkerGoal> getWorkerGoal(@PathVariable Long id){
         return workerGoalService.getWorkerGoal(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public void createWorkerGoal(@RequestBody WorkerGoal workerGoal){
         workerGoalService.createWorkerGoal(workerGoal);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/update/{id}")
     public void updateWorkerGoal(@RequestBody WorkerGoal workerGoal, @PathVariable Long id){
         workerGoalService.updateWorkerGoal(id, workerGoal);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteWorkerGoal(@PathVariable Long id){
         workerGoalService.deleteWorkerGoal(id);
     }

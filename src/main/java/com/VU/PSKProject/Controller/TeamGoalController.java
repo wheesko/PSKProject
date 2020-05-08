@@ -14,26 +14,24 @@ public class TeamGoalController {
     @Autowired
     private TeamGoalService teamGoalService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<TeamGoal> getTeamGoals(){
         return teamGoalService.getAllTeamGoals();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get/{id}")
     public Optional<TeamGoal> getTeamGoal(@PathVariable Long id){
         return teamGoalService.getTeamGoal(id);
     }
 
-    @PostMapping
-    public void createTeamGoal(@RequestBody TeamGoal teamGoal){
-        teamGoalService.createTeamGoal(teamGoal);
-    }
+    @PostMapping("/create")
+    public void createTeamGoal(@RequestBody TeamGoal teamGoal){ teamGoalService.createTeamGoal(teamGoal); }
 
-    @PutMapping("{id}")
+    @PutMapping("/update/{id}")
     public void updateTeamGoal(@RequestBody TeamGoal teamGoal, @PathVariable Long id){
         teamGoalService.updateTeamGoal(id, teamGoal);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteTeamGoal(@PathVariable Long id){
         teamGoalService.deleteTeamGoal(id);
     }

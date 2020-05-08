@@ -14,25 +14,27 @@ public class TopicController {
     @Autowired
     private TopicService topicService;
 
-    @GetMapping
+    @GetMapping("/getAll}")
     public List<Topic> getTopics() {
         return topicService.getAllTopics();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get/{id}")
     public Optional<Topic> getTopic(@PathVariable Long id) {
         return topicService.getTopic(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public void createTopic(@RequestBody Topic topic) {
         topicService.createTopic(topic);
     }
-    @PutMapping("{id}")
+
+    @PutMapping("/update/{id}")
     public void updateTopic(@RequestBody Topic topic, @PathVariable Long id){
         topicService.updateTopic(id,topic);
     }
-    @DeleteMapping("{id}")
+
+    @DeleteMapping("/delete/{id}")
     public void deleteTopic(@PathVariable Long id){
         topicService.deleteTopic(id);
     }

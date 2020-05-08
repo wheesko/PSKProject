@@ -14,21 +14,21 @@ public class LearningDayController {
     @Autowired
     private LearningDayService learningDayService;
 
-    @GetMapping("{workerId}")
+    @GetMapping("/get/{workerId}")
     public List<LearningDay> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
         return learningDayService.getAllLearningDaysByWorkerId(workerId);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public void createLearningEventForWorker(@RequestBody LearningDay learningDay) {
         learningDayService.createLearningDay(learningDay);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/update/{id}")
     public void updateLearningEvent(@RequestBody LearningDay learningDay, @PathVariable Long id) {
         learningDayService.updateLearningDay(learningDay, id);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteLearningEvent(@PathVariable Long id) {
         learningDayService.deleteLearningDay(id);
     }
