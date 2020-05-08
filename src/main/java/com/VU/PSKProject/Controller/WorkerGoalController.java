@@ -1,9 +1,6 @@
 package com.VU.PSKProject.Controller;
 
-import com.VU.PSKProject.Entity.TeamGoal;
-import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Entity.WorkerGoal;
-import com.VU.PSKProject.Service.TeamGoalService;
 import com.VU.PSKProject.Service.WorkerGoalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

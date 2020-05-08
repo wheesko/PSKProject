@@ -1,9 +1,6 @@
 package com.VU.PSKProject.Service;
 
-import com.VU.PSKProject.Entity.Role;
-import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.TeamGoal;
-import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Repository.TeamGoalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

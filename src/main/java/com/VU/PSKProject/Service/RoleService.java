@@ -1,7 +1,6 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.Role;
-import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
