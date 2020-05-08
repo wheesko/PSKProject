@@ -13,12 +13,12 @@ public class WorkerDTO {
     private String name;
     private String surname;
 
-    private TeamDTO managedTeam;
-    private TeamDTO workingTeam;
+    private Long managedTeam;
+    private Long workingTeam;
 
     private int quarterLearningDayLimit;
     private int consecutiveLearningDayLimit;
 
-    private List<LearningDayDTO> learningDays;
-    private List<WorkerGoalDTO> goals;
+    private List<Long> learningDays;
+    private List<Long> goals;
 }

@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class TeamGoalDTO {
     private Long id;
-    private TeamDTO team;
-    private TopicDTO topic;
+    private Long team;
+    private Long topic;
 }

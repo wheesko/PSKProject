@@ -8,6 +8,6 @@ import lombok.Setter;
 public class WorkerGoalDTO {
     private Long id;
 
-    private WorkerDTO worker;
-    private TopicDTO topic;
+    private Long worker;
+    private Long topic;
 }

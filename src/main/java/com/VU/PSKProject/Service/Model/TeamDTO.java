@@ -10,6 +10,6 @@ public class TeamDTO {
     private Long id;
     private String name;
     private Long managerId;
-    private List<WorkerDTO> workers;
-    private List<TeamGoalDTO> goals;
+    private List<Long> workers;
+    private List<Long> goals;
 }
