@@ -1,7 +1,9 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Team;
+import com.VU.PSKProject.Service.Model.TeamDTO;
 import com.VU.PSKProject.Service.TeamService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +27,16 @@ public class TeamController {
     }
 
     @PostMapping("/create")
-    public void createTeam(@RequestBody Team team){
+    public void createTeam(@RequestBody TeamDTO teamDto){
+        Team team = new Team();
+        BeanUtils.copyProperties(teamDto, team);
         teamService.createTeam(team);
     }
 
     @PutMapping("/update/{id}")
-    public void updateTeam(@RequestBody Team team, @PathVariable Long id){
+    public void updateTeam(@RequestBody TeamDTO teamDto, @PathVariable Long id){
+        Team team = new Team();
+        BeanUtils.copyProperties(teamDto, team);
         teamService.updateTeam(id, team);
     }
 

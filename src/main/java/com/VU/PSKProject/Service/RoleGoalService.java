@@ -2,6 +2,8 @@ package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.RoleGoal;
 import com.VU.PSKProject.Repository.RoleGoalRepository;
+import com.VU.PSKProject.Service.Model.RoleDTO;
+import com.VU.PSKProject.Service.Model.RoleGoalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

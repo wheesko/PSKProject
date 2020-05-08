@@ -1,7 +1,10 @@
 package com.VU.PSKProject.Controller;
 
+import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Entity.WorkerGoal;
+import com.VU.PSKProject.Service.Model.WorkerGoalDTO;
 import com.VU.PSKProject.Service.WorkerGoalService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +28,16 @@ public class  WorkerGoalController {
     }
 
     @PostMapping("/create")
-    public void createWorkerGoal(@RequestBody WorkerGoal workerGoal){
+    public void createWorkerGoal(@RequestBody WorkerGoalDTO workerGoalDto){
+        WorkerGoal workerGoal = new WorkerGoal();
+        BeanUtils.copyProperties(workerGoalDto, workerGoal);
         workerGoalService.createWorkerGoal(workerGoal);
     }
 
     @PutMapping("/update/{id}")
-    public void updateWorkerGoal(@RequestBody WorkerGoal workerGoal, @PathVariable Long id){
+    public void updateWorkerGoal(@RequestBody WorkerGoalDTO workerGoalDto, @PathVariable Long id){
+        WorkerGoal workerGoal = new WorkerGoal();
+        BeanUtils.copyProperties(workerGoalDto, workerGoal);
         workerGoalService.updateWorkerGoal(id, workerGoal);
     }
     @DeleteMapping("/delete/{id}")

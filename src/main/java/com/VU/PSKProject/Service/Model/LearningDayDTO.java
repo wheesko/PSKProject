@@ -1,5 +1,6 @@
-package com.VU.PSKProject.DTO;
+package com.VU.PSKProject.Service.Model;
 
+import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Worker;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,5 +15,5 @@ public class LearningDayDTO {
     private String comment;
     private Timestamp startAt;
     private Timestamp endAt;
-    private Long assigneeId;
+    private WorkerDTO assignee;
 }

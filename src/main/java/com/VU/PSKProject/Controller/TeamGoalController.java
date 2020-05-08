@@ -1,7 +1,9 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.TeamGoal;
+import com.VU.PSKProject.Service.Model.TeamGoalDTO;
 import com.VU.PSKProject.Service.TeamGoalService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +27,16 @@ public class TeamGoalController {
     }
 
     @PostMapping("/create")
-    public void createTeamGoal(@RequestBody TeamGoal teamGoal){ teamGoalService.createTeamGoal(teamGoal); }
+    public void createTeamGoal(@RequestBody TeamGoalDTO teamGoalDto){
+        TeamGoal teamGoal = new TeamGoal();
+        BeanUtils.copyProperties(teamGoalDto, teamGoal);
+        teamGoalService.createTeamGoal(teamGoal);
+    }
 
     @PutMapping("/update/{id}")
-    public void updateTeamGoal(@RequestBody TeamGoal teamGoal, @PathVariable Long id){
+    public void updateTeamGoal(@RequestBody TeamGoalDTO teamGoalDto, @PathVariable Long id){
+        TeamGoal teamGoal = new TeamGoal();
+        BeanUtils.copyProperties(teamGoalDto, teamGoal);
         teamGoalService.updateTeamGoal(id, teamGoal);
     }
     @DeleteMapping("/delete/{id}")

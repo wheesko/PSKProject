@@ -1,4 +1,4 @@
-package com.VU.PSKProject.DTO;
+package com.VU.PSKProject.Service.Model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.util.List;
 public class TopicDTO {
     private Long id;
     private String name;
-    private Long parentTopicId;
+    private TopicDTO parentTopic;
     private String description;
-    private List<Long> teamGoals;
+    private List<TeamGoalDTO> teamGoals;
 }

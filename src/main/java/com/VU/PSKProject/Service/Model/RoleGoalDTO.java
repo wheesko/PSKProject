@@ -1,4 +1,4 @@
-package com.VU.PSKProject.DTO;
+package com.VU.PSKProject.Service.Model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class RoleGoalDTO {
     private Long id;
-    private Long roleId;
-    private Long topicId;
+    private RoleDTO role;
+    private TopicDTO topic;
 }

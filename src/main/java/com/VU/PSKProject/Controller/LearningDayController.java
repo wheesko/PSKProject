@@ -1,7 +1,9 @@
 package com.VU.PSKProject.Controller;
 
+import com.VU.PSKProject.Service.Model.LearningDayDTO;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.LearningDayService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +22,16 @@ public class LearningDayController {
     }
 
     @PostMapping("/create")
-    public void createLearningEventForWorker(@RequestBody LearningDay learningDay) {
+    public void createLearningEventForWorker(@RequestBody LearningDayDTO learningDayDto) {
+        LearningDay learningDay = new LearningDay();
+        BeanUtils.copyProperties(learningDayDto, learningDay);
         learningDayService.createLearningDay(learningDay);
     }
 
     @PutMapping("/update/{id}")
-    public void updateLearningEvent(@RequestBody LearningDay learningDay, @PathVariable Long id) {
+    public void updateLearningEvent(@RequestBody LearningDayDTO learningDayDto, @PathVariable Long id) {
+        LearningDay learningDay = new LearningDay();
+        BeanUtils.copyProperties(learningDayDto, learningDay);
         learningDayService.updateLearningDay(learningDay, id);
     }
     @DeleteMapping("/delete/{id}")

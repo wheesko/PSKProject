@@ -1,7 +1,9 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Topic;
+import com.VU.PSKProject.Service.Model.TopicDTO;
 import com.VU.PSKProject.Service.TopicService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +27,16 @@ public class TopicController {
     }
 
     @PostMapping("/create")
-    public void createTopic(@RequestBody Topic topic) {
+    public void createTopic(@RequestBody TopicDTO topicDto) {
+        Topic topic = new Topic();
+        BeanUtils.copyProperties(topicDto, topic);
         topicService.createTopic(topic);
     }
 
     @PutMapping("/update/{id}")
-    public void updateTopic(@RequestBody Topic topic, @PathVariable Long id){
+    public void updateTopic(@RequestBody TopicDTO topicDto, @PathVariable Long id){
+        Topic topic = new Topic();
+        BeanUtils.copyProperties(topicDto, topic);
         topicService.updateTopic(id,topic);
     }
 

@@ -1,7 +1,9 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Service.WorkerService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +30,16 @@ public class WorkerController {
     }
 
     @PostMapping("/create")
-    public void createWorker(@RequestBody Worker worker) {
+    public void createWorker(@RequestBody WorkerDTO workerDto) {
+        Worker worker = new Worker();
+        BeanUtils.copyProperties(workerDto, worker);
         workerService.createWorker(worker);
     }
 
     @PutMapping("/update/{id}")
-    public void updateWorker(@RequestBody Worker worker, @PathVariable Long id) {
+    public void updateWorker(@RequestBody WorkerDTO workerDto, @PathVariable Long id) {
+        Worker worker = new Worker();
+        BeanUtils.copyProperties(workerDto, worker);
         workerService.updateWorker(id, worker);
     }
 
