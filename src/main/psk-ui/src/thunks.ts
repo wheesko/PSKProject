@@ -9,6 +9,7 @@ import { userLogin, userLogout } from './redux/user/actions';
 export const thunkLogin = (
 	loginRequest: LoginRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
 	authenticationService.login(loginRequest).then(response => {
+		console.log(response);
 		dispatch(userLogin({
 			email: loginRequest.email,
 			loggedIn: true,
