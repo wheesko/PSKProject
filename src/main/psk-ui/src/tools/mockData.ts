@@ -1,8 +1,8 @@
-import {Worker} from '../models/worker';
-import {Role} from '../models/role';
-import {LearningEvent} from '../models/learningEvent';
-import {Authority} from "../models/authority";
-import {Employee} from "../redux/my-employees/types";
+import { Worker } from '../models/worker';
+import { Role } from '../models/role';
+import { LearningEvent } from '../models/learningEvent';
+import { Authority } from '../models/authority';
+import { Employee } from '../models/employee';
 
 export const roles: Role[] = [
 	{ title: 'Java developer', color: 'blue' },
@@ -77,6 +77,7 @@ export const myEmployees: Employee[] = [
 	{
 		id: 1,
 		name: 'Povilas Tamosauskas',
+		email: 'pt@psk123.com',
 		role: roles[4].title,
 		quarterConstraint: 3,
 		team: 'PSK_123',
@@ -84,6 +85,7 @@ export const myEmployees: Employee[] = [
 	}, {
 		id: 2,
 		name: 'Lukas Michnevic',
+		email: 'lm@psk123.com',
 		role: roles[5].title,
 		quarterConstraint: 3,
 		team: 'PSK_123',
@@ -92,6 +94,7 @@ export const myEmployees: Employee[] = [
 	{
 		id: 3,
 		name: 'Vytautas Rudys',
+		email: 'vr@psk123.com',
 		role: roles[5].title,
 		quarterConstraint: 3,
 		team: 'PSK_123',
@@ -100,6 +103,7 @@ export const myEmployees: Employee[] = [
 	{
 		id: 4,
 		name: 'Karolis Dijokas',
+		email: 'kd@psk123.com',
 		role: roles[6].title,
 		quarterConstraint: 3,
 		team: 'PSK_123',
@@ -108,6 +112,7 @@ export const myEmployees: Employee[] = [
 	{
 		id: 5,
 		name: 'Aurimas Golotylecas',
+		email: 'ag@psk123.com',
 		role: roles[5].title,
 		quarterConstraint: 3,
 		team: 'PSK_123',

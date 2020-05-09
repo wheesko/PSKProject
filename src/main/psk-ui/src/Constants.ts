@@ -57,6 +57,7 @@ export const KEY_NEW_TOPIC = 'new-topic';
 //LIST ITEM NAMES
 export const CALENDAR_ITEM_NAME = 'My Calendar';
 export const USER_ITEM_NAME = 'My Profile';
+export const THIS_ACTION_CANNOT_BE_UNDONE = 'This action cannot be undone!';
 
 //ROLES
 export enum Roles {

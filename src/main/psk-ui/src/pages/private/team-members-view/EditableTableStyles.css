@@ -1,0 +1,10 @@
+.editButton {
+    margin-right: 8px;
+}
+.infoAlert {
+    margin-bottom: 16px !important;
+}
+li {
+    font-size: 14px;
+    line-height: 22px;
+}

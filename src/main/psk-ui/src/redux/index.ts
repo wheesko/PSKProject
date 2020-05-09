@@ -11,16 +11,13 @@ import {
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { myEmployeesReducer } from './my-employees/reducers';
-import { MyEmployeesState } from './my-employees/types'; // defaults to localStorage for web
 
 export interface RootState {
 	user: UserState;
-	myEmployees: MyEmployeesState;
 }
 
 // with more reducers, we will combine them together into one store
-const combinedReducers: any = combineReducers({ user: userReducer, myEmployees: myEmployeesReducer });
+const combinedReducers: any = combineReducers({ user: userReducer });
 const rootReducer = withReduxStateSync(combinedReducers);
 
 const persistedReducers: any = persistReducer({ key: 'root', storage }, rootReducer);

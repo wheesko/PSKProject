@@ -4,7 +4,6 @@ import { TEAM_NAME } from '../../../Constants';
 import { useDispatch } from 'react-redux';
 import { thunkLogin } from '../../../thunks';
 import '../../../App.css';
-import { clearMyEmployees } from '../../../redux/my-employees/actions';
 
 const layout = {
 	labelCol: { span: 24 },
