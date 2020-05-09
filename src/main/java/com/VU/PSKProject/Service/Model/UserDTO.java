@@ -9,5 +9,5 @@ import lombok.Setter;
 public class UserDTO {
     private String email; //TODO: add email regex
     private String password;
-    private UserRole userRole;
+    private Long userRole;
 }
