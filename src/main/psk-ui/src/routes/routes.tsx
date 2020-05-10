@@ -11,7 +11,7 @@ import {
 	KEY_TEAMS,
 	KEY_TOPIC_TREE,
 	KEY_TOPICS
-} from '../Constants';
+} from '../constants/routeKeyConstants';
 import { CalendarView } from '../pages/private/calendar-view';
 import { ProfileView } from '../pages/private/profile-view';
 import { TeamCalendarView } from '../pages/private/team-calendar-view';
@@ -44,7 +44,7 @@ const Routes: React.FunctionComponent<{}> = () => {
 			/>
 			<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`} component={TeamCalendarView}/>
 			{/*ROUTES REQUIRE LEAD AUTHORITY*/}
-			{user.authority === Authority.LEAD ?		
+			{user.authority === Authority.LEAD ?
 				<Route exact path={`/${KEY_TEAMS}/${KEY_INFO}`} component={InfoView}/> : null}
 			<Route exact path={`/${KEY_TEAMS}/${KEY_MEMBERS}`} component={TeamMembersView}/>
 			<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`}/>

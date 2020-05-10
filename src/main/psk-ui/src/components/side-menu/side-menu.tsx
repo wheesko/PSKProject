@@ -6,23 +6,25 @@ import {
 	CALENDAR_MENU_ITEM_NAME,
 	CREATE_NEW_TOPIC_MENU_ITEM_NAME,
 	INFO_MENU_ITEM_NAME,
-	KEY_CALENDAR,
-	KEY_INFO,
-	KEY_MEMBERS,
-	KEY_MY_CALENDAR, KEY_MY_EMPLOYEES,
-	KEY_NEW_TOPIC,
-	KEY_PROFILE,
-	KEY_TEAMS,
-	KEY_TOPIC_TREE,
-	KEY_TOPICS,
 	MY_TEAM_CALENDAR_MENU_ITEM_NAME,
 	TEAM_MEMBERS_MENU_ITEM_NAME,
 	TEAMS_MENU_ITEM_NAME,
 	TOPIC_TREE_MENU_ITEM_NAME,
 	TOPICS_MENU_ITEM_NAME,
 	USER_MENU_ITEM_NAME,
-} from '../../Constants';
+} from '../../constants/menuListConstants';
 
+import {
+	KEY_CALENDAR,
+	KEY_INFO,
+	KEY_MEMBERS,
+	KEY_MY_CALENDAR,
+	KEY_NEW_TOPIC,
+	KEY_PROFILE,
+	KEY_TEAMS,
+	KEY_TOPIC_TREE,
+	KEY_TOPICS
+} from '../../constants/routeKeyConstants';
 import {
 	CalendarOutlined,
 	DeploymentUnitOutlined,
@@ -33,7 +35,6 @@ import {
 	TeamOutlined,
 	UserOutlined,
 	TableOutlined,
-	PartitionOutlined
 } from '@ant-design/icons';
 
 import { Link } from 'react-router-dom';
@@ -74,7 +75,7 @@ const SideMenu: React.FunctionComponent<{}> = () => {
 			>
 				<Menu.Item key={KEY_CALENDAR}>
 					<Link to={`/${KEY_TEAMS}/${KEY_CALENDAR}`}>
-						<TableOutlined />
+						<TableOutlined/>
 						<span className="nav-text">{MY_TEAM_CALENDAR_MENU_ITEM_NAME}</span>
 					</Link>
 				</Menu.Item>

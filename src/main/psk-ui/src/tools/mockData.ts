@@ -6,12 +6,14 @@ import { Employee } from '../models/employee';
 
 export const roles: Role[] = [
 	{ title: 'Java developer', color: 'blue' },
-	{  title: 'Business analyst',  color: 'gold' },
-	{  title: 'Test engineer', color: 'green',  },
+	{ title: 'Business analyst', color: 'gold' },
+	{ title: 'Test engineer', color: 'green', },
 	{ title: 'Software process manager', color: 'purple', },
-	{  title: 'Front-end engineer', color: 'volcano' },
-	{   title: 'Back-end engineer', color: 'lime' },
-	{   title: 'Database engineer', color: 'geekblue' }];
+	{ title: 'Front-end engineer', color: 'volcano' },
+	{ title: 'Back-end engineer', color: 'lime' },
+	{ title: 'Database engineer', color: 'geekblue' }];
+
+export const defaultQuarterConstraint = 3;
 
 export const workerList: Worker[] = [
 	{
@@ -32,8 +34,8 @@ export const workerList: Worker[] = [
 		id: 2,
 		name: 'Lukas',
 		surname: 'Michnevic',
-		role: roles[5],
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Back-end engineer")),
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
 		goals: [],
@@ -47,8 +49,8 @@ export const workerList: Worker[] = [
 		id: 3,
 		name: 'Vytautas',
 		surname: 'Rudys',
-		role: roles[5],
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Back-end engineer")),
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
 		goals: [],
@@ -63,7 +65,7 @@ export const workerList: Worker[] = [
 		name: 'Karolis',
 		surname: 'Dijokas',
 		role: roles[6],
-		quarterConstraint: 3,
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
 		goals: [],
@@ -78,16 +80,16 @@ export const myEmployees: Employee[] = [
 		id: 1,
 		name: 'Povilas Tamosauskas',
 		email: 'pt@psk123.com',
-		role: roles[4].title,
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Front-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		goals: [],
 	}, {
 		id: 2,
 		name: 'Lukas Michnevic',
 		email: 'lm@psk123.com',
-		role: roles[5].title,
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Back-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		goals: [],
 	},
@@ -95,8 +97,8 @@ export const myEmployees: Employee[] = [
 		id: 3,
 		name: 'Vytautas Rudys',
 		email: 'vr@psk123.com',
-		role: roles[5].title,
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Back-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		goals: [],
 	},
@@ -104,8 +106,8 @@ export const myEmployees: Employee[] = [
 		id: 4,
 		name: 'Karolis Dijokas',
 		email: 'kd@psk123.com',
-		role: roles[6].title,
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Database engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		goals: [],
 	},
@@ -113,8 +115,8 @@ export const myEmployees: Employee[] = [
 		id: 5,
 		name: 'Aurimas Golotylecas',
 		email: 'ag@psk123.com',
-		role: roles[5].title,
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Back-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		goals: [],
 	}];

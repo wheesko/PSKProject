@@ -1,58 +1,19 @@
 import React, { useState } from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form, Tooltip, Button, Modal } from 'antd';
+import { Table,  Popconfirm, Form, Tooltip, Button, Modal } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Employee } from '../../../models/employee';
+import { Employee } from '../../../../models/employee';
 import {
 	DELETE_WARNING,
 	DELETE_WARNING_INFO,
 	EDIT_EMPLOYEE_DETAILS,
 	REMOVE_EMPLOYEE
-} from '../../../constants/employeeConstants';
+} from '../../../../constants/employeeConstants';
 import './EditableTableStyles.css';
-import { myEmployees } from '../../../tools/mockData';
-import { THIS_ACTION_CANNOT_BE_UNDONE } from '../../../Constants';
+import { myEmployees } from '../../../../tools/mockData';
+import { THIS_ACTION_CANNOT_BE_UNDONE } from '../../../../constants/otherConstants';
+import { EditableCell } from './EditableCell';
 
 const { confirm } = Modal;
-
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-	editing: boolean;
-	dataIndex: string;
-	title: string;
-	inputType: number | string;
-	record: Employee;
-	index: number;
-	children: React.ReactNode;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-													   editing,
-													   dataIndex,
-													   title,
-													   inputType,
-													   record,
-													   index,
-													   children,
-													   ...restProps
-												   }: EditableCellProps) => {
-
-	const inputNode = inputType === 'number' ? <InputNumber/> : <Input/>;
-
-	return (
-		<td {...restProps}>
-			{editing ? (
-				<Form.Item
-					name={dataIndex}
-					style={{ margin: 0 }}
-					/*	you can add additional rules here */
-				>
-					{inputNode}
-				</Form.Item>
-			) : (
-				children
-			)}
-		</td>
-	);
-};
 
 const EditableTable = () => {
 	const [form] = Form.useForm();
@@ -222,7 +183,7 @@ const EditableTable = () => {
 									</>,
 									okText: 'Yes',
 									cancelText: 'No',
-									onOk(){
+									onOk() {
 										// on ok send delete request
 										// and get current employee list
 										console.log('OK');

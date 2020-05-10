@@ -3,7 +3,7 @@ import React from 'react';
 import { Calendar, Typography } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { List, Avatar, Badge } from 'antd';
-import { MY_TEAM_CALENDAR, N_LEARNING_EVENTS } from '../../../Constants';
+import { MY_TEAM_CALENDAR, N_LEARNING_EVENTS } from '../../../constants/otherConstants';
 import { Link } from 'react-router-dom';
 import * as moment from 'moment';
 

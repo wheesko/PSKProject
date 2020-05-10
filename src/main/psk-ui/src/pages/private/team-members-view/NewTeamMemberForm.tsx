@@ -5,7 +5,7 @@ import {
 	EMPLOYEE_EMAIL,
 	EMPLOYEE_EMAIL_REQUIRED,  INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
 } from '../../../constants/employeeConstants';
-import './EditableTableStyles.css';
+import './editable-table/EditableTableStyles.css';
 
 const formItemLayout = {
 	labelCol: {

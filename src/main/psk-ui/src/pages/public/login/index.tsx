@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
-import { TEAM_NAME } from '../../../Constants';
+import { TEAM_NAME } from '../../../constants/otherConstants';
 import { useDispatch } from 'react-redux';
 import { thunkLogin } from '../../../thunks';
 import '../../../App.css';

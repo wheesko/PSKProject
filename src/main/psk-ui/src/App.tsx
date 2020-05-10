@@ -3,7 +3,7 @@ import { Layout, Button } from 'antd';
 
 import {
 	TEAM_NAME,
-} from './Constants';
+} from './constants/otherConstants';
 
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';

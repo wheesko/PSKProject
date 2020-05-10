@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './TeamMembersStyles.css';
 import { Button, Col, Modal, Row,Typography } from 'antd';
 
-import { DONE } from '../../../Constants';
+import { DONE } from '../../../constants/otherConstants';
 import {
 	PlusOutlined,
 } from '@ant-design/icons';
@@ -13,7 +13,7 @@ import {
 	ADD_NEW_EMPLOYEES,
 	YOUR_EMPLOYEES
 } from '../../../constants/employeeConstants';
-import { EditableTable } from './EditableTable';
+import { EditableTable } from './editable-table/EditableTable';
 
 const { Title } = Typography;
 
