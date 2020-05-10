@@ -6,7 +6,7 @@ import {
 	CHOOSE_TIME, COMMENT, EVENT_NAME, INPUT_EVENT_NAME,
 	SAVE_LEARNING_EVENT,
 	WARNING_EVENT_TIME_IS_REQUIRED
-} from '../../../Constants';
+} from '../../../constants/otherConstants';
 
 import './EventFormStyles.css';
 

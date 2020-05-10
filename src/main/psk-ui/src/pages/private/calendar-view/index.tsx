@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Calendar, Modal, Button, Typography, Tag, Divider } from 'antd';
 import * as moment from 'moment';
 
-import { DAY_EVENT_LIST_EMPTY, MY_CALENDAR } from '../../../Constants';
+import { DAY_EVENT_LIST_EMPTY, MY_CALENDAR } from '../../../constants/otherConstants';
 import { EventForm } from './EventForm';
 import { LearningEvent } from '../../../models/learningEvent';
 import { learningEvents } from '../../../tools/mockData';

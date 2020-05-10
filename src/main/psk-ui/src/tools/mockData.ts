@@ -1,22 +1,26 @@
 import { Worker } from '../models/worker';
 import { Role } from '../models/role';
 import { LearningEvent } from '../models/learningEvent';
+import { Authority } from '../models/authority';
+import { Employee } from '../models/employee';
 
 export const roles: Role[] = [
-	{ id: 0, title: 'Java developer', description: '', color: 'blue' },
-	{ id: 1, title: 'Business analyst', description: '', color: 'gold' },
-	{ id: 2, title: 'Test engineer', color: 'green', description: '' },
-	{ id: 3, title: 'Software process manager', color: 'purple', description: '' },
-	{ id: 4, description: '', title: 'Front-end engineer', color: 'volcano' },
-	{ id: 5, description: '', title: 'Back-end engineer', color: 'lime' },
-	{ id: 6, description: '', title: 'Database engineer', color: 'geekblue' }];
+	{ title: 'Java developer', color: 'blue' },
+	{ title: 'Business analyst', color: 'gold' },
+	{ title: 'Test engineer', color: 'green', },
+	{ title: 'Software process manager', color: 'purple', },
+	{ title: 'Front-end engineer', color: 'volcano' },
+	{ title: 'Back-end engineer', color: 'lime' },
+	{ title: 'Database engineer', color: 'geekblue' }];
+
+export const defaultQuarterConstraint = 3;
 
 export const workerList: Worker[] = [
 	{
 		id: 1,
 		name: 'Povilas',
 		surname: 'Tamosauskas',
-		role: roles.find(role => role.id === 4),
+		role: roles[4],
 		quarterConstraint: 3,
 		team: 'PSK_123',
 		// learnedTopics:
@@ -25,12 +29,13 @@ export const workerList: Worker[] = [
 		learnedTopics: [],
 		learningEvents: [],
 		icon: null,
+		authority: Authority.UNASSIGNED
 	}, {
 		id: 2,
 		name: 'Lukas',
 		surname: 'Michnevic',
-		role: roles.find(role => role.id === 5),
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Back-end engineer")),
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
 		goals: [],
@@ -38,13 +43,14 @@ export const workerList: Worker[] = [
 		learnedTopics: [],
 		learningEvents: [],
 		icon: null,
+		authority: Authority.UNASSIGNED
 	},
 	{
 		id: 3,
 		name: 'Vytautas',
 		surname: 'Rudys',
-		role: roles.find(role => role.id === 5),
-		quarterConstraint: 3,
+		role: roles.find((role => role.title === "Back-end engineer")),
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
 		goals: [],
@@ -52,13 +58,14 @@ export const workerList: Worker[] = [
 		learnedTopics: [],
 		learningEvents: [],
 		icon: null,
+		authority: Authority.UNASSIGNED
 	},
 	{
 		id: 4,
 		name: 'Karolis',
 		surname: 'Dijokas',
-		role: roles.find(role => role.id === 6),
-		quarterConstraint: 3,
+		role: roles[6],
+		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
 		goals: [],
@@ -66,6 +73,52 @@ export const workerList: Worker[] = [
 		learnedTopics: [],
 		learningEvents: [],
 		icon: null,
+		authority: Authority.UNASSIGNED
+	}];
+export const myEmployees: Employee[] = [
+	{
+		id: 1,
+		name: 'Povilas Tamosauskas',
+		email: 'pt@psk123.com',
+		role: roles.find((role => role.title === "Front-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
+		team: 'PSK_123',
+		goals: [],
+	}, {
+		id: 2,
+		name: 'Lukas Michnevic',
+		email: 'lm@psk123.com',
+		role: roles.find((role => role.title === "Back-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
+		team: 'PSK_123',
+		goals: [],
+	},
+	{
+		id: 3,
+		name: 'Vytautas Rudys',
+		email: 'vr@psk123.com',
+		role: roles.find((role => role.title === "Back-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
+		team: 'PSK_123',
+		goals: [],
+	},
+	{
+		id: 4,
+		name: 'Karolis Dijokas',
+		email: 'kd@psk123.com',
+		role: roles.find((role => role.title === "Database engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
+		team: 'PSK_123',
+		goals: [],
+	},
+	{
+		id: 5,
+		name: 'Aurimas Golotylecas',
+		email: 'ag@psk123.com',
+		role: roles.find((role => role.title === "Back-end engineer"))!.title,
+		quarterConstraint: defaultQuarterConstraint,
+		team: 'PSK_123',
+		goals: [],
 	}];
 
 export const learningEvents: LearningEvent[] = [

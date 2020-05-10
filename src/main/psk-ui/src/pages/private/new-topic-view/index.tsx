@@ -9,7 +9,7 @@ import {
 	INPUT_TOPIC_NAME, IS_THIS_A_SUBTOPIC,
 	NEW_TOPIC_SUBTITLE,
 	NEW_TOPIC_TITLE, SUBMIT, SUBTOPIC_EXPLAINER, TOPIC_NAME
-} from '../../../Constants';
+} from '../../../constants/otherConstants';
 
 import './NewTopicStyles.css';
 
