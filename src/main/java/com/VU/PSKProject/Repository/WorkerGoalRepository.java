@@ -12,5 +12,5 @@ import java.util.List;
 @Repository
 public interface WorkerGoalRepository extends JpaRepository<WorkerGoal, Long> {
     @Query("select g from worker_goal g where g.worker.id in :workerIds")
-    List<WorkerGoal> findByWorkerIdIn(@Param("workerId") List<Long> workerIds);
+    List<WorkerGoal> findByWorkerIdIn(@Param("workerIds") List<Long> workerIds);
 }
