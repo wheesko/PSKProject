@@ -5,6 +5,7 @@ import com.VU.PSKProject.Repository.WorkerGoalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +33,14 @@ public class WorkerGoalService {
 
     public Optional<WorkerGoal> getWorkerGoal(Long id) {
         return workerGoalRepository.findById(id);
+    }
+
+    public List<WorkerGoal> findWorkerGoalsById(Long id) {
+        return workerGoalRepository.findAllById(Collections.singleton(id));
+    }
+
+    public List<WorkerGoal> findWorkerGoalsById(List<Long> ids)
+    {
+        return workerGoalRepository.findByWorkerIdIn(ids);
     }
 }

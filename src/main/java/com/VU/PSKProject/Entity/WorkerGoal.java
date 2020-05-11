@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "worker_goal")
 @Setter
 @Getter
 public class WorkerGoal {
