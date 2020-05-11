@@ -47,9 +47,40 @@ public class WorkerController {
     @PostMapping("/create")
     public void createWorker(@RequestBody WorkerDTO workerDto) {
         Worker worker = new Worker();
-        BeanUtils.copyProperties(workerDto, worker);
-        teamService.getTeam(workerDto.getManagedTeam()).ifPresent(worker::setManagedTeam);
-        teamService.getTeam(workerDto.getWorkingTeam()).ifPresent(worker::setWorkingTeam);
+
+        if(workerDto.getManagedTeam() != null)
+            teamService.getTeam(workerDto.getManagedTeam()).ifPresent(worker::setManagedTeam);
+
+        if(workerDto.getWorkingTeam() != null)
+            teamService.getTeam(workerDto.getWorkingTeam()).ifPresent(worker::setWorkingTeam);
+
+        //TODO: possibly need to rework this
+        if(workerDto.getLearningDays() != null) {
+            var learningDays = learningDayService.getAllLearningDaysByWorkerId(workerDto.getLearningDays());
+            worker.setLearningDays(learningDays);
+        }
+
+        if(workerDto.getGoals() != null) {
+            var workerGoals = workerGoalService.findWorkerGoalsById(workerDto.getGoals());
+            worker.setGoals(workerGoals);
+        }
+
+        if(workerDto.getName() != null){
+            worker.setName(workerDto.getName());
+        }
+
+        if(workerDto.getSurname() != null){
+            worker.setSurname(workerDto.getSurname());
+        }
+
+        if(workerDto.getConsecutiveLearningDayLimit() != 0){
+            worker.setConsecutiveLearningDayLimit(workerDto.getConsecutiveLearningDayLimit());
+        }
+
+        if(workerDto.getQuarterLearningDayLimit() != 0){
+            worker.setQuarterLearningDayLimit(workerDto.getQuarterLearningDayLimit());
+        }
+
         workerService.createWorker(worker);
     }
 
