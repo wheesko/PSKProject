@@ -24,6 +24,10 @@ public class LearningDayController {
     public List<LearningDay> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
         return learningDayService.getAllLearningDaysByWorkerId(workerId);
     }
+    @GetMapping("/getByManagerId/{managerId}")
+    public List<LearningDay> getAllLearningEventsByManagerId(@PathVariable Long managerId) {
+        return learningDayService.getAllLearningDaysByManagerId(managerId);
+    }
 
     @GetMapping("/get/{year}/{month}/{workerId}")
     public List<LearningDayDTO> getMonthLearningDaysByWorkerId(

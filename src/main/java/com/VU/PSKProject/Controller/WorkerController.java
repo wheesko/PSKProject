@@ -48,6 +48,8 @@ public class WorkerController {
     public void createWorker(@RequestBody WorkerDTO workerDto) {
         Worker worker = new Worker();
         BeanUtils.copyProperties(workerDto, worker);
+        teamService.getTeam(workerDto.getManagedTeam()).ifPresent(worker::setManagedTeam);
+        teamService.getTeam(workerDto.getWorkingTeam()).ifPresent(worker::setWorkingTeam);
         workerService.createWorker(worker);
     }
 
