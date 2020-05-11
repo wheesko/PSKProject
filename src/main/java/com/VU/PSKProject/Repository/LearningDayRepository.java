@@ -19,7 +19,4 @@ public interface LearningDayRepository extends JpaRepository<LearningDay, Long> 
 
     @Query("select f from learning_day f where f.assignee.id in :workerIds")
     List<LearningDay> findByWorkerIdIn(@Param("workerIds") List<Long> workerIds);
-
-    @Query("select f from learning_day f where f.assignee in :workers")
-    List<LearningDay> findByWorkers(@Param("workers") Optional<Worker> workers);
 }

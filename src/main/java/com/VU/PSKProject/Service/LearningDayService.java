@@ -1,19 +1,20 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.LearningDay;
+import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
-import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Model.LearningDayDTO;
 import com.VU.PSKProject.Utils.DateUtils;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 @Service
 public class LearningDayService {
@@ -21,7 +22,10 @@ public class LearningDayService {
     private LearningDayRepository learningDayRepository;
 
     @Autowired
-    private WorkerRepository workerRepository;
+    private WorkerService workerService;
+
+    @Autowired
+    private TeamService teamService;
 
     @Autowired
     private LearningDayMapper learningDayMapper;
@@ -60,9 +64,24 @@ public class LearningDayService {
     public List<LearningDay> getAllLearningDaysByManagerId(Long managerId) {
 
         // get all workers
-        Optional<Worker> workerIds = workerRepository.findByManagedTeamId(managerId);
+         //Worker workerId = workerRepository.findByManagedTeamId(managerId);
 
         // get all learning days
-        return learningDayRepository.findByWorkers(workerIds);
+        //return learningDayRepository.findByWorkers(workerIds);
+
+        Team team;
+        if(teamService.getTeamByManager(managerId).isPresent()){
+            team = teamService.getTeamByManager(managerId).get();
+        }else{
+            return null; //handle it somehow
+        }
+
+        var workers = workerService.findByWorkingTeamId(team.getId());
+        List<Long> ids = new ArrayList<>();
+        for (Worker w: workers) {
+            ids.add(w.getId());
+        }
+
+        return learningDayRepository.findByWorkerIdIn(ids);
     }
 }
