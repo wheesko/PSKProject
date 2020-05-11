@@ -1,8 +1,12 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Service.LearningDayService;
 import com.VU.PSKProject.Service.Model.WorkerDTO;
+import com.VU.PSKProject.Service.TeamService;
+import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
+import lombok.var;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,15 @@ public class WorkerController {
 
     @Autowired
     private WorkerService workerService;
+
+    @Autowired
+    private TeamService teamService;
+
+    @Autowired
+    private LearningDayService learningDayService;
+
+    @Autowired
+    private WorkerGoalService workerGoalService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Worker>> getWorkers() {
@@ -40,6 +53,12 @@ public class WorkerController {
     public void updateWorker(@RequestBody WorkerDTO workerDto, @PathVariable Long id) {
         Worker worker = new Worker();
         BeanUtils.copyProperties(workerDto, worker);
+        teamService.getTeam(workerDto.getManagedTeam()).ifPresent(worker::setManagedTeam);
+        teamService.getTeam(workerDto.getWorkingTeam()).ifPresent(worker::setWorkingTeam);
+        var learningDays = learningDayService.getAllLearningDaysByWorkerId(workerDto.getLearningDays());
+        worker.setLearningDays(learningDays);
+        var workerGoals = workerGoalService.findWorkerGoalsById(workerDto.getGoals());
+        worker.setGoals(workerGoals);
         workerService.updateWorker(id, worker);
     }
 
@@ -50,7 +69,7 @@ public class WorkerController {
     }
 
     @GetMapping("managedTeams/{id}")
-    public ResponseEntity<Worker> getWokerByManagedTeam(@PathVariable Long id) {
+    public ResponseEntity<Worker> getWorkerByManagedTeam(@PathVariable Long id) {
         Optional<Worker> worker = workerService.findByManagedTeamId(id);
         return worker.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

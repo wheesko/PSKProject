@@ -29,4 +29,8 @@ public class LearningDayService {
     public void deleteLearningDay(Long id) {
         learningDayRepository.deleteById(id);
     }
+
+    public List<LearningDay> getAllLearningDaysByWorkerId(List<Long> workerId) {
+        return learningDayRepository.findByWorkerIdIn(workerId);
+    }
 }
