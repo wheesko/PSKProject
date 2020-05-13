@@ -5,20 +5,15 @@ import { App } from './App';
 import * as serviceWorker from './serviceWorker';
 import { Router } from 'react-router-dom';
 import history from './history';
-import configureStore from './redux';
 import 'antd/dist/antd.css';
 import './index.css';
 import { PersistGate } from 'redux-persist/integration/react';
-
-const {
-	store,
-	persistedStore
-} = configureStore();
+import { store } from './redux/store';
 
 
 ReactDOM.render(
-	<Provider store={store}>
-		<PersistGate persistor={persistedStore}>
+	<Provider store={store.store}>
+		<PersistGate persistor={store.persistedStore}>
 			<Router history={history}>
 				<App/>
 			</Router>

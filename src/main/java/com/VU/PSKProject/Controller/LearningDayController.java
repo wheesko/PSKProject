@@ -25,11 +25,20 @@ public class LearningDayController {
         return learningDayService.getAllLearningDaysByWorkerId(workerId);
     }
 
+    @GetMapping("/get/{year}/{month}/{workerId}")
+    public List<LearningDayDTO> getMonthLearningDaysByWorkerId(
+        @PathVariable String year,
+        @PathVariable String month,
+        @PathVariable Long workerId
+    ) {
+        return learningDayService.getMonthLearningDaysByWorkerId(year, month, workerId);
+    }
+
     @PostMapping("/create")
     public void createLearningEventForWorker(@RequestBody LearningDayDTO learningDayDto) {
         LearningDay learningDay = new LearningDay();
         BeanUtils.copyProperties(learningDayDto, learningDay);
-        workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
+        workerService.getWorker(learningDayDto.getAssignee().getId()).ifPresent(learningDay::setAssignee);
         learningDayService.createLearningDay(learningDay);
     }
 
@@ -37,7 +46,7 @@ public class LearningDayController {
     public void updateLearningEvent(@RequestBody LearningDayDTO learningDayDto, @PathVariable Long id) {
         LearningDay learningDay = new LearningDay();
         BeanUtils.copyProperties(learningDayDto, learningDay);
-        workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
+        workerService.getWorker(learningDayDto.getAssignee().getId()).ifPresent(learningDay::setAssignee);
         learningDayService.updateLearningDay(learningDay, id);
     }
     @DeleteMapping("/delete/{id}")

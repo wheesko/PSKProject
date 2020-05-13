@@ -16,11 +16,12 @@ public class PskProjectApplication {
 		SpringApplication.run(PskProjectApplication.class, args);
 	}
 
-
 	//TODO: This method is for dev testing only, will need to be removed later
 	// Add more users if neccessary
 	@Bean
 	public ApplicationRunner initializer(UserRepository repository) {
+		repository.deleteAll();
+
 		return args -> repository.saveAll(Arrays.asList(
 				new User(
 						"admin",

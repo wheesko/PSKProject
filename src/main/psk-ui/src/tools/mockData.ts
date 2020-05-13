@@ -126,8 +126,7 @@ export const learningEvents: LearningEvent[] = [
 		id: 0,
 		name: 'Building apps with Redux',
 		description: 'Some very very cool description',
-		timeFrom: null,
-		timeTo: null,
+		dateTimeAt: '',
 		learningTopic: {
 			id: 0,
 			name: 'Web topic',
@@ -142,8 +141,7 @@ export const learningEvents: LearningEvent[] = [
 		id: 1,
 		name: 'JPA basics',
 		description: 'Some very very cool description',
-		timeFrom: null,
-		timeTo: null,
+		dateTimeAt: '',
 		learningTopic: {
 			id: 1,
 			name: 'Java topic',
@@ -159,8 +157,7 @@ export const learningEvents: LearningEvent[] = [
 		id: 2,
 		name: 'Automated testing',
 		description: 'Learning automated testing with selenium and webdriver',
-		timeFrom: null,
-		timeTo: null,
+		dateTimeAt: '',
 		learningTopic: {
 			id: 2,
 			name: 'Testing',
