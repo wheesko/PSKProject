@@ -9,9 +9,11 @@ import java.util.List;
 @Setter
 public class WorkerDTO {
     private Long id;
+    private Long userId;
 
     private String name;
     private String surname;
+    private String email;
 
     private Long managedTeam;
     private Long workingTeam;

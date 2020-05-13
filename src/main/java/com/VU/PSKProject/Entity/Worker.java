@@ -25,6 +25,9 @@ public class Worker {
 
     private String surname;
 
+    @OneToOne
+    private User userInstance;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Team managedTeam;

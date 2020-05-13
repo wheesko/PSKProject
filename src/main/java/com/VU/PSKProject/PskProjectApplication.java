@@ -1,7 +1,7 @@
 package com.VU.PSKProject;
 
 import com.VU.PSKProject.Entity.User;
-import com.VU.PSKProject.Entity.UserRole;
+import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Repository.UserRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,17 +26,17 @@ public class PskProjectApplication {
 				new User(
 						"admin",
 						"$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
-						UserRole.LEAD
+						UserAuthority.LEAD
 				),
 				new User(
 						"worker",
 						"$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
-						UserRole.WORKER
+						UserAuthority.WORKER
 				),
 				new User(
 						"admin1",
 						"$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
-						UserRole.LEAD
+						UserAuthority.LEAD
 				)
 		));
 	}
