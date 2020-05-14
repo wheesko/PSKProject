@@ -27,4 +27,11 @@ public class Topic {
     public Topic(){
 
     }
+
+    public Topic(String name, Topic parentTopic, String description, List<TeamGoal> goals){
+        this.name = name;
+        this.parentTopic = parentTopic;
+        this.description = description;
+        this.teamGoals = goals;
+    }
 }

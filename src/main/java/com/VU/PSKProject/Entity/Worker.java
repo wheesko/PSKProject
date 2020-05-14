@@ -19,6 +19,20 @@ public class Worker {
 
     }
 
+    public Worker(String name, String surname, User user, Team managedTeam, Team workingTeam,
+                  int quarterLearningDayLimit, int consecutiveLearningDayLimit, List<LearningDay> learningDays, List<WorkerGoal> workerGoals)
+    {
+        this.name = name;
+        this.surname = surname;
+        this.managedTeam = managedTeam;
+        this.workingTeam = workingTeam;
+        this.user = user;
+        this.quarterLearningDayLimit = quarterLearningDayLimit;
+        this.consecutiveLearningDayLimit = consecutiveLearningDayLimit;
+        this.learningDays = learningDays;
+        this.goals = workerGoals;
+    }
+
     @Id
     @GeneratedValue
     private Long id;
