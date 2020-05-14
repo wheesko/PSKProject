@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
-    private Long id;
+public class LoginResponseModel {
+    private Long userId;
+    private Long workerId;
     private String email; //TODO: add email regex
-    private String password;
-    private String userRole;
+    private String userAuthority;
 }

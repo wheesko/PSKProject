@@ -3,6 +3,8 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Repository.UserRepository;
+import com.VU.PSKProject.Service.Mapper.UserMapper;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,9 @@ import java.util.Collections;
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     public UserService (UserRepository userRepository) {
@@ -42,5 +47,9 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User: " + userName + " not found"));
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(String.valueOf(user.getUserAuthority()))));
+    }
+
+    public UserDTO getUserByEmail(String email) {
+       return userMapper.toDTO(userRepository.findByEmail(email).orElseGet(null));
     }
 }
