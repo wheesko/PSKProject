@@ -13,6 +13,7 @@ import { SideMenu } from './components/side-menu/side-menu';
 import { Routes } from './routes/routes';
 import { thunkLogout } from './thunks';
 import history from './history';
+import notificationService, { NotificationType } from './service/notification-service';
 
 const { Content, Footer, Sider } = Layout;
 
@@ -26,6 +27,10 @@ const App: React.FunctionComponent<{}> = () => {
 		dispatch(thunkLogout());
 		// when logging out, change current url to '/'
 		history.push('/');
+		notificationService.notify( {
+			notificationType: NotificationType.SUCCESS,
+			message: 'Logged out successfully'
+		});
 	};
 	
 	return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Calendar, Modal, Button, Typography, Tag, Divider, Spin } from 'antd';
+import { Button, Calendar, Divider, Modal, Spin, Tag, Typography } from 'antd';
 import moment from 'moment';
 
 import { DAY_EVENT_LIST_EMPTY, MY_CALENDAR } from '../../../constants/otherConstants';
@@ -9,6 +9,7 @@ import { LearningEvent } from '../../../models/learningEvent';
 import calendarService from '../../../api/calendar-service';
 
 import './CalendarStyles.css';
+import notificationService, { NotificationType } from '../../../service/notification-service';
 
 const { Title } = Typography;
 
@@ -54,7 +55,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				<ul className="events">
 					{getListData(value).map(item => (
 						<li key={item.id}>
-							<Tag color={"red"}>{item.name}</Tag>
+							<Tag color={'red'}>{item.name}</Tag>
 						</li>
 					))}
 				</ul>
@@ -80,8 +81,12 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		}).then((response) => {
 			setLoading(false);
 			return response;
-		}).catch(() => {
-			//TODO: Notify if failed to get learning events
+		}).catch((error) => {
+			notificationService.notify({
+				notificationType: NotificationType.ERROR,
+				message: 'Failed to load events',
+				description: error.toString()
+			});
 			setLoading(false);
 			return [];
 		});
