@@ -3,10 +3,12 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.LearningDayService;
+import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import lombok.var;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class WorkerController {
     @Autowired
     private WorkerGoalService workerGoalService;
 
+    @Autowired
+    private WorkerMapper workerMapper;
+
     @GetMapping("/getAll")
     public ResponseEntity<List<Worker>> getWorkers() {
         return ResponseEntity.ok(workerService.getAllWorkers());
@@ -46,40 +51,7 @@ public class WorkerController {
 
     @PostMapping("/create")
     public void createWorker(@RequestBody WorkerDTO workerDto) {
-        Worker worker = new Worker();
-
-        if(workerDto.getManagedTeam() != null)
-            teamService.getTeam(workerDto.getManagedTeam()).ifPresent(worker::setManagedTeam);
-
-        if(workerDto.getWorkingTeam() != null)
-            teamService.getTeam(workerDto.getWorkingTeam()).ifPresent(worker::setWorkingTeam);
-
-        //TODO: possibly need to rework this
-        if(workerDto.getLearningDays() != null) {
-            var learningDays = learningDayService.getAllLearningDaysByWorkerId(workerDto.getLearningDays());
-            worker.setLearningDays(learningDays);
-        }
-
-        if(workerDto.getGoals() != null) {
-            var workerGoals = workerGoalService.findWorkerGoalsById(workerDto.getGoals());
-            worker.setGoals(workerGoals);
-        }
-
-        if(workerDto.getName() != null){
-            worker.setName(workerDto.getName());
-        }
-
-        if(workerDto.getSurname() != null){
-            worker.setSurname(workerDto.getSurname());
-        }
-
-        if(workerDto.getConsecutiveLearningDayLimit() != 0){
-            worker.setConsecutiveLearningDayLimit(workerDto.getConsecutiveLearningDayLimit());
-        }
-
-        if(workerDto.getQuarterLearningDayLimit() != 0){
-            worker.setQuarterLearningDayLimit(workerDto.getQuarterLearningDayLimit());
-        }
+        Worker worker = workerMapper.fromDTO(workerDto);
 
         workerService.createWorker(worker);
     }
@@ -95,38 +67,7 @@ public class WorkerController {
         if(worker == null)
             return;
 
-        if(workerDto.getManagedTeam() != null)
-            teamService.getTeam(workerDto.getManagedTeam()).ifPresent(worker::setManagedTeam);
-
-        if(workerDto.getWorkingTeam() != null)
-            teamService.getTeam(workerDto.getWorkingTeam()).ifPresent(worker::setWorkingTeam);
-
-        //TODO: possibly need to rework this
-        if(workerDto.getLearningDays() != null) {
-            var learningDays = learningDayService.getAllLearningDaysByWorkerId(workerDto.getLearningDays());
-            worker.setLearningDays(learningDays);
-        }
-
-        if(workerDto.getGoals() != null) {
-            var workerGoals = workerGoalService.findWorkerGoalsById(workerDto.getGoals());
-            worker.setGoals(workerGoals);
-        }
-
-        if(workerDto.getName() != null){
-            worker.setName(workerDto.getName());
-        }
-
-        if(workerDto.getSurname() != null){
-            worker.setSurname(workerDto.getSurname());
-        }
-
-        if(workerDto.getConsecutiveLearningDayLimit() != 0){
-            worker.setConsecutiveLearningDayLimit(workerDto.getConsecutiveLearningDayLimit());
-        }
-
-        if(workerDto.getQuarterLearningDayLimit() != 0){
-            worker.setQuarterLearningDayLimit(workerDto.getQuarterLearningDayLimit());
-        }
+        PropertyUtils.customCopyProperties(workerDto, worker);
 
         workerService.updateWorker(id, worker);
     }

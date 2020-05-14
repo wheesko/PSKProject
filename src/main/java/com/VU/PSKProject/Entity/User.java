@@ -20,7 +20,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserAuthority userAuthority;
 
-    @OneToOne(mappedBy = "userInstance")
+    @OneToOne(mappedBy = "user")
     private Worker workerInstance;
 
     public User(String email, String password, UserAuthority userAuthority) {

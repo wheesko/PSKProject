@@ -73,10 +73,10 @@ public class LearningDayService {
         if(teamService.getTeamByManager(managerId).isPresent()){
             team = teamService.getTeamByManager(managerId).get();
         }else{
-            return null; //handle it somehow
+            return null; //TODO: handle it somehow
         }
 
-        var workers = workerService.findByWorkingTeamId(team.getId());
+        List<Worker> workers = workerService.findByWorkingTeamId(team.getId());
         List<Long> ids = new ArrayList<>();
         for (Worker w: workers) {
             ids.add(w.getId());

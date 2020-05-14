@@ -20,6 +20,7 @@ public class PskProjectApplication {
 	// Add more users if neccessary
 	@Bean
 	public ApplicationRunner initializer(UserRepository repository) {
+		//TODO: Implement intitial data generation here
 		repository.deleteAll();
 
 		return args -> repository.saveAll(Arrays.asList(

@@ -3,12 +3,14 @@ package com.VU.PSKProject.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "worker")
+@DynamicUpdate
 @Setter
 @Getter
 public class Worker {
@@ -25,8 +27,8 @@ public class Worker {
 
     private String surname;
 
-    @OneToOne
-    private User userInstance;
+    @OneToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})

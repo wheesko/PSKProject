@@ -4,6 +4,7 @@ import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,11 @@ public class WorkerService {
     }
 
     public void createWorker(Worker worker) {
-        byte[] array = new byte[7];
-        new Random().nextBytes(array);
-        String randomPassword = new String(array, StandardCharsets.UTF_8);
+        String randomPassword = PasswordUtils.generateRandomString(7);
         //TODO: Generate token to save
-        userService.createUser(new User(worker.getName(), randomPassword, UserAuthority.WORKER));
+        User u = new User(worker.getName(), randomPassword, UserAuthority.WORKER);
+        userService.createUser(u);
+        worker.setUser(u);
         workerRepository.save(worker);
     }
 
