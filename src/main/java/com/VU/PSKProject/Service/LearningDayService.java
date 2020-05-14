@@ -7,7 +7,6 @@ import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Model.LearningDayDTO;
 import com.VU.PSKProject.Utils.DateUtils;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +44,7 @@ public class LearningDayService {
                 .collect(Collectors.toList());
     }
     public List<LearningDay> getAllLearningDaysByWorkerId(List<Long> workerId) {
-        return learningDayRepository.findByWorkerIdIn(workerId);
+        return learningDayRepository.findAllByAssigneeIdIn(workerId);
     }
 
     public void createLearningDay(LearningDay learningDay) {
@@ -70,6 +69,7 @@ public class LearningDayService {
         //return learningDayRepository.findByWorkers(workerIds);
 
         Team team;
+
         if(teamService.getTeamByManager(managerId).isPresent()){
             team = teamService.getTeamByManager(managerId).get();
         }else{
@@ -82,6 +82,6 @@ public class LearningDayService {
             ids.add(w.getId());
         }
 
-        return learningDayRepository.findByWorkerIdIn(ids);
+        return learningDayRepository.findAllByAssigneeIdIn(ids);
     }
 }

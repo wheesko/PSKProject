@@ -1,13 +1,11 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.LearningDay;
+import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Service.LearningDayService;
+import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.WorkerDTO;
-import com.VU.PSKProject.Service.TeamService;
-import com.VU.PSKProject.Service.WorkerGoalService;
-import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import lombok.var;
 import org.springframework.beans.BeanUtils;
@@ -27,13 +25,7 @@ public class WorkerController {
     private WorkerService workerService;
 
     @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private LearningDayService learningDayService;
-
-    @Autowired
-    private WorkerGoalService workerGoalService;
+    private UserService userService;
 
     @Autowired
     private WorkerMapper workerMapper;
@@ -52,7 +44,8 @@ public class WorkerController {
     @PostMapping("/create")
     public void createWorker(@RequestBody WorkerDTO workerDto) {
         Worker worker = workerMapper.fromDTO(workerDto);
-
+        User u = userService.createUserFromEmail(workerDto.getEmail());
+        worker.setUser(u);
         workerService.createWorker(worker);
     }
 

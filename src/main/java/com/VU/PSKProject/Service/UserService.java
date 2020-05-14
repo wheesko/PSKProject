@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.User;
+import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,14 @@ public class UserService implements UserDetailsService {
     public void createUser(User user){
         userRepository.save(user);
     }
+
+    public User createUserFromEmail(String email){
+        String temporaryPassword = "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG"; // encoded "admin" string
+        User u = new User(email, temporaryPassword, UserAuthority.WORKER);
+        createUser(u);
+        return u;
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {

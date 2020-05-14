@@ -43,7 +43,7 @@ public class PskProjectApplication {
 		users.add(new User(
 				"worker",
 				"$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
-				UserAuthority.LEAD
+				UserAuthority.WORKER
 		));
 
 		users.add(new User(

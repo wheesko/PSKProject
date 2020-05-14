@@ -32,13 +32,6 @@ public class WorkerService {
     }
 
     public void createWorker(Worker worker) {
-        //String randomPassword = PasswordUtils.generateRandomString(7);
-        //TODO: remove temporaryPassword in final version (When predefined data is not needed)
-        String temporaryPassword = "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG"; // encoded "admin" string
-        User u = new User(worker.getName(), temporaryPassword, UserAuthority.WORKER);
-        userService.createUser(u);
-        worker.setUser(u);
-
         workerRepository.save(worker);
     }
 
