@@ -5,6 +5,7 @@ import { AppState } from './redux';
 import { LoginRequest } from './api/model/login-request';
 import authenticationService from './api/authentication-service';
 import { userLogin, userLogout } from './redux/user/actions';
+import notificationService, { NotificationType } from './service/notification-service';
 
 export const thunkLogin = (
 	loginRequest: LoginRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
@@ -20,8 +21,17 @@ export const thunkLogin = (
 			authority: decodedResponse!.role[0].authority,
 			role: { title: '', color: '' }
 		}));
-	}).catch((error: any) => {
-		console.log(error);
+
+		notificationService.notify({
+			notificationType: NotificationType.SUCCESS,
+			message: 'Logged in successfully'
+		});
+	}).catch(() => {
+		notificationService.notify( {
+			notificationType: NotificationType.ERROR,
+			message: 'Login unsuccessful',
+			description: 'Please check your credentials'
+		});
 	});
 };
 
