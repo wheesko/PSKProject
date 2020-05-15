@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -89,26 +90,40 @@ public class PskProjectApplication {
 		topics.add(new Topic("Thinking sharp using Java", topics.get(3), "description", null));
 
 
+		ArrayList<Role> roles = new ArrayList<>();
+		roles.add(new Role("Developer", null));
+		roles.add(new Role("Brain Developer", null));
+
+		ArrayList<Team> teams = new ArrayList<>();
+		teams.add(new Team("Noobs", null, null, null));
+		teams.add(new Team("EvenBiggerNoobs", null, null, null));
+
+		ArrayList<Worker> workers = new ArrayList<>();
+		workers.add(new Worker("werk", "wurk", users.get(0), teams.get(0), teams.get(0), roles.get(0),
+				5, 5,
+				null, null));
+		workers.add(new Worker("twerk", "twurk", users.get(1), teams.get(1), teams.get(1), roles.get(0),
+				5, 5,
+				null, null));
+
+
 		return  args -> {
 			userRepository.saveAll(users);
+			roleRepository.saveAll(roles);
 			topicRepository.saveAll(topics);
+			teamRepository.saveAll(teams);
+			workerRepository.saveAll(workers);
 			workerRepository.saveAll(Arrays.asList(
-					new Worker("werk", "wurk", users.get(0), null, null, 5, 5,
+					new Worker("qwerk", "qwurk", users.get(2), null, teams.get(0),  roles.get(1),
+							5, 5,
 							null, null),
-					new Worker("twerk", "twurk", users.get(1), null, null, 5, 5,
+					new Worker("swerk", "swurk", users.get(3), null, teams.get(0),  roles.get(1),
+							5, 5,
 							null, null),
-					new Worker("qwerk", "qwurk", users.get(2), null, null, 5, 5,
-							null, null),
-					new Worker("swerk", "swurk", users.get(3), null, null, 5, 5,
-							null, null),
-					new Worker("kwerk", "kwurk", users.get(4), null, null, 5, 5,
+					new Worker("kwerk", "kwurk", users.get(4), null, teams.get(1), roles.get(0),
+							5, 5,
 							null, null)
 			));
-			teamRepository.saveAll(Arrays.asList(
-					new Team("Noobs", null, null, null),
-					new Team("EvenBiggerNoobs", null, null, null)
-			));
-
 		};
 	}
 }

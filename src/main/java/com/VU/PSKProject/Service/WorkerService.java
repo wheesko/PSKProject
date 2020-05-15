@@ -4,12 +4,17 @@ import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.Model.ReturnWorkerDTO;
+import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Utils.PasswordUtils;
+import com.VU.PSKProject.Utils.PropertyUtils;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "worker")
-@DynamicUpdate
+//@DynamicUpdate
 @Setter
 @Getter
 public class Worker {
@@ -19,7 +19,7 @@ public class Worker {
 
     }
 
-    public Worker(String name, String surname, User user, Team managedTeam, Team workingTeam,
+    public Worker(String name, String surname, User user, Team managedTeam, Team workingTeam, Role role,
                   int quarterLearningDayLimit, int consecutiveLearningDayLimit, List<LearningDay> learningDays, List<WorkerGoal> workerGoals)
     {
         this.name = name;
@@ -27,6 +27,7 @@ public class Worker {
         this.managedTeam = managedTeam;
         this.workingTeam = workingTeam;
         this.user = user;
+        this.role = role;
         this.quarterLearningDayLimit = quarterLearningDayLimit;
         this.consecutiveLearningDayLimit = consecutiveLearningDayLimit;
         this.learningDays = learningDays;
@@ -42,6 +43,7 @@ public class Worker {
     private String surname;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -51,6 +53,10 @@ public class Worker {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Team workingTeam;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Role role;
 
     private int quarterLearningDayLimit;
 

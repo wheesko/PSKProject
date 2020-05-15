@@ -5,11 +5,14 @@ import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
+import com.VU.PSKProject.Service.Model.ReturnWorkerDTO;
 import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import lombok.var;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +34,31 @@ public class WorkerController {
     private WorkerMapper workerMapper;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Worker>> getWorkers() {
-        return ResponseEntity.ok(workerService.getAllWorkers());
+    public ResponseEntity<List<WorkerDTO>> getWorkers() {
+        List<Worker> workers = workerService.getAllWorkers();
+        List<WorkerDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            WorkerDTO workerDTO = workerMapper.toDto(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTOS.add(workerDTO);
+        }
+        return ResponseEntity.ok(workerDTOS);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Worker> getWorker(@PathVariable Long id) {
+    public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {
         Optional<Worker> worker = workerService.getWorker(id);
-        return worker.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        if(worker.isPresent())
+        {
+            WorkerDTO workerDTO = workerMapper.toDto(worker.get());
+            workerDTO.setEmail(worker.get().getUser().getEmail());
+            return ResponseEntity.ok(workerDTO);
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "Worker with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
     }
 
     @PostMapping("/create")

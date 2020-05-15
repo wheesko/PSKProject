@@ -1,5 +1,7 @@
 package com.VU.PSKProject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +23,7 @@ public class User {
     private UserAuthority userAuthority;
 
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private Worker workerInstance;
 
     public User(String email, String password, UserAuthority userAuthority) {

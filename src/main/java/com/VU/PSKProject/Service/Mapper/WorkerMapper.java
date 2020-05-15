@@ -16,4 +16,8 @@ public class WorkerMapper {
     {
         return modelMapper.map(workerDTO, Worker.class);
     }
+
+    public WorkerDTO toDto(Worker worker){
+        return modelMapper.map(worker, WorkerDTO.class);
+    }
 }
