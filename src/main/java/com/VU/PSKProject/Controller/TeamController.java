@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Model.TeamDTO;
+import com.VU.PSKProject.Service.Model.TeamDTOFull;
 import com.VU.PSKProject.Service.Model.TeamToCreateDTO;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.WorkerService;
@@ -30,21 +31,21 @@ public class TeamController {
     private WorkerService workerService;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<TeamDTO>> getTeams(){
+    public ResponseEntity<List<TeamDTOFull>> getTeams(){
         List<Team> teams = teamService.getAllTeams();
-        List<TeamDTO> teamDTOS = new ArrayList<>();
+        List<TeamDTOFull> teamDTOS = new ArrayList<>();
         for (Team t: teams) {
-            TeamDTO teamDTO = teamMapper.toDto(t);
+            TeamDTOFull teamDTO = teamMapper.toDto(t);
             teamDTOS.add(teamDTO);
         }
         return ResponseEntity.ok(teamDTOS);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<TeamDTO> getTeam(@PathVariable Long id){
+    public ResponseEntity<TeamDTOFull> getTeam(@PathVariable Long id){
         Optional<Team> team = teamService.getTeam(id);
         if(team.isPresent()){
-            TeamDTO teamDTO = teamMapper.toDto(team.get());
+            TeamDTOFull teamDTO = teamMapper.toDto(team.get());
             return ResponseEntity.ok(teamDTO);
         }else
         {

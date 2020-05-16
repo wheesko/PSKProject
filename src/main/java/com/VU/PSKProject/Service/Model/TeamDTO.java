@@ -10,7 +10,7 @@ import java.util.List;
 public class TeamDTO {
     private Long id;
     private String name;
-    private WorkerDTOStripped managerId;
+    private WorkerDTOStripped teamLead;
     private List<WorkerDTOStripped> workers;
     private List<WorkerDTOStripped> goals;
 }

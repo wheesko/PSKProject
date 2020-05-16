@@ -1,5 +1,6 @@
 package com.VU.PSKProject.Service.Model;
 
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
 
