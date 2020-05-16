@@ -17,7 +17,7 @@ public class TeamService {
     private TeamRepository teamRepository;
 
     @Autowired
-    private WorkerRepository workerRepository;
+    private WorkerService workerService;
 
     public List<Team> getAllTeams(){
         return teamRepository.findAll();

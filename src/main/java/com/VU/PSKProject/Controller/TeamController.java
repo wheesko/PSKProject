@@ -3,7 +3,10 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Model.TeamDTO;
+import com.VU.PSKProject.Service.Model.TeamToCreateDTO;
 import com.VU.PSKProject.Service.TeamService;
+import com.VU.PSKProject.Service.WorkerService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +25,9 @@ public class TeamController {
 
     @Autowired
     private TeamMapper teamMapper;
+
+    @Autowired
+    private WorkerService workerService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<TeamDTO>> getTeams(){
@@ -49,17 +55,22 @@ public class TeamController {
     }
 
     @PostMapping("/create")
-    public void createTeam(@RequestBody TeamDTO teamDto){
-        Team team = new Team();
-        BeanUtils.copyProperties(teamDto, team);
-        teamService.createTeam(team);
+    public void createTeam(@RequestBody TeamToCreateDTO teamDto){
+        Team team = teamMapper.fromDTO(teamDto);
+
+        workerService.getWorker(team.getManager().getId()).ifPresent(w -> {
+            w.setManagedTeam(team);
+            teamService.createTeam(team);
+        });
     }
 
     @PutMapping("/update/{id}")
     public void updateTeam(@RequestBody TeamDTO teamDto, @PathVariable Long id){
-        Team team = new Team();
-        BeanUtils.copyProperties(teamDto, team);
-        teamService.updateTeam(id, team);
+        teamService.getTeam(id).ifPresent(w ->
+        {
+            PropertyUtils.customCopyProperties(teamDto, w);
+            teamService.updateTeam(id, w);
+        });
     }
 
     @DeleteMapping("/delete/{id}")
