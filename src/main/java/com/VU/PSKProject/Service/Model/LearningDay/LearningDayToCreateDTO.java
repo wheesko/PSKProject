@@ -8,11 +8,11 @@ import java.sql.Timestamp;
 
 @Setter
 @Getter
-public class LearningDayDTO {
+public class LearningDayToCreateDTO {
     private Long id;
     private String name;
     private String comment;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Vilnius")
     private Timestamp dateTimeAt;
-    private LearningDayAssigneeDTO assignee;
+    private Long assignee;
 }

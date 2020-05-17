@@ -4,6 +4,7 @@ import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.LearningDayService;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.WorkerService;
 import org.springframework.beans.BeanUtils;
@@ -47,14 +48,14 @@ public class LearningDayController {
     }
 
     @PostMapping("/create")
-    public void createLearningEventForWorker(@RequestBody LearningDayDTO learningDayDto) {
+    public void createLearningEventForWorker(@RequestBody LearningDayToCreateDTO learningDayDto) {
         LearningDay learningDay = learningDayMapper.fromDTO(learningDayDto);
         workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
         learningDayService.createLearningDay(learningDay);
     }
 
     @PutMapping("/update/{id}")
-    public void updateLearningEvent(@RequestBody LearningDayDTO learningDayDto, @PathVariable Long id) {
+    public void updateLearningEvent(@RequestBody LearningDayToCreateDTO learningDayDto, @PathVariable Long id) {
         LearningDay learningDay = learningDayMapper.fromDTO(learningDayDto);
         workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
         learningDayService.updateLearningDay(learningDay, id);

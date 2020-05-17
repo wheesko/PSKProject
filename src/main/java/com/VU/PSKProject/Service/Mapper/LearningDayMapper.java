@@ -2,6 +2,7 @@ package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +26,10 @@ public class LearningDayMapper {
     public LearningDayToReturnDTO toReturnDTO(LearningDay learningDay){return modelMapper.map(learningDay, LearningDayToReturnDTO.class);}
 
     public LearningDay fromDTO(LearningDayDTO learningDayDTO){
+        return modelMapper.map(learningDayDTO, LearningDay.class);
+    }
+
+    public LearningDay fromDTO(LearningDayToCreateDTO learningDayDTO){
         return modelMapper.map(learningDayDTO, LearningDay.class);
     }
 
