@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Team;
+import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Model.TeamDTO;
 import com.VU.PSKProject.Service.Model.TeamDTOFull;
@@ -33,6 +34,16 @@ public class TeamController {
     @GetMapping("/getAll")
     public ResponseEntity<List<TeamDTOFull>> getTeams(){
         List<Team> teams = teamService.getAllTeams();
+        List<TeamDTOFull> teamDTOS = new ArrayList<>();
+        for (Team t: teams) {
+            TeamDTOFull teamDTO = teamMapper.toDto(t);
+            teamDTOS.add(teamDTO);
+        }
+        return ResponseEntity.ok(teamDTOS);
+    }
+    @GetMapping("/getByTopic/{id}")
+    public ResponseEntity<List<TeamDTOFull>> getTeamsByTopic(@PathVariable Long id){
+        List<Team> teams = teamService.getTeamsByTopicId(id);
         List<TeamDTOFull> teamDTOS = new ArrayList<>();
         for (Team t: teams) {
             TeamDTOFull teamDTO = teamMapper.toDto(t);

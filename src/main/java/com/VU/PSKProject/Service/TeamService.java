@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,5 +46,20 @@ public class TeamService {
 
     public Optional<Team> getTeamByManager(Long managerId){
         return teamRepository.findByManagerId(managerId);
+    }
+
+    public List<Team> getTeamsByTopicId(Long id){
+        List <Team> teams = new ArrayList<>();
+        List <Worker> workers = workerService.getWorkersByTopic(id);
+        for (Worker worker: workers) {
+            if (!teams.contains(worker.getWorkingTeam())){
+                teams.add(worker.getWorkingTeam());
+            }
+            // NF-7: Parodyti, kokios komandos mokesi tam tikra tema. does that include manager? if u think yes, then uncomment dis
+            //if (!teams.contains(worker.getManagedTeam())){
+           //     teams.add(worker.getManagedTeam());
+           // }
+        }
+        return teams;
     }
 }
