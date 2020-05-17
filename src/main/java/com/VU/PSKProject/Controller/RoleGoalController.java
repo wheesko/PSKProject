@@ -1,12 +1,10 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.RoleGoal;
-import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
 import com.VU.PSKProject.Service.RoleGoalService;
 import com.VU.PSKProject.Service.RoleService;
 import com.VU.PSKProject.Service.TopicService;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

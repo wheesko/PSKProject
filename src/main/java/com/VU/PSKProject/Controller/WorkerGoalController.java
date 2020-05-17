@@ -1,11 +1,6 @@
 package com.VU.PSKProject.Controller;
 
-import com.VU.PSKProject.Entity.LearningDay;
-import com.VU.PSKProject.Entity.Team;
-import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Entity.WorkerGoal;
-import com.VU.PSKProject.Service.Model.LearningDayDTO;
-import com.VU.PSKProject.Service.Model.TeamToCreateDTO;
 import com.VU.PSKProject.Service.Model.WorkerGoalDTO;
 import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Service.WorkerGoalService;

@@ -3,9 +3,7 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TeamRepository;
-import com.VU.PSKProject.Repository.WorkerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
