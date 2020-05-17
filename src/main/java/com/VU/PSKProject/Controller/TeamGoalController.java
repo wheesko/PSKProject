@@ -3,6 +3,8 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.TeamGoal;
 import com.VU.PSKProject.Service.Model.TeamGoalDTO;
 import com.VU.PSKProject.Service.TeamGoalService;
+import com.VU.PSKProject.Service.TeamService;
+import com.VU.PSKProject.Service.TopicService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,10 @@ import java.util.Optional;
 public class TeamGoalController {
     @Autowired
     private TeamGoalService teamGoalService;
+    @Autowired
+    private TeamService teamService;
+    @Autowired
+    private TopicService topicService;
 
     @GetMapping("/getAll")
     public List<TeamGoal> getTeamGoals(){
@@ -30,6 +36,8 @@ public class TeamGoalController {
     public void createTeamGoal(@RequestBody TeamGoalDTO teamGoalDto){
         TeamGoal teamGoal = new TeamGoal();
         BeanUtils.copyProperties(teamGoalDto, teamGoal);
+        teamService.getTeam(teamGoalDto.getTeam()).ifPresent(teamGoal::setTeam);
+        topicService.getTopic(teamGoalDto.getTopic()).ifPresent(teamGoal::setTopic);
         teamGoalService.createTeamGoal(teamGoal);
     }
 

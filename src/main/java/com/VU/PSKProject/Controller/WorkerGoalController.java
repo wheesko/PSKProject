@@ -1,9 +1,15 @@
 package com.VU.PSKProject.Controller;
 
+import com.VU.PSKProject.Entity.LearningDay;
+import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Entity.WorkerGoal;
+import com.VU.PSKProject.Service.Model.LearningDayDTO;
+import com.VU.PSKProject.Service.Model.TeamToCreateDTO;
 import com.VU.PSKProject.Service.Model.WorkerGoalDTO;
+import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Service.WorkerGoalService;
+import com.VU.PSKProject.Service.WorkerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +22,10 @@ import java.util.Optional;
 public class  WorkerGoalController {
     @Autowired
     private WorkerGoalService workerGoalService;
+    @Autowired
+    private WorkerService workerService;
+    @Autowired
+    private TopicService topicService;
 
     @GetMapping("/getAll")
     public List<WorkerGoal> getWorkerGoals(){
@@ -31,6 +41,8 @@ public class  WorkerGoalController {
     public void createWorkerGoal(@RequestBody WorkerGoalDTO workerGoalDto){
         WorkerGoal workerGoal = new WorkerGoal();
         BeanUtils.copyProperties(workerGoalDto, workerGoal);
+        workerService.getWorker(workerGoalDto.getWorker()).ifPresent(workerGoal::setWorker);
+        topicService.getTopic(workerGoalDto.getTopic()).ifPresent(workerGoal::setTopic);
         workerGoalService.createWorkerGoal(workerGoal);
     }
 

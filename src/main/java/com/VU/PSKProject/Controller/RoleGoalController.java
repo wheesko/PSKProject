@@ -1,8 +1,12 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.RoleGoal;
+import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
 import com.VU.PSKProject.Service.RoleGoalService;
+import com.VU.PSKProject.Service.RoleService;
+import com.VU.PSKProject.Service.TopicService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,10 @@ import java.util.Optional;
 public class RoleGoalController {
     @Autowired
     private RoleGoalService roleGoalService;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private TopicService topicService;
 
     @GetMapping("/getAll")
     public List<RoleGoal> getRoleGoals(){
@@ -30,6 +38,8 @@ public class RoleGoalController {
     public void createRoleGoal(@RequestBody RoleGoalDTO roleGoalDto){
         RoleGoal roleGoal = new RoleGoal();
         BeanUtils.copyProperties(roleGoalDto, roleGoal);
+        roleService.getRole(roleGoalDto.getRole()).ifPresent(roleGoal::setRole);
+        topicService.getTopic(roleGoalDto.getTopic()).ifPresent(roleGoal::setTopic);
         roleGoalService.createRoleGoal(roleGoal);
     }
 

@@ -1,5 +1,6 @@
 package com.VU.PSKProject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,11 +16,8 @@ public class Role {
     @GeneratedValue
     private long id;
     private String name;
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            mappedBy = "role"
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<RoleGoal> roleGoals;
 
     public Role(){
