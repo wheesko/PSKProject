@@ -3,18 +3,35 @@ package com.VU.PSKProject.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "worker")
+//@DynamicUpdate
 @Setter
 @Getter
 public class Worker {
 
     public Worker() {
 
+    }
+
+    public Worker(String name, String surname, User user, Team managedTeam, Team workingTeam, Role role,
+                  int quarterLearningDayLimit, int consecutiveLearningDayLimit, List<LearningDay> learningDays, List<WorkerGoal> workerGoals)
+    {
+        this.name = name;
+        this.surname = surname;
+        this.managedTeam = managedTeam;
+        this.workingTeam = workingTeam;
+        this.user = user;
+        this.role = role;
+        this.quarterLearningDayLimit = quarterLearningDayLimit;
+        this.consecutiveLearningDayLimit = consecutiveLearningDayLimit;
+        this.learningDays = learningDays;
+        this.goals = workerGoals;
     }
 
     @Id
@@ -27,11 +44,19 @@ public class Worker {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Team managedTeam;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Team workingTeam;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Role role;
 
     private int quarterLearningDayLimit;
 

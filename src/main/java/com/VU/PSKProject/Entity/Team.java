@@ -3,17 +3,25 @@ package com.VU.PSKProject.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name = "team")
 @Setter
 @Getter
 public class Team {
 
     public Team() {
 
+    }
+
+    public Team(String name,  Worker manager, List<Worker> workers, List<TeamGoal> goals) {
+        this.name = name;
+        this.manager = manager;
+        this.workers = workers;
+        this.goals = goals;
     }
 
     @Id
@@ -26,10 +34,10 @@ public class Team {
     @JsonIgnore
     private Worker manager;
 
-    @OneToMany(mappedBy = "workingTeam")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "workingTeam")
     @JsonIgnore
     private List<Worker> workers;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "team")
     private List<TeamGoal> goals;
 }

@@ -4,6 +4,7 @@ import com.VU.PSKProject.Service.Model.LearningDayDTO;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.LearningDayService;
 import com.VU.PSKProject.Service.WorkerService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,10 @@ public class LearningDayController {
     @GetMapping("/get/{workerId}")
     public List<LearningDay> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
         return learningDayService.getAllLearningDaysByWorkerId(workerId);
+    }
+    @GetMapping("/getByManagerId/{managerId}")
+    public List<LearningDay> getAllLearningEventsByManagerId(@PathVariable Long managerId) {
+        return learningDayService.getAllLearningDaysByManagerId(managerId);
     }
 
     @GetMapping("/get/{year}/{month}/{workerId}")
@@ -45,7 +50,7 @@ public class LearningDayController {
     @PutMapping("/update/{id}")
     public void updateLearningEvent(@RequestBody LearningDayDTO learningDayDto, @PathVariable Long id) {
         LearningDay learningDay = new LearningDay();
-        BeanUtils.copyProperties(learningDayDto, learningDay);
+        PropertyUtils.customCopyProperties(learningDayDto, learningDay);
         workerService.getWorker(learningDayDto.getAssignee().getId()).ifPresent(learningDay::setAssignee);
         learningDayService.updateLearningDay(learningDay, id);
     }

@@ -1,11 +1,13 @@
 package com.VU.PSKProject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "user")
 @Getter
 @Setter
 public class User {
@@ -18,12 +20,16 @@ public class User {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserAuthority userAuthority;
 
-    public User(String email, String password, UserRole userRole) {
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private Worker workerInstance;
+
+    public User(String email, String password, UserAuthority userAuthority) {
         this.email = email;
         this.password = password;
-        this.userRole = userRole;
+        this.userAuthority = userAuthority;
     }
 
     public User() {

@@ -1,6 +1,5 @@
 package com.VU.PSKProject.Service.Model;
 
-import com.VU.PSKProject.Entity.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
