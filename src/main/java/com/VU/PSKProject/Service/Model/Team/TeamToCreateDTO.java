@@ -1,4 +1,4 @@
-package com.VU.PSKProject.Service.Model;
+package com.VU.PSKProject.Service.Model.Team;
 
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;

@@ -1,9 +1,9 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.Team;
-import com.VU.PSKProject.Service.Model.TeamDTO;
-import com.VU.PSKProject.Service.Model.TeamDTOFull;
-import com.VU.PSKProject.Service.Model.TeamToCreateDTO;
+import com.VU.PSKProject.Service.Model.Team.TeamDTO;
+import com.VU.PSKProject.Service.Model.Team.TeamDTOFull;
+import com.VU.PSKProject.Service.Model.Team.TeamToCreateDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

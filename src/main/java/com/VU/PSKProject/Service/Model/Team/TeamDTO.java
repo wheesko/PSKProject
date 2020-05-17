@@ -1,6 +1,6 @@
-package com.VU.PSKProject.Service.Model;
+package com.VU.PSKProject.Service.Model.Team;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTOStripped;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;

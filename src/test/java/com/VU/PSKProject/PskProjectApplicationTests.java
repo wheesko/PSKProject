@@ -45,7 +45,7 @@ class PskProjectApplicationTests {
 		Assert.assertEquals(learningDay.getDateTimeAt(), learningDayDTO.getDateTimeAt());
 		Assert.assertEquals(learningDay.getId(), learningDayDTO.getId());
 		Assert.assertEquals(learningDay.getComment(), learningDayDTO.getComment());
-		Assert.assertEquals(learningDay.getAssignee().getId(), learningDayDTO.getAssignee());
+		Assert.assertEquals(learningDay.getAssignee().getId(), learningDayDTO.getAssignee().getId());
 		Assert.assertEquals(learningDay.getName(), learningDayDTO.getName());
 	}
 

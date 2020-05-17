@@ -1,23 +1,15 @@
 package com.VU.PSKProject.Service;
 
-import com.VU.PSKProject.Entity.User;
-import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
-import com.VU.PSKProject.Service.Model.ReturnWorkerDTO;
-import com.VU.PSKProject.Service.Model.WorkerDTO;
-import com.VU.PSKProject.Utils.PasswordUtils;
-import com.VU.PSKProject.Utils.PropertyUtils;
-import org.hibernate.jdbc.Work;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class WorkerService {
@@ -60,5 +52,16 @@ public class WorkerService {
 
     public List<Worker> findByWorkingTeamId(Long id) {
         return workerRepository.findByWorkingTeamId(id);
+    }
+
+    public ResponseEntity<String> validateWorkerData(WorkerToCreateDTO workerDTO)
+    {
+        if(workerDTO.getEmail().isEmpty()){
+            return ResponseEntity.badRequest().body("No email provided!");
+        }
+        if(workerDTO.getManagerId() == null){
+            return ResponseEntity.badRequest().body("No manager provided!");
+        }
+        return ResponseEntity.ok().build();
     }
 }
