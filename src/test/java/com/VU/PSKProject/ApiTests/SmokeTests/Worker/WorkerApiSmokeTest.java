@@ -28,8 +28,8 @@ public class WorkerApiSmokeTest extends BaseTest {
         requestBody.addProperty("email", testWorkerEmail);
         Assert.assertEquals(
                 "Verify get single worker response status code is 200",
-                WorkerApi.createWorker(requestBody, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.createWorker(requestBody, token).getStatusCode());
     }
 
     // negative test case
@@ -43,8 +43,8 @@ public class WorkerApiSmokeTest extends BaseTest {
         requestBody.addProperty("surname", "Fail");
         Assert.assertNotEquals(
                 "Verify create worker without managerId response status code is NOT 200",
-                WorkerApi.createWorker(requestBody, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.createWorker(requestBody, token).getStatusCode());
     }
 
     @Test(description = "Verify GET single worker SUCCESS", groups = "verifyGetWorkerSuccess")
@@ -56,8 +56,8 @@ public class WorkerApiSmokeTest extends BaseTest {
         // Verify GET response is SUCCESS
         Assert.assertEquals(
                 "Verify get single worker response status code is 200.",
-                WorkerApi.getWorkerById(testWorkerId, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.getWorkerById(testWorkerId, token).getStatusCode());
     }
 
     @Test(description = "Verify GET single worker FAILURE")
@@ -69,11 +69,11 @@ public class WorkerApiSmokeTest extends BaseTest {
         // Verify GET response is SUCCESS
         Assert.assertNotEquals(
                 "Verify GET response by non-existent id is NOT OK",
-                WorkerApi.getWorkerById(-1, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.getWorkerById(-1, token).getStatusCode());
     }
 
-    @Test(description = "Verify DELETE single worker SUCCESS")
+    @Test(description = "Verify DELETE single worker SUCCESS", groups = "verifyDeleteWorkerSuccess")
     public void verifyDeleteWorkerSuccess() {
         // 1. Create worker
         // 2. Delete worker by id
@@ -83,8 +83,8 @@ public class WorkerApiSmokeTest extends BaseTest {
         // Verify response is SUCCESS
         Assert.assertEquals(
                 "Verify delete single worker response status code is 200.",
-                WorkerApi.deleteWorkerById(testWorkerId, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.deleteWorkerById(testWorkerId, token).getStatusCode());
     }
 
     @Test(description = "Verify DELETE single worker FAILURE")
@@ -96,8 +96,8 @@ public class WorkerApiSmokeTest extends BaseTest {
         // Verify response is SUCCESS
         Assert.assertNotEquals(
                 "Verify delete single worker by non-existent id response status code is NOT 200.",
-                WorkerApi.deleteWorkerById(-1, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.deleteWorkerById(-1, token).getStatusCode());
     }
 
     @Test(description = "Verify UPDATE single worker SUCCESS", groups = "verifyUpdateWorkerSuccess")
@@ -113,8 +113,8 @@ public class WorkerApiSmokeTest extends BaseTest {
         requestBody.addProperty("name", "UpdatedName");
         Assert.assertEquals(
                 "Verify update single worker response status is 200.",
-                WorkerApi.updateWorkerById(testWorkerId, requestBody, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.updateWorkerById(testWorkerId, requestBody, token).getStatusCode());
     }
 
     @Test(description = "Verify UPDATE single worker FAILURE", groups = "verifyUpdateWorkerSuccess")
@@ -131,8 +131,8 @@ public class WorkerApiSmokeTest extends BaseTest {
         requestBody.addProperty("name", "UpdatedName");
         Assert.assertNotEquals(
                 "Verify update single worker with non-existent id response status is NOT 200.",
-                WorkerApi.updateWorkerById(-1, requestBody, token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.updateWorkerById(-1, requestBody, token).getStatusCode());
     }
 
     @Test(description = "Verify GET all workers SUCCESS")
@@ -141,20 +141,19 @@ public class WorkerApiSmokeTest extends BaseTest {
         // Verify response is SUCCESS
         Assert.assertEquals(
                 "Verify getAll workers response status code is 200.",
-                WorkerApi.getAllWorkers(token).getStatusCode(),
-                200);
+                200,
+                WorkerApi.getAllWorkers(token).getStatusCode());
     }
 
-    @AfterGroups(groups = {"verifyCreateWorkerSuccess", "verifyGetWorkerSuccess", "verifyUpdateWorkerSuccess"})
+    @AfterGroups(groups = {"verifyCreateWorkerSuccess", "verifyUpdateWorkerSuccess", "verifyGetWorkerSuccess"})
     public void deleteWorkerAfterTest() {
         String token = WorkerApi.getToken("admin", "admin");
         WorkerApi.deleteWorkerById(testWorkerId, token);
     }
 
-    @BeforeGroups(groups = {"verifyGetWorkerSuccess", "verifyUpdateWorkerSuccess"})
+    @BeforeGroups(groups = {"verifyGetWorkerSuccess", "verifyUpdateWorkerSuccess", "verifyDeleteWorkerSuccess"})
     public void createWorkerBeforeTest() {
         String token = BaseApi.getToken("admin", "admin");
-
         JsonObject createWorkerRequestBody = new JsonObject();
         createWorkerRequestBody.addProperty("id", testWorkerId);
         createWorkerRequestBody.addProperty("email", testWorkerEmail);
