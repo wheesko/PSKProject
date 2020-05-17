@@ -9,7 +9,6 @@ import org.testng.annotations.AfterGroups;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
-import java.util.concurrent.ThreadLocalRandom;
 
 public class WorkerApiSmokeTest extends BaseTest {
 
@@ -61,6 +60,19 @@ public class WorkerApiSmokeTest extends BaseTest {
                 200);
     }
 
+    @Test(description = "Verify GET single worker FAILURE")
+    public void verifyGetWorkerFailure() {
+        // 1. Get worker by id
+        // 2. Verify GET response by non-existent id is NOT OK
+        String token = BaseApi.getToken("admin", "admin");
+
+        // Verify GET response is SUCCESS
+        Assert.assertNotEquals(
+                "Verify GET response by non-existent id is NOT OK",
+                WorkerApi.getWorkerById(-1, token).getStatusCode(),
+                200);
+    }
+
     @Test(description = "Verify DELETE single worker SUCCESS")
     public void verifyDeleteWorkerSuccess() {
         // 1. Create worker
@@ -72,6 +84,19 @@ public class WorkerApiSmokeTest extends BaseTest {
         Assert.assertEquals(
                 "Verify delete single worker response status code is 200.",
                 WorkerApi.deleteWorkerById(testWorkerId, token).getStatusCode(),
+                200);
+    }
+
+    @Test(description = "Verify DELETE single worker FAILURE")
+    public void verifyDeleteWorkerFailure() {
+        // 1. Delete worker by non-existent id
+        // 2. Verify response is NOT OK
+        String token = BaseApi.getToken("admin", "admin");
+
+        // Verify response is SUCCESS
+        Assert.assertNotEquals(
+                "Verify delete single worker by non-existent id response status code is NOT 200.",
+                WorkerApi.deleteWorkerById(-1, token).getStatusCode(),
                 200);
     }
 
