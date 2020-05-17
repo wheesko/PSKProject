@@ -18,6 +18,7 @@ public class WorkerApi extends BaseApi {
         Response response = request.given()
                 .body(requestBody.toString())
                 .post("api/workers/create");
+        System.out.println("Response code: " + response.getStatusCode());
         if (response.getStatusCode() == 200)
             System.out.println("Request was successful.");
         System.out.println("Response content type: " + response.getContentType());
@@ -37,10 +38,11 @@ public class WorkerApi extends BaseApi {
         Response response = request.given()
                 .body(requestBody.toString())
                 .get("api/workers/get/" + id);
+        ResponseBody responseBody = response.getBody();
+        System.out.println("Response code: " + response.getStatusCode());
         if (response.getStatusCode() == 200)
             System.out.println("Request was successful.");
         System.out.println("Response content type: " + response.getContentType());
-        ResponseBody responseBody = response.getBody();
         System.out.println("Response body: ");
         responseBody.prettyPrint();
         // verify api/workers/get/{id} response is success
@@ -57,10 +59,11 @@ public class WorkerApi extends BaseApi {
         Response response = request.given()
                 .body(requestBody.toString())
                 .delete("api/workers/delete/" + id);
+        ResponseBody responseBody = response.getBody();
+        System.out.println("Response code: " + response.getStatusCode());
         if (response.getStatusCode() == 200)
             System.out.println("Request was successful.");
         System.out.println("Response content type: " + response.getContentType());
-        ResponseBody responseBody = response.getBody();
         System.out.println("Response body: ");
         responseBody.prettyPrint();
         // verify api/workers/get/{id} response is success
@@ -81,6 +84,7 @@ public class WorkerApi extends BaseApi {
             System.out.println("Request was successful.");
         System.out.println("Response content type: " + response.getContentType());
         ResponseBody responseBody = response.getBody();
+        System.out.println("Response code: " + response.getStatusCode());
         System.out.println("Response body: ");
         responseBody.prettyPrint();
         // verify api/workers/get/{id} response is success
@@ -97,6 +101,7 @@ public class WorkerApi extends BaseApi {
         Response response = request.given()
                 .body(requestBody.toString())
                 .get("api/workers/getAll");
+        System.out.println("Response code: " + response.getStatusCode());
         if (response.getStatusCode() == 200)
             System.out.println("Request was successful.");
         System.out.println("Response content type: " + response.getContentType());
