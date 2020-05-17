@@ -17,7 +17,6 @@ public class Role {
     private String name;
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
             mappedBy = "role"
     )
     private List<RoleGoal> roleGoals;

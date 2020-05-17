@@ -6,7 +6,6 @@ import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
-import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +53,11 @@ public class LearningDayService {
     public void updateLearningDay(LearningDay learningDay, Long learningDayId) {
         learningDay.setId(learningDayId);
         learningDayRepository.save(learningDay);
+    }
+
+    public LearningDay getLearningDayById(Long id)
+    {
+        return learningDayRepository.getOne(id);
     }
 
     public void deleteLearningDay(Long id) {
