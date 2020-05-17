@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Service.Model.LearningDayDTO;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.LearningDayService;
+import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +21,9 @@ public class LearningDayController {
 
     @Autowired
     private WorkerService workerService;
+
+    @Autowired
+    private TopicService topicService;
 
     @GetMapping("/get/{workerId}")
     public List<LearningDay> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
@@ -44,6 +48,7 @@ public class LearningDayController {
         LearningDay learningDay = new LearningDay();
         BeanUtils.copyProperties(learningDayDto, learningDay);
         workerService.getWorker(learningDayDto.getAssignee().getId()).ifPresent(learningDay::setAssignee);
+        topicService.getTopic(learningDayDto.getTopic()).ifPresent(learningDay::setTopic);
         learningDayService.createLearningDay(learningDay);
     }
 
@@ -52,6 +57,7 @@ public class LearningDayController {
         LearningDay learningDay = new LearningDay();
         PropertyUtils.customCopyProperties(learningDayDto, learningDay);
         workerService.getWorker(learningDayDto.getAssignee().getId()).ifPresent(learningDay::setAssignee);
+        topicService.getTopic(learningDayDto.getTopic()).ifPresent(learningDay::setTopic);
         learningDayService.updateLearningDay(learningDay, id);
     }
     @DeleteMapping("/delete/{id}")

@@ -28,6 +28,9 @@ public class LearningDay {
     @ManyToOne(cascade = CascadeType.ALL)
     private Worker assignee;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Topic topic;
+
     // "would be nice to have" functionality
     // will have to be implemented with the help of a separate entity
     // private int repeatingPeriod;

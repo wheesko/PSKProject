@@ -1,8 +1,10 @@
 package com.VU.PSKProject.Service;
 
+import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Model.ReturnWorkerDTO;
 import com.VU.PSKProject.Service.Model.WorkerDTO;
@@ -12,18 +14,16 @@ import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class WorkerService {
 
     @Autowired
     private WorkerRepository workerRepository;
+    @Autowired
+    private LearningDayRepository learningDayRepository;
 
     @Autowired
     private UserService userService;
@@ -61,4 +61,7 @@ public class WorkerService {
     public List<Worker> findByWorkingTeamId(Long id) {
         return workerRepository.findByWorkingTeamId(id);
     }
+
+    public List<Worker> getWorkersByTopic(Long id) { return workerRepository.getWorkersByTopicId(id);
+   }
 }

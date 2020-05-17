@@ -15,4 +15,5 @@ public class LearningDayDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Vilnius")
     private Timestamp dateTimeAt;
     private LearningDayAssigneeDTO assignee;
+    private Long topic;
 }
