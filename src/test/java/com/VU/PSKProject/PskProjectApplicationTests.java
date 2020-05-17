@@ -3,7 +3,7 @@ package com.VU.PSKProject;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
-import com.VU.PSKProject.Service.Model.LearningDayDTO;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -45,7 +45,7 @@ class PskProjectApplicationTests {
 		Assert.assertEquals(learningDay.getDateTimeAt(), learningDayDTO.getDateTimeAt());
 		Assert.assertEquals(learningDay.getId(), learningDayDTO.getId());
 		Assert.assertEquals(learningDay.getComment(), learningDayDTO.getComment());
-		Assert.assertEquals(learningDay.getAssignee().getId(), learningDayDTO.getAssignee().getId());
+		Assert.assertEquals(learningDay.getAssignee().getId(), learningDayDTO.getAssignee());
 		Assert.assertEquals(learningDay.getName(), learningDayDTO.getName());
 	}
 

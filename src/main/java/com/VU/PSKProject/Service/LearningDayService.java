@@ -5,7 +5,8 @@ import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
-import com.VU.PSKProject.Service.Model.LearningDayDTO;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ public class LearningDayService {
 
     @Autowired
     private LearningDayMapper learningDayMapper;
-
 
     public List<LearningDay> getAllLearningDaysByWorkerId(Long workerId) {
         return learningDayRepository.findAllByAssigneeId(workerId);

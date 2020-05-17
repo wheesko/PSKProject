@@ -23,8 +23,10 @@ public class PskProjectApplication {
 	public ApplicationRunner initializer(WorkerRepository workerRepository, TopicRepository topicRepository,
 										 RoleRepository roleRepository, RoleGoalRepository roleGoalRepository,
 										 TeamGoalRepository teamGoalRepository, TeamRepository teamRepository,
-										 UserRepository userRepository, WorkerGoalRepository workerGoalRepository) {
+										 UserRepository userRepository, WorkerGoalRepository workerGoalRepository,
+										 LearningDayRepository learningDayRepository) {
 		//TODO: Implement initial data generation here
+		learningDayRepository.deleteAll();
 		workerGoalRepository.deleteAll();
 		workerRepository.deleteAll();
 		topicRepository.deleteAll();
@@ -33,6 +35,7 @@ public class PskProjectApplication {
 		teamGoalRepository.deleteAll();
 		userRepository.deleteAll(); //don
 		teamRepository.deleteAll(); // don
+
 
 		ArrayList<User> users = new ArrayList<User>();
 		users.add(new User(

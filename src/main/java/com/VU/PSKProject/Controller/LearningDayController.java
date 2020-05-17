@@ -1,14 +1,16 @@
 package com.VU.PSKProject.Controller;
 
-import com.VU.PSKProject.Service.Model.LearningDayDTO;
+import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.LearningDayService;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.WorkerService;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -21,13 +23,18 @@ public class LearningDayController {
     @Autowired
     private WorkerService workerService;
 
+    @Autowired
+    private LearningDayMapper learningDayMapper;
+
     @GetMapping("/get/{workerId}")
-    public List<LearningDay> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
-        return learningDayService.getAllLearningDaysByWorkerId(workerId);
+    public List<LearningDayToReturnDTO> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
+        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
+        return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
     @GetMapping("/getByManagerId/{managerId}")
-    public List<LearningDay> getAllLearningEventsByManagerId(@PathVariable Long managerId) {
-        return learningDayService.getAllLearningDaysByManagerId(managerId);
+    public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(@PathVariable Long managerId) {
+        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(managerId);
+        return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
     @GetMapping("/get/{year}/{month}/{workerId}")
@@ -41,17 +48,15 @@ public class LearningDayController {
 
     @PostMapping("/create")
     public void createLearningEventForWorker(@RequestBody LearningDayDTO learningDayDto) {
-        LearningDay learningDay = new LearningDay();
-        BeanUtils.copyProperties(learningDayDto, learningDay);
-        workerService.getWorker(learningDayDto.getAssignee().getId()).ifPresent(learningDay::setAssignee);
+        LearningDay learningDay = learningDayMapper.fromDTO(learningDayDto);
+        workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
         learningDayService.createLearningDay(learningDay);
     }
 
     @PutMapping("/update/{id}")
     public void updateLearningEvent(@RequestBody LearningDayDTO learningDayDto, @PathVariable Long id) {
-        LearningDay learningDay = new LearningDay();
-        PropertyUtils.customCopyProperties(learningDayDto, learningDay);
-        workerService.getWorker(learningDayDto.getAssignee().getId()).ifPresent(learningDay::setAssignee);
+        LearningDay learningDay = learningDayMapper.fromDTO(learningDayDto);
+        workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
         learningDayService.updateLearningDay(learningDay, id);
     }
     @DeleteMapping("/delete/{id}")
