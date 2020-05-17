@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
 }
+
 .events .ant-badge-status {
     overflow: hidden;
     white-space: nowrap;
@@ -10,13 +11,20 @@
     text-overflow: ellipsis;
     font-size: 12px;
 }
+
 .notes-month {
     text-align: center;
     font-size: 28px;
 }
+
 .notes-month section {
     font-size: 28px;
 }
+
 .myCalendarTitle {
     text-align: start;
+}
+
+.events-cell-wrapper {
+    height: 100%;
 }

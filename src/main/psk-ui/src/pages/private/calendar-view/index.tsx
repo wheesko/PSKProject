@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Calendar, Modal, Button, Typography, Tag, Divider } from 'antd';
-import * as moment from 'moment';
+import { Calendar, Modal, Button, Typography, Tag, Divider, Spin } from 'antd';
+import moment from 'moment';
 
 import { DAY_EVENT_LIST_EMPTY, MY_CALENDAR } from '../../../constants/otherConstants';
 import { EventForm } from './EventForm';
 import { LearningEvent } from '../../../models/learningEvent';
-import { learningEvents } from '../../../tools/mockData';
+import calendarService from '../../../api/calendar-service';
 
 import './CalendarStyles.css';
 
@@ -21,6 +21,15 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	);
 	// status type is our example entity
 	const [modalListData, setModalListData] = useState<LearningEvent[]>([]);
+	const [calendarListData, setCalendarListData] = useState<LearningEvent[]>([]);
+	const [isLoading, setLoading] = useState<boolean>(false);
+
+	//component did mount
+	useEffect(() => {
+		loadData(moment()).then(learningEvents =>
+			setCalendarListData(learningEvents)
+		);
+	}, []);
 
 	function handleOnOk(): void {
 		setModalVisibility(false);
@@ -33,37 +42,68 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	}
 
 	function handleSelect(date?: moment.Moment | undefined): void {
-		console.log(date);
 		setSelectedDate(date);
 		setModalVisibility(true);
 		if (date !== undefined) setModalListData(getListData(date));
 	}
 	// TODO: move DateCellRenderer into its own module when data fetching is implemented
 	function DateCellRenderer(value: moment.Moment): React.ReactNode {
-		const listData = getListData(value);
-
+		//TODO: Rethink colors of calendar cells
 		return (
-			<ul className="events" onClick={() => {
-				console.log(value);
-			}}>
-				{listData.map(item => (
-					<li key={item.id}>
-						<Tag color={item.learningTopic!.color}>{item.name}</Tag>
-					</li>
-				))}
-			</ul>
+			<div className="events-cell-wrapper" onClick={() => handleSelect(value)}>
+				<ul className="events">
+					{getListData(value).map(item => (
+						<li key={item.id}>
+							<Tag color={"red"}>{item.name}</Tag>
+						</li>
+					))}
+				</ul>
+			</div>
 		);
+	}
+
+	function getListData(value: moment.Moment): LearningEvent[] {
+		return calendarListData.filter(learningEvent =>
+			moment(value.toDate()).isSame(learningEvent.dateTimeAt, 'date'));
+	}
+
+	function loadData(value: moment.Moment): Promise<LearningEvent[]> {
+		// fetch by year, month, day (or any arguments based on backend requirements)
+		// console.log(value.year(), value.month(), value.date())
+
+		// example data:
+		setLoading(true);
+		return calendarService.getMonthLearningDays({
+			selectedYear: value.format('Y'),
+			selectedMonth: value.format('M'),
+			workerId: 1 //TODO: use workerID from redux
+		}).then((response) => {
+			setLoading(false);
+			return response;
+		}).catch(() => {
+			//TODO: Notify if failed to get learning events
+			setLoading(false);
+			return [];
+		});
+	}
+
+	function getMonthEvents(value: moment.Moment) {
+		loadData(value).then((learningEvents) => {
+			setCalendarListData(learningEvents);
+		});
 	}
 
 	// TODO: This return is extremely long - refactor it to smaller components or render functions
 	return (
 		<div>
 			<Title level={2} className={'myCalendarTitle'}>{MY_CALENDAR}</Title>
-			<Calendar
-				dateCellRender={DateCellRenderer}
-				monthCellRender={renderMonthCell}
-				onSelect={handleSelect}
-			/>
+			<Spin spinning={isLoading} size="large">
+				<Calendar
+					dateCellRender={DateCellRenderer}
+					monthCellRender={renderMonthCell}
+					onChange={getMonthEvents}
+				/>
+			</Spin>
 			<Modal
 				title={
 					selectedDate === undefined
@@ -87,7 +127,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 							<Divider/>
 						</>
 					))}
-				{selectedDate === undefined ? null : getListData(selectedDate).length === 0 ? (
+				{selectedDate === undefined ? null : calendarListData.length === 0 ? (
 					<p>{DAY_EVENT_LIST_EMPTY}</p>
 				) : null}
 				{isFormVisible ? null : (
@@ -106,29 +146,6 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	);
 };
 // this method will be changed into a get request
-
-function getListData(value: moment.Moment): LearningEvent[] {
-	// fetch by year, month, day (or any arguments based on backend requirements)
-	// console.log(value.year(), value.month(), value.date())
-
-	// example data:
-	let listData: LearningEvent[] = [];
-
-
-	switch (value.date()) {
-	case 8:
-		listData = learningEvents.slice(0, learningEvents.length);
-		break;
-	case 10:
-		listData = learningEvents.slice(0, 2);
-		break;
-	case 15:
-		listData = learningEvents.slice(0, 1);
-		break;
-	default:
-	}
-	return listData;
-}
 
 function getMonthData (value: moment.Moment): number | null {
 	if (value.month() === 8) {

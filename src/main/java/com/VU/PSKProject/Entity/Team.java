@@ -17,6 +17,13 @@ public class Team {
 
     }
 
+    public Team(String name,  Worker manager, List<Worker> workers, List<TeamGoal> goals) {
+        this.name = name;
+        this.manager = manager;
+        this.workers = workers;
+        this.goals = goals;
+    }
+
     @Id
     @GeneratedValue
     private Long id;

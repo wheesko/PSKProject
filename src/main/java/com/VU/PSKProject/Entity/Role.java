@@ -24,4 +24,9 @@ public class Role {
 
     public Role(){
     }
+
+    public Role(String name, List<RoleGoal> roleGoals){
+        this.name = name;
+        this.roleGoals = roleGoals;
+    }
 }
