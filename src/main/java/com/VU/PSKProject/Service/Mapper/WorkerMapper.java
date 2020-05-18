@@ -1,7 +1,8 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Service.Model.WorkerDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,10 @@ public class WorkerMapper {
     public Worker fromDTO(WorkerDTO workerDTO)
     {
         return modelMapper.map(workerDTO, Worker.class);
+    }
+
+    public Worker fromDTO(WorkerToCreateDTO workerToCreateDTO){
+        return modelMapper.map(workerToCreateDTO, Worker.class);
     }
 
     public WorkerDTO toDto(Worker worker){

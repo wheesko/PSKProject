@@ -3,7 +3,7 @@ package com.VU.PSKProject;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
-import com.VU.PSKProject.Service.Model.LearningDayDTO;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

@@ -1,18 +1,15 @@
 package com.VU.PSKProject.Controller;
 
-import com.VU.PSKProject.Entity.LearningDay;
+import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
-import com.VU.PSKProject.Service.Model.ReturnWorkerDTO;
-import com.VU.PSKProject.Service.Model.WorkerDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import lombok.var;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +26,9 @@ public class WorkerController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TeamService teamService;
 
     @Autowired
     private WorkerMapper workerMapper;
@@ -62,11 +62,14 @@ public class WorkerController {
     }
 
     @PostMapping("/create")
-    public void createWorker(@RequestBody WorkerDTO workerDto) {
+    public ResponseEntity<String> createWorker(@RequestBody WorkerToCreateDTO workerDto) {
         Worker worker = workerMapper.fromDTO(workerDto);
+        ResponseEntity<String> response = workerService.validateWorkerData(workerDto);
         User u = userService.createUserFromEmail(workerDto.getEmail());
         worker.setUser(u);
+        teamService.getTeamByManager(workerDto.getManagerId()).ifPresent(worker::setWorkingTeam);
         workerService.createWorker(worker);
+        return response;
     }
 
     @PutMapping("/update/{id}")

@@ -1,4 +1,4 @@
-package com.VU.PSKProject.Service.Model;
+package com.VU.PSKProject.Service.Model.Worker;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,5 +8,5 @@ import lombok.Setter;
 public class WorkerToCreateDTO {
     private Long managerId;
     private String email;
-    private Long teamId;
+    private Long id;
 }

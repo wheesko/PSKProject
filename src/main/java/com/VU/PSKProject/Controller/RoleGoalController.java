@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.RoleGoal;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
 import com.VU.PSKProject.Service.RoleGoalService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +30,14 @@ public class RoleGoalController {
     @PostMapping("/create")
     public void createRoleGoal(@RequestBody RoleGoalDTO roleGoalDto){
         RoleGoal roleGoal = new RoleGoal();
-        BeanUtils.copyProperties(roleGoalDto, roleGoal);
+        PropertyUtils.customCopyProperties(roleGoalDto, roleGoal);
         roleGoalService.createRoleGoal(roleGoal);
     }
 
     @PutMapping("/update/{id}")
     public void updateRoleGoal(@RequestBody RoleGoalDTO roleGoalDto, @PathVariable Long id){
         RoleGoal roleGoal = new RoleGoal();
-        BeanUtils.copyProperties(roleGoalDto, roleGoal);
+        PropertyUtils.customCopyProperties(roleGoalDto, roleGoal);
         roleGoalService.updateRoleGoal(id, roleGoal);
     }
     @DeleteMapping("/delete/{id}")
