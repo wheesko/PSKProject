@@ -2,8 +2,8 @@ package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
-import com.VU.PSKProject.Service.Model.Team.TeamDTO;
-import com.VU.PSKProject.Service.Model.Team.TeamDTOFull;
+import com.VU.PSKProject.Service.Model.Team.TeamToUpdateDTO;
+import com.VU.PSKProject.Service.Model.Team.TeamToGetDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToCreateDTO;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.WorkerService;
@@ -30,21 +30,21 @@ public class TeamController {
     private WorkerService workerService;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<TeamDTOFull>> getTeams(){
+    public ResponseEntity<List<TeamToGetDTO>> getTeams(){
         List<Team> teams = teamService.getAllTeams();
-        List<TeamDTOFull> teamDTOS = new ArrayList<>();
+        List<TeamToGetDTO> teamDTOS = new ArrayList<>();
         for (Team t: teams) {
-            TeamDTOFull teamDTO = teamMapper.toDto(t);
+            TeamToGetDTO teamDTO = teamMapper.toDto(t);
             teamDTOS.add(teamDTO);
         }
         return ResponseEntity.ok(teamDTOS);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<TeamDTOFull> getTeam(@PathVariable Long id){
+    public ResponseEntity<TeamToGetDTO> getTeam(@PathVariable Long id){
         Optional<Team> team = teamService.getTeam(id);
         if(team.isPresent()){
-            TeamDTOFull teamDTO = teamMapper.toDto(team.get());
+            TeamToGetDTO teamDTO = teamMapper.toDto(team.get());
             return ResponseEntity.ok(teamDTO);
         }else
         {
@@ -65,10 +65,10 @@ public class TeamController {
     }
 
     @PutMapping("/update/{id}")
-    public void updateTeam(@RequestBody TeamDTO teamDto, @PathVariable Long id){
+    public void updateTeam(@RequestBody TeamToUpdateDTO teamToUpdateDto, @PathVariable Long id){
         teamService.getTeam(id).ifPresent(w ->
         {
-            PropertyUtils.customCopyProperties(teamDto, w);
+            PropertyUtils.customCopyProperties(teamToUpdateDto, w);
             teamService.updateTeam(id, w);
         });
     }

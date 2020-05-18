@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.List;
 @Getter
 @Setter
-public class TeamDTOFull {
+public class TeamToGetDTO {
     private Long id;
     private String name;
     @JsonProperty("TeamLead")

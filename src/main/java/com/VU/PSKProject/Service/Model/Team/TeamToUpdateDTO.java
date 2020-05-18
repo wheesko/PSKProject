@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TeamDTO {
+public class TeamToUpdateDTO {
     private Long id;
     private String name;
     private WorkerDTOStripped teamLead;
