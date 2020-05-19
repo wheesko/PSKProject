@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -47,17 +48,9 @@ public class TeamService {
     }
 
     public List<Team> getTeamsByTopicId(Long id){
-        List <Team> teams = new ArrayList<>();
-        List <Worker> workers = workerService.getWorkersByTopic(id);
-        for (Worker worker: workers) {
-            if (!teams.contains(worker.getWorkingTeam())){
-                teams.add(worker.getWorkingTeam());
-            }
-            // NF-7: Parodyti, kokios komandos mokesi tam tikra tema. does that include manager? if u think yes, then uncomment dis
-            //if (!teams.contains(worker.getManagedTeam())){
-           //     teams.add(worker.getManagedTeam());
-           // }
-        }
+        List <Team> teams = workerService.getWorkersByTopic(id).stream().map
+                (w -> w.getWorkingTeam()).distinct().collect(Collectors.toList());
+        // do we need to get managedTeam as well?
         return teams;
     }
 }
