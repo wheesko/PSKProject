@@ -13,9 +13,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/teams")
@@ -32,21 +32,13 @@ public class TeamController {
     @GetMapping("/getAll")
     public ResponseEntity<List<TeamDTOFull>> getTeams(){
         List<Team> teams = teamService.getAllTeams();
-        List<TeamDTOFull> teamDTOS = new ArrayList<>();
-        for (Team t: teams) {
-            TeamDTOFull teamDTO = teamMapper.toDto(t);
-            teamDTOS.add(teamDTO);
-        }
+        List<TeamDTOFull> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
     @GetMapping("/getByTopic/{id}")
     public ResponseEntity<List<TeamDTOFull>> getTeamsByTopic(@PathVariable Long id){
         List<Team> teams = teamService.getTeamsByTopicId(id);
-        List<TeamDTOFull> teamDTOS = new ArrayList<>();
-        for (Team t: teams) {
-            TeamDTOFull teamDTO = teamMapper.toDto(t);
-            teamDTOS.add(teamDTO);
-        }
+        List<TeamDTOFull> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
 
