@@ -5,6 +5,7 @@ import com.VU.PSKProject.Service.Model.TeamGoalDTO;
 import com.VU.PSKProject.Service.TeamGoalService;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.TopicService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class TeamGoalController {
     @PostMapping("/create")
     public void createTeamGoal(@RequestBody TeamGoalDTO teamGoalDto){
         TeamGoal teamGoal = new TeamGoal();
-        BeanUtils.copyProperties(teamGoalDto, teamGoal);
+        PropertyUtils.customCopyProperties(teamGoalDto, teamGoal);
         teamService.getTeam(teamGoalDto.getTeam()).ifPresent(teamGoal::setTeam);
         topicService.getTopic(teamGoalDto.getTopic()).ifPresent(teamGoal::setTopic);
         teamGoalService.createTeamGoal(teamGoal);
@@ -44,7 +45,7 @@ public class TeamGoalController {
     @PutMapping("/update/{id}")
     public void updateTeamGoal(@RequestBody TeamGoalDTO teamGoalDto, @PathVariable Long id){
         TeamGoal teamGoal = new TeamGoal();
-        BeanUtils.copyProperties(teamGoalDto, teamGoal);
+        PropertyUtils.customCopyProperties(teamGoalDto, teamGoal);
         teamGoalService.updateTeamGoal(id, teamGoal);
     }
     @DeleteMapping("/delete/{id}")

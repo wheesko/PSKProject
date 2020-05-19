@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.Role;
 import com.VU.PSKProject.Service.Model.RoleDTO;
 import com.VU.PSKProject.Service.RoleService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +30,14 @@ public class RoleController {
     @PostMapping("/create")
     public void createRole(@RequestBody RoleDTO roleDto) {
         Role role = new Role();
-        BeanUtils.copyProperties(roleDto, role);
+        PropertyUtils.customCopyProperties(roleDto, role);
         roleService.createRole(role);
     }
 
     @PutMapping("/update/{id}")
     public void updateRole(@RequestBody RoleDTO roleDto, @PathVariable Long id){
         Role role = new Role();
-        BeanUtils.copyProperties(roleDto, role);
+        PropertyUtils.customCopyProperties(roleDto, role);
         roleService.updateRole(id, role);
     }
 
