@@ -15,6 +15,6 @@ public class ReturnWorkerDTO {
     private String role;
     private String email;
     private List<Long> goals; // let's stick with goal ids for now
-    private int consecutiveLearningDayLimit;
-    private int quarterLearningDayLimit;
+    private Integer consecutiveLearningDayLimit;
+    private Integer quarterLearningDayLimit;
 }

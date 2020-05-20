@@ -20,8 +20,8 @@ public class WorkerDTO {
     private WorkerManagedTeamDTO managedTeam;
     private WorkerWorkingTeamDTO workingTeam;
 
-    private int quarterLearningDayLimit;
-    private int consecutiveLearningDayLimit;
+    private Integer quarterLearningDayLimit;
+    private Integer consecutiveLearningDayLimit;
 
     //private List<LearningDayDTO> learningDays;
     private List<WorkerGoalDTO> goals;
