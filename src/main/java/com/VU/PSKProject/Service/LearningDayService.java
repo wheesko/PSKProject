@@ -105,6 +105,10 @@ public class LearningDayService {
         }
         int cons = countConsecutiveDays(localDates, learningDay.getDateTimeAt().toLocalDateTime());
 
+        if(cons == -1)
+            return ResponseEntity.badRequest().body("This day is already taken");
+
+
         if(cons > worker.getConsecutiveLearningDayLimit())
             return ResponseEntity.badRequest().body("Too many consequent learning days!");
 
@@ -125,6 +129,8 @@ public class LearningDayService {
         LocalDateTime prev = dateList.get(0);
         for (int i = 1; i < dateList.size(); i++) {
             LocalDateTime next = dateList.get(i);
+            if(prev.equals(next))
+                return -1;
             if (prev.plusDays(1).equals(next)) {
                 count++;
             }

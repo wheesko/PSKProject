@@ -73,19 +73,19 @@ public class WorkerController {
     }
 
     @PutMapping("/update/{id}")
-    public void updateWorker(@RequestBody WorkerDTO workerDto, @PathVariable Long id) {
-        Worker worker = null;
-        if(workerService.getWorker(id).isPresent()){
-            //doing this way because the best language can't make lambdas work with non-finals
-            worker = workerService.getWorker(id).get();
+    public ResponseEntity<String> updateWorker(@RequestBody WorkerDTO workerDto, @PathVariable Long id) {
+        Optional<Worker> worker = workerService.getWorker(id);
+        if(worker.isPresent())
+        {
+            PropertyUtils.customCopyProperties(workerDto, worker.get());
+            workerService.updateWorker(id, worker.get());
+            return ResponseEntity.ok("Worker updated successfully");
         }
-        //return some stuff here
-        if(worker == null)
-            return;
-
-        PropertyUtils.customCopyProperties(workerDto, worker);
-
-        workerService.updateWorker(id, worker);
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "Worker with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
     }
 
     // cascading needs to be fixed
