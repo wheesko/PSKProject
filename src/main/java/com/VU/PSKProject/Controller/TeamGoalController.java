@@ -31,12 +31,7 @@ public class TeamGoalController {
         List<TeamGoal> teamGoals = teamGoalService.getAllTeamGoals();
         List<TeamGoalDTO> teamGoalDTOS = new ArrayList<>();
         for (TeamGoal teamGoal : teamGoals) {
-            TeamGoalDTO teamGoalDTO = new TeamGoalDTO();
-
-            teamGoalDTO.setId(teamGoal.getId());
-            teamGoalDTO.setTopic(teamGoal.getTopic().getId());
-            teamGoalDTO.setTeam(teamGoal.getTeam().getId());
-
+            TeamGoalDTO teamGoalDTO = new TeamGoalDTO(teamGoal.getId(),teamGoal.getTeam().getId(), teamGoal.getTopic().getId());
             teamGoalDTOS.add(teamGoalDTO);
         }
         return ResponseEntity.ok(teamGoalDTOS);
@@ -45,11 +40,7 @@ public class TeamGoalController {
     public ResponseEntity<TeamGoalDTO> getTeamGoal(@PathVariable Long id){
         Optional<TeamGoal> teamGoal = teamGoalService.getTeamGoal(id);
         if(teamGoal.isPresent()){
-            TeamGoalDTO teamGoalDTO = new TeamGoalDTO();
-
-            teamGoalDTO.setId(teamGoal.get().getId());
-            teamGoalDTO.setTopic(teamGoal.get().getTopic().getId());
-            teamGoalDTO.setTeam(teamGoal.get().getTeam().getId());
+            TeamGoalDTO teamGoalDTO = new TeamGoalDTO(teamGoal.get().getId(),teamGoal.get().getTeam().getId(), teamGoal.get().getTopic().getId());
             return ResponseEntity.ok(teamGoalDTO);
         }
         else {

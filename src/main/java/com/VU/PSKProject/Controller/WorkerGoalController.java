@@ -30,12 +30,7 @@ public class  WorkerGoalController {
         List<WorkerGoal> workerGoals = workerGoalService.getAllWorkerGoals();
         List<WorkerGoalDTO> workerGoalDTOS = new ArrayList<>();
         for (WorkerGoal workerGoal : workerGoals) {
-            WorkerGoalDTO workerGoalDTO = new WorkerGoalDTO();
-
-            workerGoalDTO.setId(workerGoal.getId());
-            workerGoalDTO.setTopic(workerGoal.getTopic().getId());
-            workerGoalDTO.setWorker(workerGoal.getWorker().getId());
-
+            WorkerGoalDTO workerGoalDTO = new WorkerGoalDTO(workerGoal.getId(), workerGoal.getWorker().getId(), workerGoal.getTopic().getId() );
             workerGoalDTOS.add(workerGoalDTO);
         }
         return ResponseEntity.ok(workerGoalDTOS);
@@ -45,11 +40,7 @@ public class  WorkerGoalController {
     public ResponseEntity<WorkerGoalDTO> getWorkerGoal(@PathVariable Long id){
         Optional<WorkerGoal> workerGoal = workerGoalService.getWorkerGoal(id);
         if(workerGoal.isPresent()){
-            WorkerGoalDTO workerGoalDTO = new WorkerGoalDTO();
-
-            workerGoalDTO.setId(workerGoal.get().getId());
-            workerGoalDTO.setTopic(workerGoal.get().getTopic().getId());
-            workerGoalDTO.setWorker(workerGoal.get().getWorker().getId());
+            WorkerGoalDTO workerGoalDTO = new WorkerGoalDTO(workerGoal.get().getId(), workerGoal.get().getWorker().getId(), workerGoal.get().getTopic().getId() );
             return ResponseEntity.ok(workerGoalDTO);
         }
         else {

@@ -33,12 +33,7 @@ public class RoleGoalController {
         List<RoleGoal> roleGoals = roleGoalService.getAllRoleGoals();
         List<RoleGoalDTO> roleGoalDTOS = new ArrayList<>();
         for (RoleGoal roleGoal : roleGoals) {
-            RoleGoalDTO roleGoalDTO = new RoleGoalDTO();
-
-            roleGoalDTO.setId(roleGoal.getId());
-            roleGoalDTO.setTopic(roleGoal.getTopic().getId());
-            roleGoalDTO.setRole(roleGoal.getRole().getId());
-
+            RoleGoalDTO roleGoalDTO = new RoleGoalDTO(roleGoal.getId(), roleGoal.getRole().getId(), roleGoal.getTopic().getId());
             roleGoalDTOS.add(roleGoalDTO);
         }
         return ResponseEntity.ok(roleGoalDTOS);
@@ -48,11 +43,7 @@ public class RoleGoalController {
     public ResponseEntity<RoleGoalDTO> getRoleGoal(@PathVariable Long id){
         Optional<RoleGoal> roleGoal =roleGoalService.getRoleGoal(id);
         if(roleGoal.isPresent()){
-            RoleGoalDTO roleGoalDTO = new RoleGoalDTO();
-
-            roleGoalDTO.setId(roleGoal.get().getId());
-            roleGoalDTO.setTopic(roleGoal.get().getTopic().getId());
-            roleGoalDTO.setRole(roleGoal.get().getRole().getId());
+            RoleGoalDTO roleGoalDTO = new RoleGoalDTO(roleGoal.get().getId(), roleGoal.get().getRole().getId(), roleGoal.get().getTopic().getId());
             return ResponseEntity.ok(roleGoalDTO);
         }
         else {
