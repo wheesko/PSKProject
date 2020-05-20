@@ -1,12 +1,15 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.RoleGoal;
+import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
+import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Service.RoleGoalService;
 import com.VU.PSKProject.Service.RoleService;
 import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +45,21 @@ public class RoleGoalController {
     }
 
     @GetMapping("/get/{id}")
-    public Optional<RoleGoal> getRoleGoal(@PathVariable Long id){
-        return roleGoalService.getRoleGoal(id);
+    public ResponseEntity<RoleGoalDTO> getRoleGoal(@PathVariable Long id){
+        Optional<RoleGoal> roleGoal =roleGoalService.getRoleGoal(id);
+        if(roleGoal.isPresent()){
+            RoleGoalDTO roleGoalDTO = new RoleGoalDTO();
+
+            roleGoalDTO.setId(roleGoal.get().getId());
+            roleGoalDTO.setTopic(roleGoal.get().getTopic().getId());
+            roleGoalDTO.setRole(roleGoal.get().getRole().getId());
+            return ResponseEntity.ok(roleGoalDTO);
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "RoleGoal with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
     }
 
     @PostMapping("/create")

@@ -7,6 +7,7 @@ import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,9 +42,21 @@ public class TeamGoalController {
         return ResponseEntity.ok(teamGoalDTOS);
     }
     @GetMapping("/get/{id}")
-    public Optional<TeamGoal> getTeamGoal(@PathVariable Long id){
+    public ResponseEntity<TeamGoalDTO> getTeamGoal(@PathVariable Long id){
+        Optional<TeamGoal> teamGoal = teamGoalService.getTeamGoal(id);
+        if(teamGoal.isPresent()){
+            TeamGoalDTO teamGoalDTO = new TeamGoalDTO();
 
-        return teamGoalService.getTeamGoal(id);
+            teamGoalDTO.setId(teamGoal.get().getId());
+            teamGoalDTO.setTopic(teamGoal.get().getTopic().getId());
+            teamGoalDTO.setTeam(teamGoal.get().getTeam().getId());
+            return ResponseEntity.ok(teamGoalDTO);
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "TeamGoal with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
     }
 
     @PostMapping("/create")

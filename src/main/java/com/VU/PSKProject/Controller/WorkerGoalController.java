@@ -7,6 +7,7 @@ import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,8 +42,21 @@ public class  WorkerGoalController {
     }
 
     @GetMapping("/get/{id}")
-    public Optional<WorkerGoal> getWorkerGoal(@PathVariable Long id){
-        return workerGoalService.getWorkerGoal(id);
+    public ResponseEntity<WorkerGoalDTO> getWorkerGoal(@PathVariable Long id){
+        Optional<WorkerGoal> workerGoal = workerGoalService.getWorkerGoal(id);
+        if(workerGoal.isPresent()){
+            WorkerGoalDTO workerGoalDTO = new WorkerGoalDTO();
+
+            workerGoalDTO.setId(workerGoal.get().getId());
+            workerGoalDTO.setTopic(workerGoal.get().getTopic().getId());
+            workerGoalDTO.setWorker(workerGoal.get().getWorker().getId());
+            return ResponseEntity.ok(workerGoalDTO);
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "WorkerGoal with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
     }
 
     @PostMapping("/create")
