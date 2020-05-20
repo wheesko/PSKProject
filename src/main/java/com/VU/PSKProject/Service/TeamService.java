@@ -48,9 +48,16 @@ public class TeamService {
     }
 
     public List<Team> getTeamsByTopicId(Long id){
-        List <Team> teams = workerService.getWorkersByTopic(id).stream().map
-                (w -> w.getWorkingTeam()).distinct().collect(Collectors.toList());
-        // do we need to get managedTeam as well?
+        List <Team> teams = new ArrayList<>();
+        List <Worker> workers = workerService.getWorkersByTopic(id);
+        for (Worker worker: workers) {
+            if (!teams.contains(worker.getWorkingTeam())){
+                teams.add(worker.getWorkingTeam());
+            }
+            if (!teams.contains(worker.getManagedTeam())){
+                 teams.add(worker.getManagedTeam());
+             }
+        }
         return teams;
     }
 }
