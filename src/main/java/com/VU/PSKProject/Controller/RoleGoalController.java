@@ -6,10 +6,11 @@ import com.VU.PSKProject.Service.RoleGoalService;
 import com.VU.PSKProject.Service.RoleService;
 import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +25,20 @@ public class RoleGoalController {
     private TopicService topicService;
 
     @GetMapping("/getAll")
-    public List<RoleGoal> getRoleGoals(){
-        return roleGoalService.getAllRoleGoals();
+    public ResponseEntity<List<RoleGoalDTO>> getRoleGoals(){
+
+        List<RoleGoal> roleGoals = roleGoalService.getAllRoleGoals();
+        List<RoleGoalDTO> roleGoalDTOS = new ArrayList<>();
+        for (RoleGoal roleGoal : roleGoals) {
+            RoleGoalDTO roleGoalDTO = new RoleGoalDTO();
+
+            roleGoalDTO.setId(roleGoal.getId());
+            roleGoalDTO.setTopic(roleGoal.getTopic().getId());
+            roleGoalDTO.setRole(roleGoal.getRole().getId());
+
+            roleGoalDTOS.add(roleGoalDTO);
+        }
+        return ResponseEntity.ok(roleGoalDTOS);
     }
 
     @GetMapping("/get/{id}")

@@ -7,8 +7,10 @@ import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +25,19 @@ public class  WorkerGoalController {
     private TopicService topicService;
 
     @GetMapping("/getAll")
-    public List<WorkerGoal> getWorkerGoals(){
-        return workerGoalService.getAllWorkerGoals();
+    public ResponseEntity<List<WorkerGoalDTO>> getWorkerGoals(){
+        List<WorkerGoal> workerGoals = workerGoalService.getAllWorkerGoals();
+        List<WorkerGoalDTO> workerGoalDTOS = new ArrayList<>();
+        for (WorkerGoal workerGoal : workerGoals) {
+            WorkerGoalDTO workerGoalDTO = new WorkerGoalDTO();
+
+            workerGoalDTO.setId(workerGoal.getId());
+            workerGoalDTO.setTopic(workerGoal.getTopic().getId());
+            workerGoalDTO.setWorker(workerGoal.getWorker().getId());
+
+            workerGoalDTOS.add(workerGoalDTO);
+        }
+        return ResponseEntity.ok(workerGoalDTOS);
     }
 
     @GetMapping("/get/{id}")

@@ -6,10 +6,11 @@ import com.VU.PSKProject.Service.TeamGoalService;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +25,24 @@ public class TeamGoalController {
     private TopicService topicService;
 
     @GetMapping("/getAll")
-    public List<TeamGoal> getTeamGoals(){
-        return teamGoalService.getAllTeamGoals();
-    }
+    public ResponseEntity<List<TeamGoalDTO>> getTeamGoals(){
 
+        List<TeamGoal> teamGoals = teamGoalService.getAllTeamGoals();
+        List<TeamGoalDTO> teamGoalDTOS = new ArrayList<>();
+        for (TeamGoal teamGoal : teamGoals) {
+            TeamGoalDTO teamGoalDTO = new TeamGoalDTO();
+
+            teamGoalDTO.setId(teamGoal.getId());
+            teamGoalDTO.setTopic(teamGoal.getTopic().getId());
+            teamGoalDTO.setTeam(teamGoal.getTeam().getId());
+
+            teamGoalDTOS.add(teamGoalDTO);
+        }
+        return ResponseEntity.ok(teamGoalDTOS);
+    }
     @GetMapping("/get/{id}")
     public Optional<TeamGoal> getTeamGoal(@PathVariable Long id){
+
         return teamGoalService.getTeamGoal(id);
     }
 
