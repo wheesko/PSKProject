@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Entity(name = "learning_day")
 @Setter
 @Getter
-public class LearningDay {
+public class LearningDay implements Comparable<LearningDay> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +28,9 @@ public class LearningDay {
     @ManyToOne(cascade = CascadeType.ALL)
     private Worker assignee;
 
-    // "would be nice to have" functionality
-    // will have to be implemented with the help of a separate entity
-    // private int repeatingPeriod;
+    @Override
+    public int compareTo(LearningDay learningDay) {
+        return this.getDateTimeAt().compareTo(learningDay.dateTimeAt);
+    }
+
 }

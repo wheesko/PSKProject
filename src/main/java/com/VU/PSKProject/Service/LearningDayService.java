@@ -8,10 +8,15 @@ import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,5 +92,69 @@ public class LearningDayService {
         }
 
         return learningDayRepository.findAllByAssigneeIdIn(ids);
+    }
+
+    public ResponseEntity<String> checkWorkerAvailability(Worker worker, LearningDay learningDay)
+    {
+        List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
+        if(learningDays.size() < 2)
+            return ResponseEntity.ok("Learning days are in limit");
+        Collections.sort(learningDays);
+        List<LocalDateTime> localDates = new ArrayList<>();
+        for(LearningDay day: learningDays)
+        {
+            localDates.add(day.getDateTimeAt().toLocalDateTime());
+        }
+        int cons = countConsecutiveDays(localDates, learningDay.getDateTimeAt().toLocalDateTime());
+
+        if(cons > worker.getConsecutiveLearningDayLimit())
+            return ResponseEntity.badRequest().body("Too many consequent learning days!");
+
+        int quart = countQuarterDays(localDates, learningDay.getDateTimeAt().toLocalDateTime());
+
+        if(quart > worker.getQuarterLearningDayLimit())
+            return ResponseEntity.badRequest().body("Too many learning days in a quarter!");
+
+        return ResponseEntity.ok("Learning days are in limit");
+    }
+
+    private int countConsecutiveDays(List<LocalDateTime> dateList, LocalDateTime today)
+    {
+        dateList.add(today);
+
+        int count = 0;
+        LocalDateTime prev = dateList.get(0);
+        for (int i = 1; i < dateList.size(); i++) {
+            LocalDateTime next = dateList.get(i);
+            if (prev.plusDays(1).equals(next)) {
+                count++;
+            }
+            else
+            {
+                count = 0;
+            }
+            prev = next;
+        }
+
+        return count + 1;
+    }
+
+    private int countQuarterDays(List<LocalDateTime> dateTimeList, LocalDateTime today)
+    {
+        dateTimeList.add(today);
+
+        LocalDateTime firstDayOfQuarter = today.with(today.getMonth().firstMonthOfQuarter()).
+                with(TemporalAdjusters.firstDayOfMonth());
+
+        LocalDateTime lastDayOfQuarter = firstDayOfQuarter.plusMonths(2).with(TemporalAdjusters.lastDayOfMonth());
+
+        List<LocalDateTime> quarterDays = new ArrayList<>();
+
+        for(LocalDateTime day : dateTimeList)
+        {
+            if(firstDayOfQuarter.compareTo(day) * day.compareTo(lastDayOfQuarter) >= 0)
+                quarterDays.add(day);
+        }
+        return quarterDays.size()-1;
     }
 }

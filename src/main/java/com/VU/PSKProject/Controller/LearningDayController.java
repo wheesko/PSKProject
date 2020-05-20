@@ -8,12 +8,12 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api/learningDays")
@@ -49,10 +49,18 @@ public class LearningDayController {
     }
 
     @PostMapping("/create")
-    public void createLearningEventForWorker(@RequestBody LearningDayToCreateDTO learningDayDto) {
+    public ResponseEntity<String> createLearningEventForWorker(@RequestBody LearningDayToCreateDTO learningDayDto) {
         LearningDay learningDay = learningDayMapper.fromDTO(learningDayDto);
         workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
-        learningDayService.createLearningDay(learningDay);
+
+        ResponseEntity<String> resp = learningDayService.checkWorkerAvailability(learningDay.getAssignee(), learningDay);
+        if(resp.getStatusCode().is2xxSuccessful()) {
+            learningDayService.createLearningDay(learningDay);
+            return ResponseEntity.ok("Learning Day has been created successfully!");
+        }
+        else {
+            return resp;
+        }
     }
 
     @PutMapping("/update/{id}")
