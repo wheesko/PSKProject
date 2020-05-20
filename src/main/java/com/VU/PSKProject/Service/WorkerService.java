@@ -56,4 +56,7 @@ public class WorkerService {
 
     public List<Worker> getWorkersByTopic(Long id) { return learningDayRepository.findAssigneesByTopicId(id);
     }
+    public List<Worker> getWorkersByIds(List<Long> ids){
+        return learningDayRepository.findAssigneesByTopicIds(ids);
+    }
 }

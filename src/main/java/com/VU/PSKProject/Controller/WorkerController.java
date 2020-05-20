@@ -50,6 +50,17 @@ public class WorkerController {
         }
         return ResponseEntity.ok(workerDTOS);
     }
+    @GetMapping("/getByTopicIds/{ids}")
+    public ResponseEntity<List<WorkerDTO>> getWorkersByTopicIds(@PathVariable List<Long> ids) {
+        List<Worker> workers = workerService.getWorkersByIds(ids);
+        List<WorkerDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            WorkerDTO workerDTO = workerMapper.toDto(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTOS.add(workerDTO);
+        }
+        return ResponseEntity.ok(workerDTOS);
+    }
     @GetMapping("/get/{id}")
     public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {
         Optional<Worker> worker = workerService.getWorker(id);
