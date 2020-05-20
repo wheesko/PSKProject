@@ -41,6 +41,12 @@ public class TeamController {
         List<TeamDTOFull> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
+    @GetMapping("/getByTopicIds/{ids}")
+    public ResponseEntity<List<TeamDTOFull>> getTeamsByTopic(@PathVariable List<Long> ids){
+        List<Team> teams = teamService.getTeamsByTopicIds(ids);
+        List<TeamDTOFull> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+        return ResponseEntity.ok(teamDTOS);
+    }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<TeamDTOFull> getTeam(@PathVariable Long id){

@@ -60,4 +60,21 @@ public class TeamService {
         }
         return teams;
     }
+    public List<Team> getTeamsByTopicIds(List<Long> ids){
+        List <Team> teams = new ArrayList<>();
+        List <Worker> workers = workerService.getWorkersByIds(ids);
+        for (Worker worker: workers) {
+            if(worker.getWorkingTeam() != null) {
+                if (!teams.contains(worker.getWorkingTeam())){
+                    teams.add(worker.getWorkingTeam());
+                }
+            }
+            if (worker.getManagedTeam() != null){
+                if (!teams.contains(worker.getManagedTeam())){
+                    teams.add(worker.getManagedTeam());
+                }
+            }
+        }
+        return teams;
+    }
 }
