@@ -97,8 +97,6 @@ public class LearningDayService {
     public ResponseEntity<String> checkWorkerAvailability(Worker worker, LearningDay learningDay)
     {
         List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
-        if(learningDays.size() < 2)
-            return ResponseEntity.ok("Learning days are in limit");
         Collections.sort(learningDays);
         List<LocalDateTime> localDates = new ArrayList<>();
         for(LearningDay day: learningDays)
@@ -121,6 +119,7 @@ public class LearningDayService {
     private int countConsecutiveDays(List<LocalDateTime> dateList, LocalDateTime today)
     {
         dateList.add(today);
+        Collections.sort(dateList);
 
         int count = 0;
         LocalDateTime prev = dateList.get(0);
@@ -136,7 +135,7 @@ public class LearningDayService {
             prev = next;
         }
 
-        return count + 1;
+        return count+1;
     }
 
     private int countQuarterDays(List<LocalDateTime> dateTimeList, LocalDateTime today)
