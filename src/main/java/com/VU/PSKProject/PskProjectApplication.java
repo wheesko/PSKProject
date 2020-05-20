@@ -26,8 +26,8 @@ public class PskProjectApplication {
 										 UserRepository userRepository, WorkerGoalRepository workerGoalRepository,
 										 LearningDayRepository learningDayRepository) {
 		//TODO: Implement initial data generation here
-		workerRepository.deleteAll();
 		learningDayRepository.deleteAll();
+		workerRepository.deleteAll();
 		workerGoalRepository.deleteAll();
 		topicRepository.deleteAll();
 		roleGoalRepository.deleteAll();
