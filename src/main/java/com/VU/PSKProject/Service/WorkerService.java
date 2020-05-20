@@ -1,16 +1,8 @@
 package com.VU.PSKProject.Service;
 
-import com.VU.PSKProject.Entity.LearningDay;
-import com.VU.PSKProject.Entity.User;
-import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Repository.WorkerRepository;
-import com.VU.PSKProject.Service.Model.ReturnWorkerDTO;
-import com.VU.PSKProject.Service.Model.WorkerDTO;
-import com.VU.PSKProject.Utils.PasswordUtils;
-import com.VU.PSKProject.Utils.PropertyUtils;
-import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +54,6 @@ public class WorkerService {
         return workerRepository.findByWorkingTeamId(id);
     }
 
-    public List<Worker> getWorkersByTopic(Long id) { return workerRepository.getWorkersByTopicId(id);
+    public List<Worker> getWorkersByTopic(Long id) { return learningDayRepository.findAssigneesByTopicId(id);
     }
 }

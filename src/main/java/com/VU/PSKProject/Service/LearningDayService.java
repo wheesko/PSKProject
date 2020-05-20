@@ -33,6 +33,9 @@ public class LearningDayService {
     public List<LearningDay> getAllLearningDaysByWorkerId(Long workerId) {
         return learningDayRepository.findAllByAssigneeId(workerId);
     }
+    public List<LearningDay> getLearningDaysByTopicId(Long topicId) {
+        return learningDayRepository.findAllByTopicId(topicId);
+    }
 
     public List<LearningDayDTO> getMonthLearningDaysByWorkerId(String year, String month, Long workerId){
         Timestamp dateFrom = Timestamp.valueOf(DateUtils.stringsToDate(year, month, "1").minusDays(7));
