@@ -49,14 +49,25 @@ public class TeamGoalController {
             return ResponseEntity.notFound().headers(headers).build();
         }
     }
-
     @PostMapping("/create")
-    public void createTeamGoal(@RequestBody TeamGoalDTO teamGoalDto){
+    public ResponseEntity<String> createTeamGoal(@RequestBody TeamGoalDTO teamGoalDto){
         TeamGoal teamGoal = new TeamGoal();
         PropertyUtils.customCopyProperties(teamGoalDto, teamGoal);
         teamService.getTeam(teamGoalDto.getTeam()).ifPresent(teamGoal::setTeam);
         topicService.getTopic(teamGoalDto.getTopic()).ifPresent(teamGoal::setTopic);
+
+
+        List<TeamGoal> teamGoals = teamGoalService.getAllTeamGoals();
+
+        for (TeamGoal teamg: teamGoals) {
+            if (teamGoalDto.getTopic() == teamg.getTopic().getId() && teamg.getTeam().getId() == teamGoalDto.getTeam()){
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Message", "identical goal already exists");
+                return ResponseEntity.badRequest().headers(headers).build();
+            }
+        }
         teamGoalService.createTeamGoal(teamGoal);
+        return ResponseEntity.ok("ok created");
     }
 
     @PutMapping("/update/{id}")

@@ -51,12 +51,23 @@ public class  WorkerGoalController {
     }
 
     @PostMapping("/create")
-    public void createWorkerGoal(@RequestBody WorkerGoalDTO workerGoalDto){
+    public ResponseEntity<String> createWorkerGoal(@RequestBody WorkerGoalDTO workerGoalDto){
         WorkerGoal workerGoal = new WorkerGoal();
         BeanUtils.copyProperties(workerGoalDto, workerGoal);
         workerService.getWorker(workerGoalDto.getWorker()).ifPresent(workerGoal::setWorker);
         topicService.getTopic(workerGoalDto.getTopic()).ifPresent(workerGoal::setTopic);
+
+        List<WorkerGoal> workerGoals = workerGoalService.getAllWorkerGoals();
+
+        for (WorkerGoal workerg: workerGoals) {
+            if (workerGoalDto.getTopic() == workerg.getTopic().getId() && workerg.getWorker().getId() == workerGoalDto.getWorker()){
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Message", "identical goal already exists");
+                return ResponseEntity.badRequest().headers(headers).build();
+            }
+        }
         workerGoalService.createWorkerGoal(workerGoal);
+        return ResponseEntity.ok("ok created");
     }
 
     @PutMapping("/update/{id}")

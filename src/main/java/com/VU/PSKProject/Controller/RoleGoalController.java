@@ -1,8 +1,10 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.RoleGoal;
+import com.VU.PSKProject.Entity.TeamGoal;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
+import com.VU.PSKProject.Service.Model.TeamGoalDTO;
 import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Service.RoleGoalService;
 import com.VU.PSKProject.Service.RoleService;
@@ -54,12 +56,22 @@ public class RoleGoalController {
     }
 
     @PostMapping("/create")
-    public void createRoleGoal(@RequestBody RoleGoalDTO roleGoalDto){
+    public ResponseEntity<String> createRoleGoal(@RequestBody RoleGoalDTO roleGoalDto){
         RoleGoal roleGoal = new RoleGoal();
         PropertyUtils.customCopyProperties(roleGoalDto, roleGoal);
         roleService.getRole(roleGoalDto.getRole()).ifPresent(roleGoal::setRole);
         topicService.getTopic(roleGoalDto.getTopic()).ifPresent(roleGoal::setTopic);
+
+        List<RoleGoal> roleGoals = roleGoalService.getAllRoleGoals();
+        for (RoleGoal roleg: roleGoals) {
+            if (roleGoalDto.getTopic() == roleg.getTopic().getId() && roleg.getRole().getId() == roleGoalDto.getRole()){
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Message", "identical goal already exists");
+                return ResponseEntity.badRequest().headers(headers).build();
+            }
+        }
         roleGoalService.createRoleGoal(roleGoal);
+        return ResponseEntity.ok("ok created");
     }
 
     @PutMapping("/update/{id}")
