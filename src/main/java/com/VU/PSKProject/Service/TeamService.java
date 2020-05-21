@@ -53,7 +53,7 @@ public class TeamService {
         List <Team> teams = new ArrayList<>();
         List <Worker> workers = workerService.getWorkersByTopic(id);
         for (Worker worker: workers) {
-            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId() == worker.getWorkingTeam().getId())
+            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId().equals(worker.getWorkingTeam().getId()))
             {
                 if(worker.getWorkingTeam() != null){
                     if (!teams.contains(worker.getWorkingTeam())){
@@ -76,7 +76,7 @@ public class TeamService {
         List <Team> teams = new ArrayList<>();
         List <Worker> workers = workerService.getWorkersByIds(ids);
         for (Worker worker: workers) {
-            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId() == worker.getWorkingTeam().getId()){
+            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId().equals(worker.getWorkingTeam().getId())){
                 if(worker.getWorkingTeam() != null) {
                     if (!teams.contains(worker.getWorkingTeam())){
                         teams.add(worker.getWorkingTeam());

@@ -82,7 +82,7 @@ public class WorkerService {
              allWorkers = learningDayRepository.findAssigneesByTopicIdsFuture(ids);
 
         for (Worker w: allWorkers) {
-            if(!workers.contains(w) && teamId == manager.getManagedTeam().getId() && teamId == w.getWorkingTeam().getId()){
+            if(!workers.contains(w) && teamId.equals(manager.getManagedTeam().getId()) && teamId.equals(w.getWorkingTeam().getId())){
                 workers.add(w);
             }
         }

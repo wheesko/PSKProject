@@ -59,7 +59,7 @@ public class TeamGoalController {
         List<TeamGoal> teamGoals = teamGoalService.getAllTeamGoals();
 
         for (TeamGoal teamg: teamGoals) {
-            if (teamGoalDto.getTopic() == teamg.getTopic().getId() && teamg.getTeam().getId() == teamGoalDto.getTeam()){
+            if (teamGoalDto.getTopic().equals(teamg.getTopic().getId()) && teamg.getTeam().getId().equals(teamGoalDto.getTeam())){
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Message", "identical goal already exists");
                 return ResponseEntity.badRequest().headers(headers).build();

@@ -60,7 +60,7 @@ public class RoleGoalController {
 
         List<RoleGoal> roleGoals = roleGoalService.getAllRoleGoals();
         for (RoleGoal roleg: roleGoals) {
-            if (roleGoalDto.getTopic() == roleg.getTopic().getId() && roleg.getRole().getId() == roleGoalDto.getRole()){
+            if (roleGoalDto.getTopic().equals(roleg.getTopic().getId()) && roleg.getRole().getId() == roleGoalDto.getRole()){
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Message", "identical goal already exists");
                 return ResponseEntity.badRequest().headers(headers).build();

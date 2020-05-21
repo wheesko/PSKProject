@@ -57,7 +57,7 @@ public class WorkerGoalService {
         List <Worker> allWorkers = workerGoalRepository.findWorkersByTopicIds(ids);
 
         for (Worker w: allWorkers) {
-            if(teamId == manager.getManagedTeam().getId() && teamId == w.getWorkingTeam().getId()){
+            if(teamId.equals(manager.getManagedTeam().getId()) && teamId.equals(w.getWorkingTeam().getId())){
                 workers.add(w);
             }
         }

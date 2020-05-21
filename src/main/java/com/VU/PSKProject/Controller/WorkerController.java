@@ -51,7 +51,7 @@ public class WorkerController {
         List<Worker> workers = workerService.getWorkersByTopic(topicId);
         List<WorkerDTO> workerDTOS = new ArrayList<>();
         for (Worker w: workers) {
-            if(w.getWorkingTeam().getId() == manager.get().getManagedTeam().getId()){
+            if(w.getWorkingTeam().getId().equals(manager.get().getManagedTeam().getId())){
                 WorkerDTO workerDTO = workerMapper.toDto(w);
                 workerDTO.setEmail(w.getUser().getEmail());
                 workerDTOS.add(workerDTO);

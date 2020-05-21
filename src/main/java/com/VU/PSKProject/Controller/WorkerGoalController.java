@@ -61,7 +61,7 @@ public class  WorkerGoalController {
         List<WorkerGoal> workerGoals = workerGoalService.getAllWorkerGoals();
 
         for (WorkerGoal workerg: workerGoals) {
-            if (workerGoalDto.getTopic() == workerg.getTopic().getId() && workerg.getWorker().getId() == workerGoalDto.getWorker()){
+            if (workerGoalDto.getTopic().equals(workerg.getTopic().getId()) && workerg.getWorker().getId().equals(workerGoalDto.getWorker())){
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Message", "identical goal already exists");
                 return ResponseEntity.badRequest().headers(headers).build();

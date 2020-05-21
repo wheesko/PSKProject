@@ -70,7 +70,7 @@ public class TeamController {
         List<Team> teams = teamService.getAllTeams();
         List<TeamCountDTO> teamCountDTOS = new ArrayList<>();
         for (Team team: teams) {
-            if(teamIds.contains(team.getId()) && manager.get().getManagedTeam().getId() == team.getId()){
+            if(teamIds.contains(team.getId()) && manager.get().getManagedTeam().getId().equals(team.getId())){
                 TeamCountDTO teamCountDTO = new TeamCountDTO();
 
                 teamCountDTO.setId(team.getId());
