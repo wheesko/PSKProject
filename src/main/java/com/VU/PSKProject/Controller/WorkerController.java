@@ -95,6 +95,10 @@ public class WorkerController {
         if(worker.isPresent())
         {
             PropertyUtils.customCopyProperties(workerDto, worker.get());
+
+            if(workerDto.getWorkingTeam().getId().equals(workerDto.getManagedTeam().getId()))
+                return ResponseEntity.badRequest().body("managed and working ids can't be same!");
+
             workerService.updateWorker(id, worker.get());
             return ResponseEntity.ok("Worker updated successfully");
         }
