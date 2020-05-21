@@ -44,18 +44,20 @@ public class LearningDayController {
     }
 
     @GetMapping("/get/{year}/{month}/{workerId}")
-    public List<LearningDayDTO> getMonthLearningDaysByWorkerId(
+    public List<LearningDayToReturnDTO> getMonthLearningDaysByWorkerId(
         @PathVariable String year,
         @PathVariable String month,
         @PathVariable Long workerId
     ) {
-        return learningDayService.getMonthLearningDaysByWorkerId(year, month, workerId);
+        List<LearningDay> learningDays = learningDayService.getMonthLearningDaysByWorkerId(year, month, workerId);
+        return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
     @PostMapping("/create")
     public ResponseEntity<String> createLearningEventForWorker(@RequestBody LearningDayToCreateDTO learningDayDto) {
         LearningDay learningDay = learningDayMapper.fromDTO(learningDayDto);
         workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
+        topicService.getTopic(learningDayDto.getTopic()).ifPresent(learningDay::setTopic);
 
         ResponseEntity<String> resp = learningDayService.checkWorkerAvailability(learningDay.getAssignee(), learningDay);
         if(resp.getStatusCode().is2xxSuccessful()) {

@@ -39,6 +39,7 @@ public class LearningDayMapper {
             LearningDayToReturnDTO learningDayToReturnDTO = new LearningDayToReturnDTO();
             PropertyUtils.customCopyProperties(day, learningDayToReturnDTO);
             learningDayToReturnDTO.setAssignee(day.getAssignee().getId());
+            learningDayToReturnDTO.setTopic((day.getTopic().getId()));
             return learningDayToReturnDTO;
         }).collect(Collectors.toList());
     }
