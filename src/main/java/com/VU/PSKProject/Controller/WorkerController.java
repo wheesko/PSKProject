@@ -7,6 +7,7 @@ import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +45,39 @@ public class WorkerController {
         }
         return ResponseEntity.ok(workerDTOS);
     }
+    @GetMapping("/getByTopicAndManager/{topicId}/{managerId}")
+    public ResponseEntity<List<WorkerDTO>> getWorkersByTopic(@PathVariable Long topicId, @PathVariable Long managerId) {
+        // for this to werk we need to know managerId
+        Optional<Worker> manager = workerService.getWorker(managerId);
 
+        List<Worker> workers = workerService.getWorkersByTopic(topicId);
+        List<WorkerDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            if(w.getWorkingTeam().getId() == manager.get().getManagedTeam().getId()){
+                WorkerDTO workerDTO = workerMapper.toDto(w);
+                workerDTO.setEmail(w.getUser().getEmail());
+                workerDTOS.add(workerDTO);
+            }
+        }
+        return ResponseEntity.ok(workerDTOS);
+    }
+    @GetMapping("/getByTopicIdsAndManager/{topicIds}/{managerId}")
+    public ResponseEntity<List<WorkerDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, @PathVariable Long managerId) {
+
+        // for this to werk we need to know managerId
+        Optional<Worker> manager = workerService.getWorker(managerId);
+
+        List<Worker> workers = workerService.getWorkersByIds(topicIds);
+        List<WorkerDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            if(w.getWorkingTeam().getId() == manager.get().getManagedTeam().getId()) {
+                WorkerDTO workerDTO = workerMapper.toDto(w);
+                workerDTO.setEmail(w.getUser().getEmail());
+                workerDTOS.add(workerDTO);
+            }
+        }
+        return ResponseEntity.ok(workerDTOS);
+    }
     @GetMapping("/get/{id}")
     public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {
         Optional<Worker> worker = workerService.getWorker(id);

@@ -33,4 +33,7 @@ public class LearningDay implements Comparable<LearningDay> {
         return this.getDateTimeAt().compareTo(learningDay.dateTimeAt);
     }
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Topic topic;
+
 }

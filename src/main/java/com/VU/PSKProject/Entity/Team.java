@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
@@ -38,6 +39,7 @@ public class Team {
     @JsonIgnore
     private List<Worker> workers;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "team")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<TeamGoal> goals;
 }

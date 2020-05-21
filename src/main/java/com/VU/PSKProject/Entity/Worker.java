@@ -66,7 +66,7 @@ public class Worker {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<LearningDay> learningDays = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "worker")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<WorkerGoal> goals = new ArrayList<>();
 }

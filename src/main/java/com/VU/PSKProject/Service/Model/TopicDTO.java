@@ -13,4 +13,6 @@ public class TopicDTO {
     private Long parentTopic;
     private String description;
     private List<Long> teamGoals;
+    private List<Long> workerGoals;
+    private List<Long> roleGoals;
 }

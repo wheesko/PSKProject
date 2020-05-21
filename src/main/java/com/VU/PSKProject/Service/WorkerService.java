@@ -1,13 +1,14 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,8 @@ public class WorkerService {
 
     @Autowired
     private WorkerRepository workerRepository;
+    @Autowired
+    private LearningDayRepository learningDayRepository;
 
     @Autowired
     private UserService userService;
@@ -64,4 +67,27 @@ public class WorkerService {
         }
         return ResponseEntity.ok().build();
     }
+    public List<Worker> getWorkersByTopic(Long topicId) {
+        return learningDayRepository.findAssigneesByTopicIdPast(topicId);
+    }
+
+    public List<Worker> getWorkersByIds(List<Long> ids){
+        return learningDayRepository.findAssigneesByTopicIdsPast(ids);
+    }
+    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, boolean time){
+        List<Worker> workers = new ArrayList<>();
+        List <Worker> allWorkers = null;
+        if (!time)
+            allWorkers = learningDayRepository.findAssigneesByTopicIdsPast(ids);
+        if (time)
+             allWorkers = learningDayRepository.findAssigneesByTopicIdsFuture(ids);
+
+        for (Worker w: allWorkers) {
+            if(!workers.contains(w) && teamId == manager.getManagedTeam().getId() && teamId == w.getWorkingTeam().getId()){
+                workers.add(w);
+            }
+        }
+        return workers;
+    }
+
 }
