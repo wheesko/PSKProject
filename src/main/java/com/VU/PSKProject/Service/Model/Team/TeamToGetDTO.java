@@ -1,6 +1,5 @@
 package com.VU.PSKProject.Service.Model.Team;
 
-import com.VU.PSKProject.Service.Model.TeamGoalDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

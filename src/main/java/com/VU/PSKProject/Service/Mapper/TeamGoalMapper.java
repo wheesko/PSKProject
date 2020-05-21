@@ -1,7 +1,7 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.TeamGoal;
-import com.VU.PSKProject.Service.Model.TeamGoalDTO;
+import com.VU.PSKProject.Service.Model.Team.TeamGoalDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

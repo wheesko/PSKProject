@@ -1,4 +1,4 @@
-package com.VU.PSKProject.Service.Model;
+package com.VU.PSKProject.Service.Model.Team;
 
 import lombok.Getter;
 import lombok.Setter;

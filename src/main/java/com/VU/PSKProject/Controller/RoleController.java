@@ -4,7 +4,6 @@ import com.VU.PSKProject.Entity.Role;
 import com.VU.PSKProject.Service.Model.RoleDTO;
 import com.VU.PSKProject.Service.RoleService;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

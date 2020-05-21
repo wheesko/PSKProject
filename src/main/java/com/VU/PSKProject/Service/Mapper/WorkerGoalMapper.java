@@ -1,7 +1,7 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.WorkerGoal;
-import com.VU.PSKProject.Service.Model.WorkerGoalDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerGoalDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

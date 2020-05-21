@@ -2,15 +2,11 @@ package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Repository.WorkerGoalRepository;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Model.Team.TeamToUpdateDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToGetDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToCreateDTO;
-import com.VU.PSKProject.Service.Model.TeamCountDTO;
-import com.VU.PSKProject.Service.Model.TeamDTO;
-import com.VU.PSKProject.Service.Model.TeamDTOFull;
-import com.VU.PSKProject.Service.Model.TeamToCreateDTO;
+import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
@@ -43,19 +39,24 @@ public class TeamController {
     @GetMapping("/getAll")
     public ResponseEntity<List<TeamToGetDTO>> getTeams(){
         List<Team> teams = teamService.getAllTeams();
-        List<TeamDTOFull> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+        List<TeamToGetDTO> teamDTOS = new ArrayList<>();
+        for (Team t: teams) {
+            TeamToGetDTO teamDTO = teamMapper.toDto(t);
+            teamDTOS.add(teamDTO);
+        }
         return ResponseEntity.ok(teamDTOS);
     }
+
     @GetMapping("/getByTopic/{id}/{managerId}")
-    public ResponseEntity<List<TeamDTOFull>> getTeamsByTopic(@PathVariable Long id, @PathVariable Long managerId){
+    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopic(@PathVariable Long id, @PathVariable Long managerId){
         List<Team> teams = teamService.getTeamsByTopicId(id, managerId);
-        List<TeamDTOFull> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+        List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
     @GetMapping("/getByTopicIds/{ids}/{managerId}")
-    public ResponseEntity<List<TeamDTOFull>> getTeamsByTopics(@PathVariable List<Long> ids, @PathVariable Long managerId){
+    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopics(@PathVariable List<Long> ids, @PathVariable Long managerId){
         List<Team> teams = teamService.getTeamsByTopicIds(ids, managerId);
-        List<TeamDTOFull> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+        List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
 

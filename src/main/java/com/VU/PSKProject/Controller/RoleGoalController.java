@@ -1,17 +1,11 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.RoleGoal;
-import com.VU.PSKProject.Entity.TeamGoal;
-import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
-import com.VU.PSKProject.Service.Model.TeamGoalDTO;
-import com.VU.PSKProject.Service.Model.WorkerDTO;
 import com.VU.PSKProject.Service.RoleGoalService;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import org.springframework.beans.BeanUtils;
 import com.VU.PSKProject.Service.RoleService;
 import com.VU.PSKProject.Service.TopicService;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
