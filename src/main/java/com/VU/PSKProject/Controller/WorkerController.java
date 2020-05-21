@@ -6,6 +6,7 @@ import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -33,32 +34,33 @@ public class WorkerController {
     private WorkerMapper workerMapper;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<WorkerDTO>> getWorkers() {
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
         List<Worker> workers = workerService.getAllWorkers();
-        List<WorkerDTO> workerDTOS = new ArrayList<>();
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
         for (Worker w: workers) {
-            WorkerDTO workerDTO = workerMapper.toDto(w);
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
             workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
             workerDTOS.add(workerDTO);
         }
         return ResponseEntity.ok(workerDTOS);
     }
     @GetMapping("/getByTopicAndManager/{topicId}/{managerId}")
-    public ResponseEntity<List<WorkerDTO>> getWorkersByTopic(@PathVariable Long topicId, @PathVariable Long managerId) {
-        // for this to werk we need to know managerId
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, @PathVariable Long managerId) {
         Optional<Worker> manager = workerService.getWorker(managerId);
 
         List<Worker> workers = workerService.getWorkersByTopic(topicId);
-        return ResponseEntity.ok(workerService.extractByManager(workers, manager));
+        return manager.map(worker -> ResponseEntity.ok(workerService.extractByManager(workers, worker)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
     @GetMapping("/getByTopicIdsAndManager/{topicIds}/{managerId}")
-    public ResponseEntity<List<WorkerDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, @PathVariable Long managerId) {
-
-        // for this to werk we need to know managerId
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, @PathVariable Long managerId) {
         Optional<Worker> manager = workerService.getWorker(managerId);
-
         List<Worker> workers = workerService.getWorkersByIds(topicIds);
-        return ResponseEntity.ok(workerService.extractByManager(workers, manager));
+
+        return manager.map(worker -> ResponseEntity.ok(workerService.extractByManager(workers, worker)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {

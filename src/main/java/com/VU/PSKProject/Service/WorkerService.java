@@ -6,6 +6,7 @@ import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -93,12 +94,14 @@ public class WorkerService {
         }
         return workers;
     }
-    public List<WorkerDTO> extractByManager(List<Worker> workers, Optional<Worker> manager){
-        List<WorkerDTO> workerDTOS = new ArrayList<>();
+    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager){
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+
         for (Worker w: workers) {
-            if(w.getWorkingTeam().getId().equals(manager.get().getManagedTeam().getId())){
-                WorkerDTO workerDTO = workerMapper.toDto(w);
+            if(w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())){
+                WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
                 workerDTO.setEmail(w.getUser().getEmail());
+                workerDTO.setManagerId(manager.getId());
                 workerDTOS.add(workerDTO);
             }
         }
