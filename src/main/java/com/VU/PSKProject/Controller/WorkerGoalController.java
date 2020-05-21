@@ -66,8 +66,15 @@ public class  WorkerGoalController {
                 return ResponseEntity.badRequest().headers(headers).build();
             }
         }
-        workerGoalService.createWorkerGoal(workerGoal);
-        return ResponseEntity.ok("ok created");
+        if (workerGoalService.checkIfWorkerAndTopicExist(workerGoalDto.getWorker(), workerGoalDto.getTopic())) {
+            workerGoalService.createWorkerGoal(workerGoal);
+            return ResponseEntity.ok("ok created");
+        }
+        else{
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "bad worker or topic");
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
     }
 
     @PutMapping("/update/{id}")

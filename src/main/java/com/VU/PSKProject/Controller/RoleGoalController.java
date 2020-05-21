@@ -70,8 +70,16 @@ public class RoleGoalController {
                 return ResponseEntity.badRequest().headers(headers).build();
             }
         }
-        roleGoalService.createRoleGoal(roleGoal);
-        return ResponseEntity.ok("ok created");
+        if (roleGoalService.checkIfRoleAndTopicExist(roleGoalDto.getRole(), roleGoalDto.getTopic())) {
+            roleGoalService.createRoleGoal(roleGoal);
+            return ResponseEntity.ok("ok created");
+        }
+        else{
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "bad role or topic");
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
+
     }
 
     @PutMapping("/update/{id}")

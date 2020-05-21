@@ -66,8 +66,16 @@ public class TeamGoalController {
                 return ResponseEntity.badRequest().headers(headers).build();
             }
         }
-        teamGoalService.createTeamGoal(teamGoal);
-        return ResponseEntity.ok("ok created");
+
+        if (teamGoalService.checkIfTeamAndTopicExist(teamGoalDto.getTeam(), teamGoalDto.getTopic())) {
+            teamGoalService.createTeamGoal(teamGoal);
+            return ResponseEntity.ok("ok created");
+        }
+        else{
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "bad team or topic");
+            return ResponseEntity.badRequest().headers(headers).build();
+        }
     }
 
     @PutMapping("/update/{id}")

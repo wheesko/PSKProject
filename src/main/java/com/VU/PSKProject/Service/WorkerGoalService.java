@@ -2,7 +2,9 @@ package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Entity.WorkerGoal;
+import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Repository.WorkerGoalRepository;
+import com.VU.PSKProject.Repository.WorkerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,10 @@ import java.util.Optional;
 public class WorkerGoalService {
     @Autowired
     private WorkerGoalRepository workerGoalRepository;
+    @Autowired
+    private TopicRepository topicRepository;
+    @Autowired
+    private WorkerRepository workerRepository;
 
     public List<WorkerGoal> getAllWorkerGoals() { return workerGoalRepository.findAll();
     }
@@ -56,5 +62,10 @@ public class WorkerGoalService {
             }
         }
         return workers;
+    }
+    public boolean checkIfWorkerAndTopicExist(long workerId, Long topicId){
+        if(topicRepository.existsById(topicId) && workerRepository.existsById(workerId))
+            return true;
+        else return false;
     }
 }

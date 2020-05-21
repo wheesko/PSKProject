@@ -94,6 +94,7 @@ public class WorkerController {
         User u = userService.createUserFromEmail(workerDto.getEmail());
         worker.setUser(u);
         workerService.createWorker(worker);
+
     }
 
     @PutMapping("/update/{id}")
