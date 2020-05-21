@@ -3,6 +3,8 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.Mapper.WorkerMapper;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class WorkerService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WorkerMapper workerMapper;
 
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
@@ -87,6 +92,17 @@ public class WorkerService {
             }
         }
         return workers;
+    }
+    public List<WorkerDTO> extractByManager(List<Worker> workers, Optional<Worker> manager){
+        List<WorkerDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            if(w.getWorkingTeam().getId().equals(manager.get().getManagedTeam().getId())){
+                WorkerDTO workerDTO = workerMapper.toDto(w);
+                workerDTO.setEmail(w.getUser().getEmail());
+                workerDTOS.add(workerDTO);
+            }
+        }
+        return workerDTOS;
     }
 
 }

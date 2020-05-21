@@ -49,15 +49,7 @@ public class WorkerController {
         Optional<Worker> manager = workerService.getWorker(managerId);
 
         List<Worker> workers = workerService.getWorkersByTopic(topicId);
-        List<WorkerDTO> workerDTOS = new ArrayList<>();
-        for (Worker w: workers) {
-            if(w.getWorkingTeam().getId().equals(manager.get().getManagedTeam().getId())){
-                WorkerDTO workerDTO = workerMapper.toDto(w);
-                workerDTO.setEmail(w.getUser().getEmail());
-                workerDTOS.add(workerDTO);
-            }
-        }
-        return ResponseEntity.ok(workerDTOS);
+        return ResponseEntity.ok(workerService.extractByManager(workers, manager));
     }
     @GetMapping("/getByTopicIdsAndManager/{topicIds}/{managerId}")
     public ResponseEntity<List<WorkerDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, @PathVariable Long managerId) {
@@ -66,15 +58,7 @@ public class WorkerController {
         Optional<Worker> manager = workerService.getWorker(managerId);
 
         List<Worker> workers = workerService.getWorkersByIds(topicIds);
-        List<WorkerDTO> workerDTOS = new ArrayList<>();
-        for (Worker w: workers) {
-            if(w.getWorkingTeam().getId() == manager.get().getManagedTeam().getId()) {
-                WorkerDTO workerDTO = workerMapper.toDto(w);
-                workerDTO.setEmail(w.getUser().getEmail());
-                workerDTOS.add(workerDTO);
-            }
-        }
-        return ResponseEntity.ok(workerDTOS);
+        return ResponseEntity.ok(workerService.extractByManager(workers, manager));
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {
