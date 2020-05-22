@@ -2,14 +2,17 @@ package com.VU.PSKProject;
 
 import com.VU.PSKProject.Entity.*;
 import com.VU.PSKProject.Repository.*;
+import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.lang.reflect.Array;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 @SpringBootApplication
 public class PskProjectApplication {
@@ -70,7 +73,7 @@ public class PskProjectApplication {
 
 		ArrayList<Topic> topics = new ArrayList<Topic>();
 
-		topics.add(new Topic("Why C# is better than Java", null, "change my mind", null));
+		/*topics.add(new Topic("Why C# is better than Java", null, "change my mind", null));
 		topics.add(new Topic("You should stop using Java", topics.get(0), "change my mind", null));
 		topics.add(new Topic("Having no var is terrible", topics.get(0), "change my mind", null));
 		topics.add(new Topic("Java users can't C#", topics.get(0), "change my mind", null));
@@ -90,8 +93,36 @@ public class PskProjectApplication {
 		topics.add(new Topic("Decorator decorates even more", topics.get(5), "description", null));
 
 		topics.add(new Topic("Java is bad for your vision", topics.get(1), "description", null));
-		topics.add(new Topic("Thinking sharp using Java", topics.get(3), "description", null));
+		topics.add(new Topic("Thinking sharp using Java", topics.get(3), "description", null));*/
 
+		ArrayList<Topic> cppChildren = new ArrayList<>();
+		Topic gd = new Topic("Game development", null, "Intro to game dev", null);
+		Topic ge = new Topic("Game Engines", null, "Intro to game engines", null);
+		cppChildren.add(gd);
+		cppChildren.add(ge);
+
+		ArrayList<Topic> oopChildren = new ArrayList<>();
+		Topic cpp = new Topic("C++ Programming", cppChildren, "Intro to C++", null);
+		Topic cs = new Topic("C# Programming", null, "Intro to C#", null);
+		oopChildren.add(cpp);
+		oopChildren.add(cs);
+
+		Topic oop = new Topic("OOP Programming", oopChildren, "Intro to OOP", null);
+		Topic ads = new Topic("Algorithms & Data structures", null, "Intro to ADS", null);
+
+		ArrayList<Topic> cChildren = new ArrayList<>();
+		cChildren.add(ads);
+		cChildren.add(oop);
+		Topic c = new Topic("C Programming", cChildren, "Intro to C", null);
+
+
+		topics.add(gd);
+		topics.add(ge);
+		topics.add(cpp);
+		topics.add(cs);
+		topics.add(oop);
+		topics.add(ads);
+		topics.add(c);
 
 		ArrayList<Role> roles = new ArrayList<>();
 		roles.add(new Role("Developer", null));
@@ -110,12 +141,21 @@ public class PskProjectApplication {
 				null, null));
 
 
+		ArrayList<LearningDay> learningDayList = new ArrayList<>();
+		learningDayList.add(new LearningDay("Study C", "C Study", new Timestamp(new Date().getTime()), workers.get(0),c));
+		learningDayList.add(new LearningDay("Study OOP", "OOP Study", new Timestamp(new Date().getTime()), workers.get(0),oop));
+		learningDayList.add(new LearningDay("Study CPP", "CPP Study", new Timestamp(new Date().getTime()), workers.get(0),cpp));
+		learningDayList.add(new LearningDay("Study Gamedev", "Gamedev Study", new Timestamp(new Date().getTime()), workers.get(0), gd));
+		learningDayList.add(new LearningDay("Study ADS", "ADS Study", new Timestamp(new Date().getTime()), workers.get(0),ads));
+
 		return  args -> {
 			userRepository.saveAll(users);
 			roleRepository.saveAll(roles);
 			topicRepository.saveAll(topics);
 			teamRepository.saveAll(teams);
 			workerRepository.saveAll(workers);
+			learningDayRepository.saveAll(learningDayList);
+
 			workerRepository.saveAll(Arrays.asList(
 					new Worker("qwerk", "qwurk", users.get(2), null, teams.get(0),  roles.get(1),
 							5, 5,
