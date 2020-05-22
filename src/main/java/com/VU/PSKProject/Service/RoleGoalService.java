@@ -1,7 +1,10 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.RoleGoal;
+import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Repository.RoleGoalRepository;
+import com.VU.PSKProject.Repository.RoleRepository;
+import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Service.Model.RoleDTO;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,10 @@ import java.util.Optional;
 public class RoleGoalService {
     @Autowired
     private RoleGoalRepository roleGoalRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private TopicRepository topicRepository;
 
     public List<RoleGoal> getAllRoleGoals() { return roleGoalRepository.findAll();
     }
@@ -31,5 +38,11 @@ public class RoleGoalService {
 
     public Optional<RoleGoal> getRoleGoal(Long id) {
         return roleGoalRepository.findById(id);
+    }
+
+    public boolean checkIfRoleAndTopicExist(long roleId, Long topicId){
+        if(topicRepository.existsById(topicId) && roleRepository.existsById(roleId))
+        return true;
+        else return false;
     }
 }

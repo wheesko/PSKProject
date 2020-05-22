@@ -2,6 +2,8 @@ package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.TeamGoal;
 import com.VU.PSKProject.Repository.TeamGoalRepository;
+import com.VU.PSKProject.Repository.TeamRepository;
+import com.VU.PSKProject.Repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,10 @@ import java.util.Optional;
 public class TeamGoalService {
     @Autowired
     private TeamGoalRepository teamGoalRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
+    private TopicRepository topicRepository;
 
     public List<TeamGoal> getAllTeamGoals() { return teamGoalRepository.findAll();
     }
@@ -34,4 +40,9 @@ public class TeamGoalService {
         return teamGoalRepository.findById(id);
     }
 
+    public boolean checkIfTeamAndTopicExist(long teamId, Long topicId){
+        if(topicRepository.existsById(topicId) && teamRepository.existsById(teamId))
+            return true;
+        else return false;
+    }
 }
