@@ -45,9 +45,9 @@ public class AuthenticationService {
         Object principal = auth.getPrincipal();
         User user = (User) principal;
         UserDTO userData = userService.getUserByEmail(user.getUsername());
-//        Worker workerData = workerService.getWorkerByUserId(userData.getId());
+        Worker workerData = workerService.getWorkerByUserId(userData.getId());
 
-        String loginResponseString = new Gson().toJson(getLoginResponse(userData, null));
+        String loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
 
         PrintWriter out = res.getWriter();
         res.setContentType("application/json");
