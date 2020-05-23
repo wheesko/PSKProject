@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Repository;
 
 import com.VU.PSKProject.Entity.LearningDay;
+import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,4 +35,24 @@ public interface LearningDayRepository extends JpaRepository<LearningDay, Long> 
             " where d.topic.id in :topicIds" +
             " AND d.dateTimeAt >  CURRENT_TIMESTAMP ")
     List<Worker> findAssigneesByTopicIdsFuture(@Param("topicIds")List<Long> topicIds);
+
+    @Query("select d.topic from learning_day  d" +
+            " where d.dateTimeAt < CURRENT_TIMESTAMP" +
+            " AND d.assignee.workingTeam.id = :teamId")
+    List<Topic> findTopicsByTeamPAST(@Param("teamId") Long teamId);
+
+    @Query("select d.topic from learning_day  d" +
+            " where d.dateTimeAt > CURRENT_TIMESTAMP" +
+            " AND d.assignee.workingTeam.id = :teamId")
+    List<Topic> findTopicsByTeamFuture(@Param("teamId") Long teamId);
+
+    @Query("select d.topic from learning_day  d" +
+            " where d.dateTimeAt < CURRENT_TIMESTAMP" +
+            " AND d.assignee.id = :workerId")
+    List<Topic> findTopicsByWorkerPAST(@Param("workerId") Long workerId);
+
+    @Query("select d.topic from learning_day  d" +
+            " where d.dateTimeAt > CURRENT_TIMESTAMP" +
+            " AND d.assignee.id = :workerId")
+    List<Topic> findTopicsByWorkerFuture(@Param("workerId") Long workerId);
 }

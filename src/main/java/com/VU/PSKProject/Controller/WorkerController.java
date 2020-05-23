@@ -60,7 +60,6 @@ public class WorkerController {
 
         return manager.map(worker -> ResponseEntity.ok(workerService.extractByManager(workers, worker)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
-
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {
