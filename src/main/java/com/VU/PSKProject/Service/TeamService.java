@@ -3,6 +3,7 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TeamRepository;
+import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ public class TeamService {
 
     @Autowired
     private WorkerService workerService;
+    @Autowired
+    private WorkerGoalService workerGoalService;
 
     public List<Team> getAllTeams(){
         return teamRepository.findAll();
@@ -90,5 +93,33 @@ public class TeamService {
 
         }
         return teams;
+    }
+    public List<TeamCountDTO> getTeamsCountDTOByTopics( List<Long> topicIds, List<Long> teamIds, Long managerId){
+        // for this to werk we need to know manager id
+        Optional<Worker> manager = workerService.getWorker(managerId);
+
+        List<Team> teams = getAllTeams();
+        List<TeamCountDTO> teamCountDTOS = new ArrayList<>();
+        for (Team team: teams) {
+            if(teamIds.contains(team.getId()) && manager.get().getManagedTeam().getId().equals(team.getId())){
+                TeamCountDTO teamCountDTO = new TeamCountDTO();
+
+                teamCountDTO.setId(team.getId());
+                teamCountDTO.setName(team.getName());
+
+                // false time means PAST, true means FUTURE
+                teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
+                        (team.getId(), topicIds, manager.get(), false).size());
+
+                teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
+                        (team.getId(), topicIds, manager.get(), true).size());
+
+                teamCountDTO.setDreamingCount(workerGoalService.getWorkersByGoalsTeamManager
+                        (team.getId(), topicIds, manager.get()).size());
+
+                teamCountDTOS.add(teamCountDTO);
+            }
+        }
+        return teamCountDTOS;
     }
 }
