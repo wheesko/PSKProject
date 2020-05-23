@@ -62,8 +62,7 @@ public class WorkerService {
         return workerRepository.findByWorkingTeamId(id);
     }
 
-    public ResponseEntity<String> validateWorkerData(WorkerToCreateDTO workerDTO)
-    {
+    public ResponseEntity<String> validateWorkerData(WorkerToCreateDTO workerDTO) {
         if(workerDTO.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("No email provided!");
         }
@@ -79,6 +78,7 @@ public class WorkerService {
     public List<Worker> getWorkersByIds(List<Long> ids){
         return learningDayRepository.findAssigneesByTopicIdsPast(ids);
     }
+
     public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, boolean time){
         List<Worker> workers = new ArrayList<>();
         List <Worker> allWorkers = null;
@@ -94,7 +94,8 @@ public class WorkerService {
         }
         return workers;
     }
-    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager){
+
+    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager) {
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
 
         for (Worker w: workers) {
@@ -106,6 +107,10 @@ public class WorkerService {
             }
         }
         return workerDTOS;
+    }
+
+    public Worker getWorkerByUserId(Long userId) {
+        return workerRepository.findByUserId(userId).orElse(new Worker());
     }
 
 }

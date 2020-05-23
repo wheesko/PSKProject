@@ -50,6 +50,6 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDTO getUserByEmail(String email) {
-       return userMapper.toDTO(userRepository.findByEmail(email).orElseGet(null));
+       return userMapper.toDTO(userRepository.findByEmail(email).orElse(new User()));
     }
 }
