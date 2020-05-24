@@ -22,7 +22,7 @@ public class PskProjectApplication {
 										 LearningDayRepository learningDayRepository) {
 
 		SampleDataDB sampleDataDB = new SampleDataDB(workerRepository, topicRepository, roleRepository, roleGoalRepository, teamGoalRepository, teamRepository, userRepository, workerGoalRepository, learningDayRepository);
-		sampleDataDB.nuclearPizdiec();
+		sampleDataDB.deleteEverything();
 		sampleDataDB.saveUsers();
 		sampleDataDB.saveRoles();
 		sampleDataDB.saveTopics();

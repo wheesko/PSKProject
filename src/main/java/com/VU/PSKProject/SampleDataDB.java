@@ -36,7 +36,7 @@ public class SampleDataDB {
         this.learningDayRepository = learningDayRepository;
     }
 
-    public void nuclearPizdiec(){
+    public void deleteEverything(){
         learningDayRepository.deleteAll();
         workerRepository.deleteAll();
         workerGoalRepository.deleteAll();
