@@ -6,6 +6,7 @@ import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +37,13 @@ public class LearningDayService {
         return learningDayRepository.findAllByAssigneeId(workerId);
     }
 
-    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, Long workerId) {
+    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, UserDTO user) {
+        Worker worker = workerService.getWorkerByUserId(user.getId());
+
         Timestamp dateFrom = Timestamp.valueOf(DateUtils.stringsToDate(year, month, "1").minusDays(7));
         String lastDay = DateUtils.getLastDayOfMonth(year, month);
         Timestamp dateTo = Timestamp.valueOf(DateUtils.stringsToDate(year, month, lastDay).plusDays(7));
-        return learningDayRepository.findAllByDateTimeAtBetweenAndAssigneeId(dateFrom, dateTo, workerId);
+        return learningDayRepository.findAllByDateTimeAtBetweenAndAssigneeId(dateFrom, dateTo, worker.getId());
     }
 
     public List<LearningDay> getAllLearningDaysByWorkerId(List<Long> workerId) {

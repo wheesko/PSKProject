@@ -14,7 +14,7 @@ class CalendarService {
     public getMonthLearningDays = (request: LearningDayRequest): Promise<LearningEvent[]> => {
     	return this.restService
     		.get<LearningEvent[]>(
-    			`/learningDays/get/${request.selectedYear}/${request.selectedMonth}/${request.workerId}`
+    			`/learningDays/get/${request.selectedYear}/${request.selectedMonth}`
     		)
     		.then((response: AxiosResponse<LearningEvent[]>) => {
     			return response.data;

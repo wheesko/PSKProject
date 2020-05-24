@@ -76,8 +76,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		setLoading(true);
 		return calendarService.getMonthLearningDays({
 			selectedYear: value.format('Y'),
-			selectedMonth: value.format('M'),
-			workerId: 1 //TODO: use workerID from redux
+			selectedMonth: value.format('M')
 		}).then((response) => {
 			setLoading(false);
 			return response;
