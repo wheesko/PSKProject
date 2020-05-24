@@ -32,9 +32,6 @@ public class TopicService {
     private TeamService teamService;
 
     @Autowired
-    private LearningDayService learningDayService;
-
-    @Autowired
     private TopicMapper topicMapper;
 
     public List<Topic> getAllTopics() {

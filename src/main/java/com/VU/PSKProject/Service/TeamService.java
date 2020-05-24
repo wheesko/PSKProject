@@ -114,7 +114,7 @@ public class TeamService {
                 teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
                         (team.getId(), topicIds, manager.get(), true).size());
 
-                teamCountDTO.setDreamingCount(workerGoalService.getWorkersByGoalsTeamManager
+                teamCountDTO.setGoalsCount(workerGoalService.getWorkersByGoalsTeamManager
                         (team.getId(), topicIds, manager.get()).size());
 
                 teamCountDTOS.add(teamCountDTO);
