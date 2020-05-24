@@ -5,7 +5,8 @@ export interface LearningEvent {
 	id: number;
 	name: string;
 	description: string;
+	comment: string;
 	dateTimeAt: string;
-	learningTopic: LearningTopic;
+	topic: LearningTopic;
 	assignedWorker: Worker | null;
 }

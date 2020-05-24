@@ -2,10 +2,11 @@ package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Team;
+import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
-import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LearningDayService {
@@ -37,11 +37,13 @@ public class LearningDayService {
         return learningDayRepository.findAllByAssigneeId(workerId);
     }
 
-    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, Long workerId) {
+    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, UserDTO user) {
+        Worker worker = workerService.getWorkerByUserId(user.getId());
+
         Timestamp dateFrom = Timestamp.valueOf(DateUtils.stringsToDate(year, month, "1").minusDays(7));
         String lastDay = DateUtils.getLastDayOfMonth(year, month);
         Timestamp dateTo = Timestamp.valueOf(DateUtils.stringsToDate(year, month, lastDay).plusDays(7));
-        return learningDayRepository.findAllByDateTimeAtBetweenAndAssigneeId(dateFrom, dateTo, workerId);
+        return learningDayRepository.findAllByDateTimeAtBetweenAndAssigneeId(dateFrom, dateTo, worker.getId());
     }
 
     public List<LearningDay> getAllLearningDaysByWorkerId(List<Long> workerId) {
@@ -158,5 +160,26 @@ public class LearningDayService {
                 quarterDays.add(day);
         }
         return quarterDays.size()-1;
+    }
+    public List<Topic> getTopicsByTeamPast(Long id){
+        return learningDayRepository.findTopicsByTeamPAST(id);
+    }
+    public List<Topic> getTopicsByTeamFuture(Long id){
+        return learningDayRepository.findTopicsByTeamFuture(id);
+    }
+    public List<Topic> getTopicsByWorkerPast(Long id){
+        return learningDayRepository.findTopicsByWorkerPAST(id);
+    }
+    public List<Topic> getTopicsByWorkerFuture(Long id){
+        return learningDayRepository.findTopicsByWorkerFuture(id);
+    }
+    public List<Worker> getAssigneesByTopicIdPast(Long topicId){
+        return learningDayRepository.findAssigneesByTopicIdPast(topicId);
+    }
+    public List<Worker> getAssigneesByTopicIdsPast(List<Long> topicIds){
+        return learningDayRepository.findAssigneesByTopicIdsPast(topicIds);
+    }
+    public List<Worker> getAssigneesByTopicIdsFuture(List<Long> topicIds){
+        return learningDayRepository.findAssigneesByTopicIdsFuture(topicIds);
     }
 }

@@ -14,8 +14,8 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @ManyToOne
-    private Topic parentTopic;
+    @ManyToMany
+    private List<Topic> childrenTopics;
     private String description;
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -37,9 +37,9 @@ public class Topic {
 
     }
 
-    public Topic(String name, Topic parentTopic, String description, List<TeamGoal> goals){
+    public Topic(String name, List<Topic> childrenTopics, String description, List<TeamGoal> goals){
         this.name = name;
-        this.parentTopic = parentTopic;
+        this.childrenTopics = childrenTopics;
         this.description = description;
         this.teamGoals = goals;
     }

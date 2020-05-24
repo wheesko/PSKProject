@@ -18,6 +18,7 @@ export const thunkLogin = (
 			email: loginRequest.email,
 			loggedIn: true,
 			token: response?.headers.authorization.replace('Bearer ', ''),
+			refreshToken: response?.headers.refreshtoken.replace('Bearer ', ''),
 			authority: decodedResponse!.role[0].authority,
 			role: { title: '', color: '' }
 		}));

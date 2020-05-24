@@ -1,23 +1,13 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
-import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +17,9 @@ public class WorkerService {
 
     @Autowired
     private WorkerRepository workerRepository;
+
     @Autowired
-    private LearningDayRepository learningDayRepository;
+    private LearningDayService learningDayService;
 
     @Autowired
     private UserService userService;
@@ -70,8 +61,7 @@ public class WorkerService {
         return workerRepository.findByWorkingTeamId(id);
     }
 
-    public ResponseEntity<String> validateWorkerData(WorkerToCreateDTO workerDTO)
-    {
+    public ResponseEntity<String> validateWorkerData(WorkerToCreateDTO workerDTO) {
         if(workerDTO.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("No email provided!");
         }
@@ -81,19 +71,20 @@ public class WorkerService {
         return ResponseEntity.ok().build();
     }
     public List<Worker> getWorkersByTopic(Long topicId) {
-        return learningDayRepository.findAssigneesByTopicIdPast(topicId);
+        return learningDayService.getAssigneesByTopicIdPast(topicId);
     }
 
     public List<Worker> getWorkersByIds(List<Long> ids){
-        return learningDayRepository.findAssigneesByTopicIdsPast(ids);
+        return learningDayService.getAssigneesByTopicIdsPast(ids);
     }
+
     public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, boolean time){
         List<Worker> workers = new ArrayList<>();
         List <Worker> allWorkers = null;
         if (!time)
-            allWorkers = learningDayRepository.findAssigneesByTopicIdsPast(ids);
+            allWorkers = learningDayService.getAssigneesByTopicIdsPast(ids);
         if (time)
-             allWorkers = learningDayRepository.findAssigneesByTopicIdsFuture(ids);
+             allWorkers = learningDayService.getAssigneesByTopicIdsFuture(ids);
 
         for (Worker w: allWorkers) {
             if(!workers.contains(w) && teamId.equals(manager.getManagedTeam().getId()) && teamId.equals(w.getWorkingTeam().getId())){
@@ -102,7 +93,6 @@ public class WorkerService {
         }
         return workers;
     }
-
     public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager){
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
 
@@ -110,10 +100,15 @@ public class WorkerService {
             if(w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())){
                 WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
                 workerDTO.setEmail(w.getUser().getEmail());
-                workerDTO.setManagerId(w.getWorkingTeam().getManager().getId());
+                workerDTO.setManagerId(manager.getId());
                 workerDTOS.add(workerDTO);
             }
         }
         return workerDTOS;
     }
+
+    public Worker getWorkerByUserId(Long userId) {
+        return workerRepository.findByUserId(userId).orElse(new Worker());
+    }
+
 }

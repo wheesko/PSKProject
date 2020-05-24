@@ -20,7 +20,7 @@ class AuthenticationService {
 
 	public logout = (): Promise<void> => {
 		return Promise.resolve();
-	}
+	};
 }
 
 const authenticationService = new AuthenticationService();

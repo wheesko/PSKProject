@@ -71,7 +71,6 @@ public class WorkerController {
 
         return manager.map(worker -> ResponseEntity.ok(workerService.extractByManager(workers, worker)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
-
     }
 
     @GetMapping("/exportTopicAndManager/{topicId}/{managerId}")

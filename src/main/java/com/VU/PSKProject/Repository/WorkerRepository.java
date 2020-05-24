@@ -14,4 +14,6 @@ public interface WorkerRepository extends JpaRepository<Worker, Long>,
     List<Worker> findByWorkingTeamId(Long workingTeamId);
 
     boolean existsById(Long Id);
+
+    Optional<Worker> findByUserId(Long id);
 }
