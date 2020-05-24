@@ -6,10 +6,18 @@ import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -101,11 +109,25 @@ public class WorkerService {
             if(w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())){
                 WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
                 workerDTO.setEmail(w.getUser().getEmail());
-                workerDTO.setManagerId(manager.getId());
+                workerDTO.setManagerId(w.getWorkingTeam().getManager().getId());
                 workerDTOS.add(workerDTO);
             }
         }
         return workerDTOS;
+    }
+
+    public void exportToCSV(List<WorkerToExportDTO> workers, HttpServletResponse response) throws Exception {
+        String filename = "workers.csv";
+        response.setContentType("text/csv");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
+
+        StatefulBeanToCsv<WorkerToExportDTO> writer = new StatefulBeanToCsvBuilder<WorkerToExportDTO>(response.getWriter())
+                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                .withOrderedResults(false)
+                .build();
+
+        writer.write(workers);
     }
 
 }
