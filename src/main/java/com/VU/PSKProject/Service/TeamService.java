@@ -3,10 +3,13 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TeamRepository;
+import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
+import com.VU.PSKProject.Service.Model.Team.TeamToGetDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -121,5 +124,10 @@ public class TeamService {
             }
         }
         return teamCountDTOS;
+    }
+
+    public void exportToCSV(List<TeamCountDTO> dataToExport, HttpServletResponse response) throws Exception{
+        String[] headers = {"Name,", "Learned topics count,", "Planned topics count,", "Goals count,"};
+        CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
     }
 }

@@ -4,7 +4,6 @@ import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
-import com.VU.PSKProject.Service.CsvExporters.WorkerExporter.WorkerExporter;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
@@ -35,9 +34,6 @@ public class WorkerController {
 
     @Autowired
     private WorkerMapper workerMapper;
-
-    @Autowired
-    private WorkerExporter workerExporter;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {

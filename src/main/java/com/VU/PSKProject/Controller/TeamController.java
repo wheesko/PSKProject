@@ -2,7 +2,6 @@ package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
-import com.VU.PSKProject.Service.CsvExporters.TeamExporter.TeamExporter;
 import com.VU.PSKProject.Service.Model.Team.*;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.WorkerService;
@@ -29,9 +28,6 @@ public class TeamController {
 
     @Autowired
     private WorkerService workerService;
-
-    @Autowired
-    private TeamExporter teamExporter;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<TeamToGetDTO>> getTeams(){
@@ -70,7 +66,7 @@ public class TeamController {
                           @PathVariable Long managerId,
                           HttpServletResponse response)throws Exception{
         List<TeamCountDTO> teams = teamService.getTeamsCountDTOByTopics(topicIds, teamIds, managerId);
-        teamExporter.exportToCSV(teams, response);
+        teamService.exportToCSV(teams, response);
 
     }
 
