@@ -1,12 +1,8 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Team;
-import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
-import com.VU.PSKProject.Service.Model.Team.TeamToUpdateDTO;
-import com.VU.PSKProject.Service.Model.Team.TeamToGetDTO;
-import com.VU.PSKProject.Service.Model.Team.TeamToCreateDTO;
-import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
+import com.VU.PSKProject.Service.Model.Team.*;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
@@ -64,33 +60,7 @@ public class TeamController {
     public ResponseEntity<List<TeamCountDTO>> getTeamsCountByTopics(@PathVariable List<Long> topicIds,
                                                                     @PathVariable List<Long> teamIds,
                                                                     @PathVariable Long managerId){
-        // for this to werk we need to know manager id
-        Optional<Worker> manager = workerService.getWorker(managerId);
-
-        List<Team> teams = teamService.getAllTeams();
-        List<TeamCountDTO> teamCountDTOS = new ArrayList<>();
-        for (Team team: teams) {
-            if(teamIds.contains(team.getId()) && manager.get().getManagedTeam().getId().equals(team.getId())){
-                TeamCountDTO teamCountDTO = new TeamCountDTO();
-
-                teamCountDTO.setId(team.getId());
-                teamCountDTO.setName(team.getName());
-
-                // false time means PAST, true means FUTURE
-                teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager.get(), false).size());
-
-                teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager.get(), true).size());
-
-                teamCountDTO.setDreamingCount(workerGoalService.getWorkersByGoalsTeamManager
-                        (team.getId(), topicIds, manager.get()).size());
-
-
-                teamCountDTOS.add(teamCountDTO);
-            }
-        }
-        return ResponseEntity.ok(teamCountDTOS);
+        return ResponseEntity.ok(teamService.getTeamsCountDTOByTopics(topicIds,teamIds, managerId));
     }
 
     @GetMapping("/get/{id}")
