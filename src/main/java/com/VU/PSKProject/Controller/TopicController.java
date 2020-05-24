@@ -1,21 +1,16 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Topic;
-import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
-import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
-import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.TopicService;
-import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +31,7 @@ public class TopicController {
     }
 
     @GetMapping("/getCovered/{workerId}")
-    public List<CoveredTopicsTreeNodeDTO> getTopicsCoveredByWorker(@PathVariable Long workerId) {
+    public List<CoveredTopicDTO> getTopicsCoveredByWorker(@PathVariable Long workerId) {
         return topicService.getAllWorkerCoveredTopics(workerId);
     }
 
@@ -66,5 +61,11 @@ public class TopicController {
     @GetMapping("/getWorkersTopicsByManagerId/{managerId}")
     public ResponseEntity<List<WorkerTopicsDTO>> getWorkersTopicsByManager(@PathVariable Long managerId) {
         return ResponseEntity.ok(topicService.getWorkersTopicsDTObyManager(managerId));
+    }
+
+    @GetMapping("exportWorkersTopicsByManagerId/{managerId}")
+    public void exportCSV(@PathVariable Long managerId) {
+       List<WorkerTopicsDTO> workerTopicsDTOS = topicService.getWorkersTopicsDTObyManager(managerId);
+
     }
 }

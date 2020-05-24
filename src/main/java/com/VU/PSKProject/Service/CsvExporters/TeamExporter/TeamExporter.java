@@ -1,8 +1,7 @@
-package com.VU.PSKProject.Service.Model.CsvExporters.TeamExporter;
+package com.VU.PSKProject.Service.CsvExporters.TeamExporter;
 
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;

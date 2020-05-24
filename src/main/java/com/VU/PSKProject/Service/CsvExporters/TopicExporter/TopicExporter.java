@@ -1,9 +1,7 @@
-package com.VU.PSKProject.Service.Model.CsvExporters.WorkerExporter;
+package com.VU.PSKProject.Service.CsvExporters.TopicExporter;
 
-import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Service.Mapper.WorkerMapper;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Service.Mapper.TopicMapper;
+import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -12,31 +10,29 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class WorkerExporter {
-
+public class TopicExporter {
     @Autowired
-    WorkerMapper workerMapper;
+    TopicMapper topicMapper;
 
-    public void exportToCSV(List<WorkerToExportDTO> workers, HttpServletResponse response) throws Exception {
-        String filename = "workers.csv";
+   /* public void exportToCSV(List<> teams, HttpServletResponse response) throws Exception {
+        String filename = "teams.csv";
         response.setContentType("text/csv");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
 
-        StatefulBeanToCsv<WorkerToExportDTO> writer = new StatefulBeanToCsvBuilder<WorkerToExportDTO>(response.getWriter())
+        StatefulBeanToCsv<TeamCountDTO> writer = new StatefulBeanToCsvBuilder<TeamCountDTO>(response.getWriter())
                 .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
                 .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                 .withOrderedResults(false)
                 .build();
 
-        String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team\n"};
+        String[] headers = {"Team Name,", "Learned topic count,", "Planned topic count,", "Goal Count\n"};
         for(String s : headers)
         {
             response.getWriter().write(s );
         }
-        writer.write(workers);
-    }
+        writer.write(teams);
+    }*/
 }

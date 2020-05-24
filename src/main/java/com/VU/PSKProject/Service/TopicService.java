@@ -3,13 +3,9 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
-import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
-import com.VU.PSKProject.Service.Model.LearningDay.LearningDayAssigneeDTO;
-import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
-import com.VU.PSKProject.Service.Model.TopicDTO;
+import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +55,7 @@ public class TopicService {
         return topicRepository.findById(id);
     }
 
-    public List<CoveredTopicsTreeNodeDTO> getAllWorkerCoveredTopics(Long workerId)
+    public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId)
     {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDays.stream().map(l -> topicMapper.toTreeNodeDTO(l.getTopic())).collect(Collectors.toList());
@@ -126,4 +122,5 @@ public class TopicService {
         }
         return teamTopicsDTO;
     }
+
 }

@@ -54,6 +54,10 @@ public class WorkerMapper {
             PropertyUtils.customCopyProperties(w, worker);
             worker.setRole(w.getRole().getName());
             worker.setWorkingTeam(w.getWorkingTeam().getName());
+            if(w.getManagedTeam() != null)
+                worker.setManagedTeam(w.getManagedTeam().getName());
+            else
+                worker.setManagedTeam("None");
             return worker;
         }).collect(Collectors.toList());
     }

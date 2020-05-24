@@ -2,12 +2,16 @@ package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +26,7 @@ public class WorkerService {
     private LearningDayService learningDayService;
 
     @Autowired
-    private UserService userService;
+    private TeamService teamService;
 
     @Autowired
     private WorkerMapper workerMapper;
@@ -107,8 +111,24 @@ public class WorkerService {
         return workerDTOS;
     }
 
+    public List<WorkerToGetDTO> retrieveAllWorkers() {
+        List<Worker> workers = getAllWorkers();
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
+            workerDTOS.add(workerDTO);
+        }
+        return workerDTOS;
+    }
+
     public Worker getWorkerByUserId(Long userId) {
         return workerRepository.findByUserId(userId).orElse(new Worker());
     }
 
+    public void exportToCSV(List<WorkerToExportDTO> dataToExport, HttpServletResponse response) throws Exception {
+        String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team,", "Managed team\n"};
+        CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
+    }
 }

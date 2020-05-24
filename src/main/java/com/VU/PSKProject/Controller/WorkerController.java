@@ -4,17 +4,13 @@ import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
-import com.VU.PSKProject.Service.Model.CsvExporters.WorkerExporter.WorkerExporter;
+import com.VU.PSKProject.Service.CsvExporters.WorkerExporter.WorkerExporter;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/workers")
@@ -46,14 +41,7 @@ public class WorkerController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
-        List<Worker> workers = workerService.getAllWorkers();
-        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
-        for (Worker w: workers) {
-            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
-            workerDTO.setEmail(w.getUser().getEmail());
-            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
-            workerDTOS.add(workerDTO);
-        }
+        List<WorkerToGetDTO> workerDTOS = workerService.retrieveAllWorkers();
         return ResponseEntity.ok(workerDTOS);
     }
     @GetMapping("/getByTopicAndManager/{topicId}/{managerId}")
@@ -80,7 +68,7 @@ public class WorkerController {
         manager.ifPresent(m ->{
             List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
             try {
-                workerExporter.exportToCSV(workerToExportDTOS, response);
+                workerService.exportToCSV(workerToExportDTOS, response);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -94,11 +82,21 @@ public class WorkerController {
         manager.ifPresent(m ->{
             List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
             try {
-                workerExporter.exportToCSV(workerToExportDTOS, response);
+                workerService.exportToCSV(workerToExportDTOS, response);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    @GetMapping("/exportAllToCSV/")
+    public void exportWorkers(HttpServletResponse response) {
+        List<WorkerToExportDTO> workersToExport = workerMapper.toExportList(workerService.retrieveAllWorkers());
+        try {
+            workerService.exportToCSV(workersToExport, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @GetMapping("/get/{id}")

@@ -17,4 +17,6 @@ public class WorkerToExportDTO {
     private String role;
     @CsvBindByPosition(position = 4)
     private String workingTeam;
+    @CsvBindByPosition(position = 5)
+    private String managedTeam;
 }
