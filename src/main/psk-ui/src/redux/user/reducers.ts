@@ -1,4 +1,4 @@
-import { UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, UserActionTypes, UserState } from './types';
+import { UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, USER_TOKEN_UPDATE, UserActionTypes, UserState } from './types';
 import { Authority } from '../../models/authority';
 
 const initialState: UserState = {
@@ -7,6 +7,7 @@ const initialState: UserState = {
 	token: '',
 	role: { title: '', color: '' },
 	authority: Authority.UNASSIGNED,
+	refreshToken: ''
 };
 
 export function userReducer(
@@ -28,6 +29,12 @@ export function userReducer(
 	}
 	case USER_LOGOUT: {
 		return initialState;
+	}
+	case USER_TOKEN_UPDATE: {
+		return {
+			...state,
+			...action.payload
+		};
 	}
 	default:
 		return state;

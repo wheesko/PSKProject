@@ -1,5 +1,7 @@
 package com.VU.PSKProject.Service.Model.LearningDay;
 
+import com.VU.PSKProject.Service.Model.TopicDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +16,6 @@ public class LearningDayToReturnDTO {
     private String comment;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Vilnius")
     private Timestamp dateTimeAt;
-    private Long assignee;
-    private Long topic;
+    private WorkerDTO assignee;
+    private TopicDTO topic;
 }

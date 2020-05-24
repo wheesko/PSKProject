@@ -64,6 +64,9 @@
                 "allowExpressions": true
             }
         ],
+        "@typescript-eslint/ban-ts-ignore": [
+            "warn"
+        ],
         "@typescript-eslint/no-use-before-define": "off"
     }
 }

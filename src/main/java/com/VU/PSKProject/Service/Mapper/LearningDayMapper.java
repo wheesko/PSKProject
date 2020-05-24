@@ -33,14 +33,9 @@ public class LearningDayMapper {
         return modelMapper.map(learningDayDTO, LearningDay.class);
     }
 
-    public List<LearningDayToReturnDTO> mapLearningDayListToReturnDTO(List<LearningDay> learningDays)
-    {
-        return learningDays.stream().map(day ->{
-            LearningDayToReturnDTO learningDayToReturnDTO = new LearningDayToReturnDTO();
-            PropertyUtils.customCopyProperties(day, learningDayToReturnDTO);
-            learningDayToReturnDTO.setAssignee(day.getAssignee().getId());
-            learningDayToReturnDTO.setTopic((day.getTopic().getId()));
-            return learningDayToReturnDTO;
-        }).collect(Collectors.toList());
+    public List<LearningDayToReturnDTO> mapLearningDayListToReturnDTO(List<LearningDay> learningDays) {
+        return learningDays.stream()
+                .map(day -> modelMapper.map(day, LearningDayToReturnDTO.class))
+                .collect(Collectors.toList());
     }
 }

@@ -6,5 +6,4 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface RoleRepository extends JpaRepository<Role, Long>, CrudRepository<Role, Long> {
     boolean existsById(Long Id);
-
 }
