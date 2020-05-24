@@ -3,6 +3,7 @@ package com.VU.PSKProject.Entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.jdbc.Work;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ public class LearningDay implements Comparable<LearningDay> {
     private Timestamp dateTimeAt;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Worker assignee;
 
     @Override
@@ -33,7 +34,17 @@ public class LearningDay implements Comparable<LearningDay> {
         return this.getDateTimeAt().compareTo(learningDay.dateTimeAt);
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Topic topic;
 
+    public LearningDay(){}
+
+    public LearningDay(String name, String comment, Timestamp dateTimeAt, Worker assignee, Topic topic)
+    {
+        this.name = name;
+        this.comment = comment;
+        this.assignee = assignee;
+        this.dateTimeAt = dateTimeAt;
+        this.topic = topic;
+    }
 }

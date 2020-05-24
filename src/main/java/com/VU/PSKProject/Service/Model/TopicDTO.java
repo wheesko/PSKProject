@@ -10,7 +10,7 @@ import java.util.List;
 public class TopicDTO {
     private Long id;
     private String name;
-    private Long parentTopic;
+    private List<Long> childrenTopics;
     private String description;
     private List<Long> teamGoals;
     private List<Long> workerGoals;

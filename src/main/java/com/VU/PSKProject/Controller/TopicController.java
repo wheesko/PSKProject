@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Topic;
+import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicDTO;
@@ -32,6 +33,11 @@ public class TopicController {
     @GetMapping("/get/{id}")
     public Optional<Topic> getTopic(@PathVariable Long id) {
         return topicService.getTopic(id);
+    }
+
+    @GetMapping("/getCovered/{workerId}")
+    public List<CoveredTopicsTreeNodeDTO> getTopicsCoveredByWorker(@PathVariable Long workerId) {
+        return topicService.getAllWorkerCoveredTopics(workerId);
     }
 
     @PostMapping("/create")
