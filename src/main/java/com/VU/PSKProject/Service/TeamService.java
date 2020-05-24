@@ -8,7 +8,6 @@ import com.VU.PSKProject.Service.Model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,8 +51,7 @@ public class TeamService {
         return teamRepository.findByManagerId(managerId);
     }
 
-    public List<Team> getTeamsByTopicId(Long id, Principal principal){
-        UserDTO user = userService.getUserByEmail(principal.getName());
+    public List<Team> getTeamsByTopicId(Long id, UserDTO user){
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List <Team> teams = new ArrayList<>();
@@ -75,8 +73,7 @@ public class TeamService {
         }
         return teams;
     }
-    public List<Team> getTeamsByTopicIds(List<Long> ids, Principal principal){
-        UserDTO user = userService.getUserByEmail(principal.getName());
+    public List<Team> getTeamsByTopicIds(List<Long> ids, UserDTO user){
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List <Team> teams = new ArrayList<>();
@@ -98,8 +95,8 @@ public class TeamService {
         }
         return teams;
     }
-    public List<TeamCountDTO> getTeamsCountDTOByTopics( List<Long> topicIds, List<Long> teamIds, Principal principal){
-        UserDTO user = userService.getUserByEmail(principal.getName());
+    public List<TeamCountDTO> getTeamsCountDTOByTopics( List<Long> topicIds, List<Long> teamIds, UserDTO user){
+
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List<Team> teams = getAllTeams();
@@ -111,12 +108,11 @@ public class TeamService {
                 teamCountDTO.setId(team.getId());
                 teamCountDTO.setName(team.getName());
 
-                // false time means PAST, true means FUTURE
                 teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager, false).size());
+                        (team.getId(), topicIds, manager, "PAST").size());
 
                 teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager, true).size());
+                        (team.getId(), topicIds, manager, "FUTURE").size());
 
                 teamCountDTO.setDreamingCount(workerGoalService.getWorkersByGoalsTeamManager
                         (team.getId(), topicIds, manager).size());

@@ -50,17 +50,14 @@ public class WorkerController {
     @GetMapping("/getByTopic/{topicId}")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        Worker manager = workerService.getWorkerByUserId(user.getId());
-
-        List<Worker> workers = workerService.getWorkersByTopic(topicId);
-        return ResponseEntity.ok(workerService.extractByManager(workers, manager));
+        return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByTopic(topicId),
+                workerService.getWorkerByUserId(user.getId())));
     }
     @GetMapping("/getByTopicIds/{topicIds}/")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        Worker manager = workerService.getWorkerByUserId(user.getId());
-        List<Worker> workers = workerService.getWorkersByIds(topicIds);
-        return ResponseEntity.ok(workerService.extractByManager(workers, manager));
+        return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByIds(topicIds),
+                workerService.getWorkerByUserId(user.getId())));
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {

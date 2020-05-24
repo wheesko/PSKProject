@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -40,8 +39,7 @@ public class LearningDayService {
         return learningDayRepository.findAllByAssigneeId(workerId);
     }
 
-    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, Principal principal) {
-        UserDTO user = userService.getUserByEmail(principal.getName());
+    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, UserDTO user) {
         Worker worker = workerService.getWorkerByUserId(user.getId());
 
         Timestamp dateFrom = Timestamp.valueOf(DateUtils.stringsToDate(year, month, "1").minusDays(7));
@@ -72,9 +70,7 @@ public class LearningDayService {
         learningDayRepository.deleteById(id);
     }
 
-    public List<LearningDay> getAllLearningDaysByManagerId(Principal principal) {
-
-        UserDTO user = userService.getUserByEmail(principal.getName());
+    public List<LearningDay> getAllLearningDaysByManagerId(UserDTO user) {
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
         // get all workers

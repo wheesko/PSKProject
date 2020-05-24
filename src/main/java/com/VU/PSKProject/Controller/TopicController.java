@@ -4,8 +4,10 @@ import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Service.TopicService;
+import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import java.util.Optional;
 public class TopicController {
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/getAll")
     public List<Topic> getTopics() {
@@ -57,10 +61,12 @@ public class TopicController {
 
     @GetMapping("/getTeamTopics")
     public ResponseEntity<TeamTopicsDTO> getTeamsCountByTopics(Principal principal){
-        return ResponseEntity.ok(topicService.getTeamTopicsDTObyManager(principal));
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return ResponseEntity.ok(topicService.getTeamTopicsDTObyManager(user));
     }
     @GetMapping("/getWorkersTopics")
     public ResponseEntity<List<WorkerTopicsDTO>> getWorkersTopicsByManager(Principal principal) {
-        return ResponseEntity.ok(topicService.getWorkersTopicsDTObyManager(principal));
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return ResponseEntity.ok(topicService.getWorkersTopicsDTObyManager(user));
     }
 }

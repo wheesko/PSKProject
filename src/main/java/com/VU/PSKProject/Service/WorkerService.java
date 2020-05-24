@@ -77,12 +77,12 @@ public class WorkerService {
         return learningDayService.getAssigneesByTopicIdsPast(ids);
     }
 
-    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, boolean time){
+    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, String time){
         List<Worker> workers = new ArrayList<>();
         List <Worker> allWorkers = null;
-        if (!time)
+        if (time == "PAST")
             allWorkers = learningDayService.getAssigneesByTopicIdsPast(ids);
-        if (time)
+        if (time == "FUTURE")
              allWorkers = learningDayService.getAssigneesByTopicIdsFuture(ids);
 
         for (Worker w: allWorkers) {

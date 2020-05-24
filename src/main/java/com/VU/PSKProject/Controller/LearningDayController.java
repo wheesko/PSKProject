@@ -5,7 +5,9 @@ import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.LearningDayService;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.TopicService;
+import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class LearningDayController {
 	@Autowired
     private TopicService topicService;
 
+	@Autowired
+    private UserService userService;
+
     @GetMapping("/get/{workerId}")
     public List<LearningDayToReturnDTO> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
@@ -38,7 +43,8 @@ public class LearningDayController {
     }
     @GetMapping("/getByManagerId")
     public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(Principal principal) {
-        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(principal);
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(user);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
@@ -48,7 +54,8 @@ public class LearningDayController {
         @PathVariable String month,
         Principal principal
     ) {
-        List<LearningDay> learningDays = learningDayService.getMonthLearningDaysByWorkerId(year, month, principal);
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<LearningDay> learningDays = learningDayService.getMonthLearningDaysByWorkerId(year, month, user);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
