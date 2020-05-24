@@ -141,14 +141,22 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 						onClick={() => {
 							setIsFormVisible(true);
 						}}
+						disabled={modalListData.length !== 0}
 					>
 						Add event
 					</Button>
 				)}
-				{isFormVisible ? <EventForm/> : null}
+				{isFormVisible ? <EventForm selectedDate={selectedDate} onCreateDay={onCreateDay}/> : null}
 			</Modal>
 		</div>
 	);
+
+	function onCreateDay() {
+		loadData(selectedDate === undefined ? moment() : selectedDate).then(learningEvents => {
+			setCalendarListData(learningEvents);
+			setModalVisibility(false);
+		});
+	}
 };
 // this method will be changed into a get request
 

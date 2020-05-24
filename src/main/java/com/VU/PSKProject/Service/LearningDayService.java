@@ -5,11 +5,13 @@ import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.LearningDayRepository;
+import com.VU.PSKProject.Service.Exception.LearningDayException;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -33,26 +35,43 @@ public class LearningDayService {
     private UserService userService;
 
     @Autowired
+    private TopicService topicService;
+
+    @Autowired
     private LearningDayMapper learningDayMapper;
 
     public List<LearningDay> getAllLearningDaysByWorkerId(Long workerId) {
         return learningDayRepository.findAllByAssigneeId(workerId);
     }
 
-    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, UserDTO user) {
+    public List<LearningDayToReturnDTO> getMonthLearningDaysByWorkerId(String year, String month, UserDTO user) {
         Worker worker = workerService.getWorkerByUserId(user.getId());
 
         Timestamp dateFrom = Timestamp.valueOf(DateUtils.stringsToDate(year, month, "1").minusDays(7));
         String lastDay = DateUtils.getLastDayOfMonth(year, month);
         Timestamp dateTo = Timestamp.valueOf(DateUtils.stringsToDate(year, month, lastDay).plusDays(7));
-        return learningDayRepository.findAllByDateTimeAtBetweenAndAssigneeId(dateFrom, dateTo, worker.getId());
+
+        List<LearningDay> learningDays =
+                learningDayRepository.findAllByDateTimeAtBetweenAndAssigneeId(dateFrom, dateTo, worker.getId());
+
+        return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
     public List<LearningDay> getAllLearningDaysByWorkerId(List<Long> workerId) {
         return learningDayRepository.findAllByAssigneeIdIn(workerId);
     }
 
-    public void createLearningDay(LearningDay learningDay) {
+    public void createLearningDay(LearningDayToCreateDTO learningDayRequest, UserDTO user) {
+        Worker worker = workerService.getWorkerByUserId(user.getId());
+        Topic topic = topicService.getTopic(learningDayRequest.getTopic())
+                .orElseThrow(() -> new LearningDayException("Could not find topic"));
+
+        LearningDay learningDay = learningDayMapper.fromDTO(learningDayRequest);
+
+        learningDay.setAssignee(worker);
+        learningDay.setTopic(topic);
+
+        checkWorkerAvailability(worker, learningDay);
         learningDayRepository.save(learningDay);
     }
 
@@ -97,8 +116,7 @@ public class LearningDayService {
         return learningDayRepository.findAllByAssigneeIdIn(ids);
     }
 
-    public ResponseEntity<String> checkWorkerAvailability(Worker worker, LearningDay learningDay)
-    {
+    private void checkWorkerAvailability(Worker worker, LearningDay learningDay) {
         List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
         Collections.sort(learningDays);
         List<LocalDateTime> localDates = new ArrayList<>();
@@ -109,18 +127,15 @@ public class LearningDayService {
         int cons = countConsecutiveDays(localDates, learningDay.getDateTimeAt().toLocalDateTime());
 
         if(cons == -1)
-            return ResponseEntity.badRequest().body("This day is already taken");
-
+            throw new LearningDayException("This day is already taken");
 
         if(cons > worker.getConsecutiveLearningDayLimit())
-            return ResponseEntity.badRequest().body("Too many consequent learning days!");
+            throw new LearningDayException("Too many consequent learning days!");
 
         int quart = countQuarterDays(localDates, learningDay.getDateTimeAt().toLocalDateTime());
 
         if(quart > worker.getQuarterLearningDayLimit())
-            return ResponseEntity.badRequest().body("Too many learning days in a quarter!");
-
-        return ResponseEntity.ok("Learning days are in limit");
+             throw new LearningDayException("Too many learning days in a quarter!");
     }
 
     private int countConsecutiveDays(List<LocalDateTime> dateList, LocalDateTime today)
