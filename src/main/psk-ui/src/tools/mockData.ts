@@ -127,7 +127,7 @@ export const learningEvents: LearningEvent[] = [
 		name: 'Building apps with Redux',
 		description: 'Some very very cool description',
 		dateTimeAt: '',
-		learningTopic: {
+		topic: {
 			id: 0,
 			name: 'Web topic',
 			description: 'string',
@@ -136,13 +136,14 @@ export const learningEvents: LearningEvent[] = [
 			createdBy: 0,
 		},
 		assignedWorker: null,
+		comment: ''
 	},
 	{
 		id: 1,
 		name: 'JPA basics',
 		description: 'Some very very cool description',
 		dateTimeAt: '',
-		learningTopic: {
+		topic: {
 			id: 1,
 			name: 'Java topic',
 			description: 'string',
@@ -151,14 +152,14 @@ export const learningEvents: LearningEvent[] = [
 			createdBy: 0,
 		},
 		assignedWorker: null,
-
+		comment: ''
 	},
 	{
 		id: 2,
 		name: 'Automated testing',
 		description: 'Learning automated testing with selenium and webdriver',
 		dateTimeAt: '',
-		learningTopic: {
+		topic: {
 			id: 2,
 			name: 'Testing',
 			description: 'string',
@@ -167,7 +168,7 @@ export const learningEvents: LearningEvent[] = [
 			createdBy: 0,
 		},
 		assignedWorker: null,
-
+		comment: ''
 	}
 ];
 
