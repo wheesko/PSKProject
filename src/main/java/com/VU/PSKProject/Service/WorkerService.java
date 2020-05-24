@@ -102,6 +102,7 @@ public class WorkerService {
         }
         return workers;
     }
+
     public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager){
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
 
@@ -115,19 +116,4 @@ public class WorkerService {
         }
         return workerDTOS;
     }
-
-    public void exportToCSV(List<WorkerToExportDTO> workers, HttpServletResponse response) throws Exception {
-        String filename = "workers.csv";
-        response.setContentType("text/csv");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
-
-        StatefulBeanToCsv<WorkerToExportDTO> writer = new StatefulBeanToCsvBuilder<WorkerToExportDTO>(response.getWriter())
-                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-                .withOrderedResults(false)
-                .build();
-
-        writer.write(workers);
-    }
-
 }

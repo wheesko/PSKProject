@@ -4,6 +4,7 @@ import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
+import com.VU.PSKProject.Service.Model.CsvExporters.WorkerExporter.WorkerExporter;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
@@ -39,6 +40,9 @@ public class WorkerController {
 
     @Autowired
     private WorkerMapper workerMapper;
+
+    @Autowired
+    private WorkerExporter workerExporter;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
@@ -77,17 +81,7 @@ public class WorkerController {
         manager.ifPresent(m ->{
             List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
             try {
-                String filename = "workers.csv";
-                response.setContentType("text/csv");
-                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
-
-                StatefulBeanToCsv<WorkerToExportDTO> writer = new StatefulBeanToCsvBuilder<WorkerToExportDTO>(response.getWriter())
-                        .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-                        .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-                        .withOrderedResults(false)
-                        .build();
-
-                writer.write(workerToExportDTOS);
+                workerExporter.exportToCSV(workerToExportDTOS, response);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -101,7 +95,7 @@ public class WorkerController {
         manager.ifPresent(m ->{
             List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
             try {
-                workerService.exportToCSV(workerToExportDTOS, response);
+                workerExporter.exportToCSV(workerToExportDTOS, response);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -47,10 +47,13 @@ public class WorkerMapper {
         }).collect(Collectors.toList());
     }
 
+    // adapter to convert one dto to another
     public List<WorkerToExportDTO> toExportList(List<WorkerToGetDTO> workerList){
         return workerList.stream().map(w ->{
             WorkerToExportDTO worker = new WorkerToExportDTO();
             PropertyUtils.customCopyProperties(w, worker);
+            worker.setRole(w.getRole().getName());
+            worker.setWorkingTeam(w.getWorkingTeam().getName());
             return worker;
         }).collect(Collectors.toList());
     }
