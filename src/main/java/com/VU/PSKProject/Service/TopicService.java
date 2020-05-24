@@ -30,10 +30,7 @@ public class TopicService {
     private WorkerService workerService;
     @Autowired
     private TeamService teamService;
-
-    @Autowired
-    private LearningDayService learningDayService;
-
+    
     @Autowired
     private TopicMapper topicMapper;
 
