@@ -55,7 +55,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				<ul className="events">
 					{getListData(value).map(item => (
 						<li key={item.id}>
-							<Tag color={'red'}>{item.name}</Tag>
+							<Tag color={'red'}>{item.topic.name}</Tag>
 						</li>
 					))}
 				</ul>
@@ -125,8 +125,9 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 					: modalListData.map(item => (
 						<>
 							<li key={item.id}>
-								<Tag color={item.learningTopic?.color}>{item.name}</Tag>
-								<p>{item.description}</p>
+								<Typography.Paragraph>Topic name: {item.topic.name}</Typography.Paragraph>
+								<Typography.Paragraph>Description: {item.topic.description}</Typography.Paragraph>
+								<Typography.Paragraph>Comments: {item.comment}</Typography.Paragraph>
 							</li>
 							<Divider/>
 						</>
