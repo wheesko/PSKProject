@@ -29,9 +29,6 @@ public class TopicService {
     private TeamService teamService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private TopicMapper topicMapper;
 
     public List<Topic> getAllTopics() {

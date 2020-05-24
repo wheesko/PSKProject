@@ -22,9 +22,6 @@ public class WorkerService {
     private LearningDayService learningDayService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private WorkerMapper workerMapper;
 
     public List<Worker> getAllWorkers() {

@@ -21,8 +21,6 @@ public class TeamService {
     private WorkerService workerService;
     @Autowired
     private WorkerGoalService workerGoalService;
-    @Autowired
-    private UserService userService;
 
     public List<Team> getAllTeams(){
         return teamRepository.findAll();
