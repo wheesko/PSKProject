@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Button, Row, Col } from 'antd';
-import authenticationService from '../../../api/authentication-service';
 
 const LandingPage: React.FunctionComponent<{}> = () => {
 	return (
@@ -23,7 +22,7 @@ const LandingPage: React.FunctionComponent<{}> = () => {
 };
 
 const handleClick = (): void => {
-	authenticationService.login({email: "admin", password: "admin"}).then(data => console.log(data));
+	console.log("why am i still here");
 };
 
 export { LandingPage };

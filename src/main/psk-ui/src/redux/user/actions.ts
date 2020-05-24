@@ -1,4 +1,4 @@
-import { UserState, UPDATE_SESSION, USER_LOGIN, USER_LOGOUT } from './types';
+import { UserState, UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, USER_TOKEN_UPDATE } from './types';
 
 export function updateSession(newSession: UserState) {
 	return {
@@ -17,5 +17,12 @@ export function userLogin(newState: UserState) {
 export function userLogout() {
 	return {
 		type: USER_LOGOUT
+	};
+}
+
+export function updateToken(newState: { token: string }) {
+	return {
+		type: USER_TOKEN_UPDATE,
+		payload: newState
 	};
 }

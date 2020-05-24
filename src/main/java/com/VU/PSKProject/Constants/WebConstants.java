@@ -16,7 +16,8 @@ public class WebConstants {
             "/swagger-ui/**",
             "/webjars/**",
             "/h2-console/**",
-            "/favicon.ico"
+            "/favicon.ico",
+            "/api/refreshToken"
             // other public endpoints of your API may be appended to this array
     };
 }
