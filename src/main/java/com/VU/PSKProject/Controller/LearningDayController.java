@@ -1,20 +1,21 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
-import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.LearningDayService;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.TopicService;
+import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api/learningDays")
@@ -28,6 +29,9 @@ public class LearningDayController {
 
     @Autowired
     private LearningDayMapper learningDayMapper;
+
+    @Autowired
+    private UserService userService;
 	
 	@Autowired
     private TopicService topicService;
@@ -43,13 +47,14 @@ public class LearningDayController {
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
-    @GetMapping("/get/{year}/{month}/{workerId}")
+    @GetMapping("/get/{year}/{month}")
     public List<LearningDayToReturnDTO> getMonthLearningDaysByWorkerId(
         @PathVariable String year,
         @PathVariable String month,
-        @PathVariable Long workerId
+        Principal principal
     ) {
-        List<LearningDay> learningDays = learningDayService.getMonthLearningDaysByWorkerId(year, month, workerId);
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<LearningDay> learningDays = learningDayService.getMonthLearningDaysByWorkerId(year, month, user);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
