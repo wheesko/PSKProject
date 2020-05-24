@@ -4,9 +4,11 @@ import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TeamRepository;
 import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,8 @@ public class TeamService {
     private WorkerService workerService;
     @Autowired
     private WorkerGoalService workerGoalService;
+    @Autowired
+    private UserService userService;
 
     public List<Team> getAllTeams(){
         return teamRepository.findAll();
@@ -48,14 +52,14 @@ public class TeamService {
         return teamRepository.findByManagerId(managerId);
     }
 
-    public List<Team> getTeamsByTopicId(Long id, Long managerId){
-
-        Optional<Worker> manager = workerService.getWorker(managerId);
+    public List<Team> getTeamsByTopicId(Long id, Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List <Team> teams = new ArrayList<>();
         List <Worker> workers = workerService.getWorkersByTopic(id);
         for (Worker worker: workers) {
-            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId().equals(worker.getWorkingTeam().getId()))
+            if(manager.getManagedTeam() != null && manager.getManagedTeam().getId().equals(worker.getWorkingTeam().getId()))
             {
                 if(worker.getWorkingTeam() != null){
                     if (!teams.contains(worker.getWorkingTeam())){
@@ -71,14 +75,14 @@ public class TeamService {
         }
         return teams;
     }
-    public List<Team> getTeamsByTopicIds(List<Long> ids, Long managerId){
-
-        Optional<Worker> manager = workerService.getWorker(managerId);
+    public List<Team> getTeamsByTopicIds(List<Long> ids, Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List <Team> teams = new ArrayList<>();
         List <Worker> workers = workerService.getWorkersByIds(ids);
         for (Worker worker: workers) {
-            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId().equals(worker.getWorkingTeam().getId())){
+            if(manager.getManagedTeam() != null && manager.getManagedTeam().getId().equals(worker.getWorkingTeam().getId())){
                 if(worker.getWorkingTeam() != null) {
                     if (!teams.contains(worker.getWorkingTeam())){
                         teams.add(worker.getWorkingTeam());
@@ -94,14 +98,14 @@ public class TeamService {
         }
         return teams;
     }
-    public List<TeamCountDTO> getTeamsCountDTOByTopics( List<Long> topicIds, List<Long> teamIds, Long managerId){
-        // for this to werk we need to know manager id
-        Optional<Worker> manager = workerService.getWorker(managerId);
+    public List<TeamCountDTO> getTeamsCountDTOByTopics( List<Long> topicIds, List<Long> teamIds, Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List<Team> teams = getAllTeams();
         List<TeamCountDTO> teamCountDTOS = new ArrayList<>();
         for (Team team: teams) {
-            if(teamIds.contains(team.getId()) && manager.get().getManagedTeam().getId().equals(team.getId())){
+            if(teamIds.contains(team.getId()) && manager.getManagedTeam().getId().equals(team.getId())){
                 TeamCountDTO teamCountDTO = new TeamCountDTO();
 
                 teamCountDTO.setId(team.getId());
@@ -109,13 +113,13 @@ public class TeamService {
 
                 // false time means PAST, true means FUTURE
                 teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager.get(), false).size());
+                        (team.getId(), topicIds, manager, false).size());
 
                 teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager.get(), true).size());
+                        (team.getId(), topicIds, manager, true).size());
 
                 teamCountDTO.setDreamingCount(workerGoalService.getWorkersByGoalsTeamManager
-                        (team.getId(), topicIds, manager.get()).size());
+                        (team.getId(), topicIds, manager).size());
 
                 teamCountDTOS.add(teamCountDTO);
             }

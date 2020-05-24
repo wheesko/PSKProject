@@ -3,18 +3,16 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
-import com.VU.PSKProject.Service.Model.LearningDay.LearningDayAssigneeDTO;
-import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
-import com.VU.PSKProject.Service.Model.TopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +30,7 @@ public class TopicService {
     private TeamService teamService;
 
     @Autowired
-    private LearningDayService learningDayService;
+    private UserService userService;
 
     @Autowired
     private TopicMapper topicMapper;
@@ -84,16 +82,18 @@ public class TopicService {
         return topics;
     }
 
-    public List<WorkerTopicsDTO> getWorkersTopicsDTObyManager(Long managerId){
+    public List<WorkerTopicsDTO> getWorkersTopicsDTObyManager(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        Worker manager = workerService.getWorkerByUserId(user.getId());
+
         List<WorkerTopicsDTO> workerTopicsDTOS = new ArrayList<>();
-        // for this to werk we need to know manager id
-        Optional<Worker> manager = workerService.getWorker(managerId);
-        List<Worker> workers = workerService.findByWorkingTeamId(manager.get().getManagedTeam().getId());
+
+        List<Worker> workers = workerService.findByWorkingTeamId(manager.getManagedTeam().getId());
         for (Worker worker : workers) {
             List<Topic> topics = getWorkerTopicsAndGoals(worker.getId(), false);
 
             WorkerTopicsDTO workerTopicsDTO = new WorkerTopicsDTO
-                    (worker.getId(), worker.getName(), worker.getSurname(), managerId);
+                    (worker.getId(), worker.getName(), worker.getSurname(), manager.getId());
             for (Topic topic : topics) {
                 if (!workerTopicsDTO.getTopicsPast().contains(topic.getName()))
                     workerTopicsDTO.setTopicPast(topic.getName());
@@ -109,20 +109,20 @@ public class TopicService {
         }
         return workerTopicsDTOS;
     }
-    public TeamTopicsDTO getTeamTopicsDTObyManager(Long managerId){
-        // for this to werk we need to know manager id
-        Optional<Worker> manager = workerService.getWorker(managerId);
+    public TeamTopicsDTO getTeamTopicsDTObyManager(Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        Worker manager = workerService.getWorkerByUserId(user.getId());
         // false time means PAST, true means FUTURE
-        List<Topic> topics = getTeamTopicsAndGoals(manager.get(), false);
+        List<Topic> topics = getTeamTopicsAndGoals(manager, false);
 
         TeamTopicsDTO teamTopicsDTO = new TeamTopicsDTO
-                (manager.get().getManagedTeam().getId(), teamService.getTeamByManager(managerId).get().getName(), managerId);
+                (manager.getManagedTeam().getId(), teamService.getTeamByManager(manager.getId()).get().getName(), manager.getId());
 
         for (Topic topic : topics) {
             if (!teamTopicsDTO.getTopicsPast().contains(topic.getName()))
                 teamTopicsDTO.setTopicPast(topic.getName());
         }
-        topics = getTeamTopicsAndGoals(manager.get(), true);
+        topics = getTeamTopicsAndGoals(manager, true);
         for (Topic topic : topics) {
             if (!teamTopicsDTO.getTopicsFuture().contains(topic.getName()))
                 teamTopicsDTO.setTopicFuture(topic.getName());

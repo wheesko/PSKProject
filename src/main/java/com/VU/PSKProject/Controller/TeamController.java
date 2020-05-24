@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,24 +44,24 @@ public class TeamController {
         return ResponseEntity.ok(teamDTOS);
     }
 
-    @GetMapping("/getByTopic/{id}/{managerId}")
-    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopic(@PathVariable Long id, @PathVariable Long managerId){
-        List<Team> teams = teamService.getTeamsByTopicId(id, managerId);
+    @GetMapping("/getByTopic/{id}")
+    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopic(@PathVariable Long id, Principal principal){
+        List<Team> teams = teamService.getTeamsByTopicId(id, principal);
         List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
-    @GetMapping("/getByTopicIds/{ids}/{managerId}")
-    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopics(@PathVariable List<Long> ids, @PathVariable Long managerId){
-        List<Team> teams = teamService.getTeamsByTopicIds(ids, managerId);
+    @GetMapping("/getByTopicIds/{ids}")
+    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopics(@PathVariable List<Long> ids, Principal principal){
+        List<Team> teams = teamService.getTeamsByTopicIds(ids, principal);
         List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
 
-    @GetMapping("/getTeamsCountByTopics/{teamIds}/{topicIds}/{managerId}")
+    @GetMapping("/getTeamsCountByTopics/{teamIds}/{topicIds}")
     public ResponseEntity<List<TeamCountDTO>> getTeamsCountByTopics(@PathVariable List<Long> topicIds,
                                                                     @PathVariable List<Long> teamIds,
-                                                                    @PathVariable Long managerId){
-        return ResponseEntity.ok(teamService.getTeamsCountDTOByTopics(topicIds,teamIds, managerId));
+                                                                    Principal principal){
+        return ResponseEntity.ok(teamService.getTeamsCountDTOByTopics(topicIds,teamIds, principal));
     }
 
     @GetMapping("/get/{id}")

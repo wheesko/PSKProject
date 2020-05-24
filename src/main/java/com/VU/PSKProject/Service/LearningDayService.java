@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -29,6 +30,8 @@ public class LearningDayService {
 
     @Autowired
     private TeamService teamService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private LearningDayMapper learningDayMapper;
@@ -37,7 +40,8 @@ public class LearningDayService {
         return learningDayRepository.findAllByAssigneeId(workerId);
     }
 
-    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, UserDTO user) {
+    public List<LearningDay> getMonthLearningDaysByWorkerId(String year, String month, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
         Worker worker = workerService.getWorkerByUserId(user.getId());
 
         Timestamp dateFrom = Timestamp.valueOf(DateUtils.stringsToDate(year, month, "1").minusDays(7));
@@ -68,7 +72,10 @@ public class LearningDayService {
         learningDayRepository.deleteById(id);
     }
 
-    public List<LearningDay> getAllLearningDaysByManagerId(Long managerId) {
+    public List<LearningDay> getAllLearningDaysByManagerId(Principal principal) {
+
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        Worker manager = workerService.getWorkerByUserId(user.getId());
 
         // get all workers
          //Worker workerId = workerRepository.findByManagedTeamId(managerId);
@@ -78,8 +85,8 @@ public class LearningDayService {
 
         Team team;
 
-        if(teamService.getTeamByManager(managerId).isPresent()){
-            team = teamService.getTeamByManager(managerId).get();
+        if(teamService.getTeamByManager(manager.getId()).isPresent()){
+            team = teamService.getTeamByManager(manager.getId()).get();
         }else{
             return null; //TODO: handle it somehow
         }
