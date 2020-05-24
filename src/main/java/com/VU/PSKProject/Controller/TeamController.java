@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +84,7 @@ public class TeamController {
                 teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
                         (team.getId(), topicIds, manager.get(), true).size());
 
-                teamCountDTO.setDreamingCount(workerGoalService.getWorkersByGoalsTeamManager
+                teamCountDTO.setGoalsCount(workerGoalService.getWorkersByGoalsTeamManager
                         (team.getId(), topicIds, manager.get()).size());
 
 
@@ -91,6 +92,13 @@ public class TeamController {
             }
         }
         return ResponseEntity.ok(teamCountDTOS);
+    }
+
+    @GetMapping("/exportTeamsCountByTopics/{teamIds}/{topicIds}/{managerId}")
+    public ResponseEntity<List<TeamCountDTO>> exportCSV(@PathVariable List<Long> topicIds,
+                                                                   @PathVariable List<Long> teamIds,
+                                                                   @PathVariable Long managerId)throws Exception{
+        
     }
 
     @GetMapping("/get/{id}")
