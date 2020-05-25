@@ -7,6 +7,7 @@ import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
+import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Utils.EventDate;
@@ -22,18 +23,23 @@ import java.util.stream.Collectors;
 public class TopicService {
     @Autowired
     private TopicRepository topicRepository;
+
     @Autowired
     private LearningDayService learningDayService;
+
     @Autowired
     private WorkerService workerService;
+
     @Autowired
     private TeamService teamService;
 
     @Autowired
     private TopicMapper topicMapper;
 
-    public List<Topic> getAllTopics() {
-        return topicRepository.findAll();
+    public List<TopicToReturnDTO> getAllTopics() {
+        return topicRepository.findAll().stream()
+                .map(topicMapper::toReturnDto)
+                .collect(Collectors.toList());
     }
 
     public void createTopic(Topic topic) {
@@ -57,11 +63,11 @@ public class TopicService {
         return topicRepository.findById(id);
     }
 
-    public List<CoveredTopicsTreeNodeDTO> getAllWorkerCoveredTopics(Long workerId)
-    {
+    public List<CoveredTopicsTreeNodeDTO> getAllWorkerCoveredTopics(Long workerId) {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDays.stream().map(l -> topicMapper.toTreeNodeDTO(l.getTopic())).collect(Collectors.toList());
     }
+
     public List<Topic> getTeamTopicsAndGoals(Worker manager, EventDate.eventDate time){
         List<Topic> topics = null;
         if(time.equals(EventDate.eventDate.PAST))
@@ -70,6 +76,7 @@ public class TopicService {
             topics = learningDayService.getTopicsByTeamFuture(manager.getManagedTeam().getId());
         return topics;
     }
+
     public List<Topic> getWorkerTopicsAndGoals(Long workerId, String time){
         List<Topic> topics = null;
         if(time.equals(EventDate.eventDate.PAST))

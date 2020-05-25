@@ -4,6 +4,7 @@ import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicDTO;
+import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Service.TopicService;
@@ -22,11 +23,12 @@ import java.util.Optional;
 public class TopicController {
     @Autowired
     private TopicService topicService;
+
     @Autowired
     private UserService userService;
 
     @GetMapping("/getAll")
-    public List<Topic> getTopics() {
+    public List<TopicToReturnDTO> getTopics() {
         return topicService.getAllTopics();
     }
 
