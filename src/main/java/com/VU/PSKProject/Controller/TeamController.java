@@ -51,15 +51,13 @@ public class TeamController {
     @GetMapping("/getByTopic/{id}")
     public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopic(@PathVariable Long id, Principal principal){
         UserDTO user = userService.getUserByEmail(principal.getName());
-        List<Team> teams = teamService.getTeamsByTopicId(id, user);
-        List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+        List<TeamToGetDTO> teamDTOS = teamService.getTeamsByTopicId(id, user).stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
     @GetMapping("/getByTopicIds/{ids}")
     public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopics(@PathVariable List<Long> ids, Principal principal){
         UserDTO user = userService.getUserByEmail(principal.getName());
-        List<Team> teams = teamService.getTeamsByTopicIds(ids, user);
-        List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+        List<TeamToGetDTO> teamDTOS = teamService.getTeamsByTopicIds(ids, user).stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
 

@@ -84,7 +84,8 @@ public class LearningDayService {
         if(teamService.getTeamByManager(manager.getId()).isPresent()){
             team = teamService.getTeamByManager(manager.getId()).get();
         }else{
-            return null; //TODO: handle it somehow
+            // handle it better mybe?
+            throw new RuntimeException();
         }
 
         List<Worker> workers = workerService.findByWorkingTeamId(team.getId());

@@ -9,6 +9,7 @@ import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
+import com.VU.PSKProject.Utils.EventDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,19 +62,19 @@ public class TopicService {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDays.stream().map(l -> topicMapper.toTreeNodeDTO(l.getTopic())).collect(Collectors.toList());
     }
-    public List<Topic> getTeamTopicsAndGoals(Worker manager, String time){
+    public List<Topic> getTeamTopicsAndGoals(Worker manager, EventDate.eventDate time){
         List<Topic> topics = null;
-        if(time == "PAST")
+        if(time.equals(EventDate.eventDate.PAST))
             topics = learningDayService.getTopicsByTeamPast(manager.getManagedTeam().getId());
-        if(time == "FUTURE")
+        if(time.equals(EventDate.eventDate.FUTURE))
             topics = learningDayService.getTopicsByTeamFuture(manager.getManagedTeam().getId());
         return topics;
     }
     public List<Topic> getWorkerTopicsAndGoals(Long workerId, String time){
         List<Topic> topics = null;
-        if(time == "PAST")
+        if(time.equals(EventDate.eventDate.PAST))
             topics = learningDayService.getTopicsByWorkerPast(workerId);
-        if(time == "FUTURE")
+        if(time.equals(EventDate.eventDate.FUTURE))
             topics = learningDayService.getTopicsByWorkerFuture(workerId);
         return topics;
     }
@@ -107,7 +108,7 @@ public class TopicService {
     public TeamTopicsDTO getTeamTopicsDTObyManager(UserDTO user){
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
-        List<Topic> topics = getTeamTopicsAndGoals(manager, "PAST");
+        List<Topic> topics = getTeamTopicsAndGoals(manager, EventDate.eventDate.PAST);
 
         TeamTopicsDTO teamTopicsDTO = new TeamTopicsDTO
                 (manager.getManagedTeam().getId(), teamService.getTeamByManager(manager.getId()).get().getName(), manager.getId());
@@ -116,7 +117,7 @@ public class TopicService {
             if (!teamTopicsDTO.getTopicsPast().contains(topic.getName()))
                 teamTopicsDTO.setTopicPast(topic.getName());
         }
-        topics = getTeamTopicsAndGoals(manager, "FUTURE");
+        topics = getTeamTopicsAndGoals(manager, EventDate.eventDate.FUTURE);
         for (Topic topic : topics) {
             if (!teamTopicsDTO.getTopicsFuture().contains(topic.getName()))
                 teamTopicsDTO.setTopicFuture(topic.getName());

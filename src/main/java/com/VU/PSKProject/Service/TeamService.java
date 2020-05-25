@@ -5,6 +5,7 @@ import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TeamRepository;
 import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Utils.EventDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +52,6 @@ public class TeamService {
 
     public List<Team> getTeamsByTopicId(Long id, UserDTO user){
         Worker manager = workerService.getWorkerByUserId(user.getId());
-
         List <Team> teams = new ArrayList<>();
         List <Worker> workers = workerService.getWorkersByTopic(id);
         for (Worker worker: workers) {
@@ -107,10 +107,10 @@ public class TeamService {
                 teamCountDTO.setName(team.getName());
 
                 teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager, "PAST").size());
+                        (team.getId(), topicIds, manager, EventDate.eventDate.PAST).size());
 
                 teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager, "FUTURE").size());
+                        (team.getId(), topicIds, manager, EventDate.eventDate.FUTURE).size());
 
                 teamCountDTO.setDreamingCount(workerGoalService.getWorkersByGoalsTeamManager
                         (team.getId(), topicIds, manager).size());
