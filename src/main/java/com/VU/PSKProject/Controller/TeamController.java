@@ -3,7 +3,9 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Model.Team.*;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.TeamService;
+import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +34,8 @@ public class TeamController {
 
     @Autowired
     private WorkerGoalService workerGoalService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<TeamToGetDTO>> getTeams(){
@@ -43,24 +48,25 @@ public class TeamController {
         return ResponseEntity.ok(teamDTOS);
     }
 
-    @GetMapping("/getByTopic/{id}/{managerId}")
-    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopic(@PathVariable Long id, @PathVariable Long managerId){
-        List<Team> teams = teamService.getTeamsByTopicId(id, managerId);
-        List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+    @GetMapping("/getByTopic/{id}")
+    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopic(@PathVariable Long id, Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<TeamToGetDTO> teamDTOS = teamService.getTeamsByTopicId(id, user).stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
-    @GetMapping("/getByTopicIds/{ids}/{managerId}")
-    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopics(@PathVariable List<Long> ids, @PathVariable Long managerId){
-        List<Team> teams = teamService.getTeamsByTopicIds(ids, managerId);
-        List<TeamToGetDTO> teamDTOS = teams.stream().map(teamMapper::toDto).collect(Collectors.toList());
+    @GetMapping("/getByTopicIds/{ids}")
+    public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopics(@PathVariable List<Long> ids, Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<TeamToGetDTO> teamDTOS = teamService.getTeamsByTopicIds(ids, user).stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
 
-    @GetMapping("/getTeamsCountByTopics/{teamIds}/{topicIds}/{managerId}")
+    @GetMapping("/getTeamsCountByTopics/{teamIds}/{topicIds}")
     public ResponseEntity<List<TeamCountDTO>> getTeamsCountByTopics(@PathVariable List<Long> topicIds,
                                                                     @PathVariable List<Long> teamIds,
-                                                                    @PathVariable Long managerId){
-        return ResponseEntity.ok(teamService.getTeamsCountDTOByTopics(topicIds,teamIds, managerId));
+                                                                    Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return ResponseEntity.ok(teamService.getTeamsCountDTOByTopics(topicIds,teamIds, user));
     }
 
     @GetMapping("/get/{id}")

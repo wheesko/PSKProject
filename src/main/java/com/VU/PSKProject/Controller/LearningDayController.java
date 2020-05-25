@@ -29,21 +29,22 @@ public class LearningDayController {
 
     @Autowired
     private LearningDayMapper learningDayMapper;
-
-    @Autowired
-    private UserService userService;
 	
 	@Autowired
     private TopicService topicService;
+
+	@Autowired
+    private UserService userService;
 
     @GetMapping("/get/{workerId}")
     public List<LearningDayToReturnDTO> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
-    @GetMapping("/getByManagerId/{managerId}")
-    public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(@PathVariable Long managerId) {
-        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(managerId);
+    @GetMapping("/getByManagerId")
+    public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(user);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
