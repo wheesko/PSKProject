@@ -29,6 +29,8 @@ public class LearningDayService {
 
     @Autowired
     private TeamService teamService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private LearningDayMapper learningDayMapper;
@@ -68,7 +70,8 @@ public class LearningDayService {
         learningDayRepository.deleteById(id);
     }
 
-    public List<LearningDay> getAllLearningDaysByManagerId(Long managerId) {
+    public List<LearningDay> getAllLearningDaysByManagerId(UserDTO user) {
+        Worker manager = workerService.getWorkerByUserId(user.getId());
 
         // get all workers
          //Worker workerId = workerRepository.findByManagedTeamId(managerId);
@@ -78,10 +81,11 @@ public class LearningDayService {
 
         Team team;
 
-        if(teamService.getTeamByManager(managerId).isPresent()){
-            team = teamService.getTeamByManager(managerId).get();
+        if(teamService.getTeamByManager(manager.getId()).isPresent()){
+            team = teamService.getTeamByManager(manager.getId()).get();
         }else{
-            return null; //TODO: handle it somehow
+            // handle it better mybe?
+            throw new RuntimeException();
         }
 
         List<Worker> workers = workerService.findByWorkingTeamId(team.getId());

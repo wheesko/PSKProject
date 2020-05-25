@@ -5,6 +5,7 @@ import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Utils.EventDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,6 @@ public class WorkerService {
 
     @Autowired
     private LearningDayService learningDayService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private WorkerMapper workerMapper;
@@ -77,12 +75,12 @@ public class WorkerService {
         return learningDayService.getAssigneesByTopicIdsPast(ids);
     }
 
-    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, boolean time){
+    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, EventDate.eventDate time){
         List<Worker> workers = new ArrayList<>();
         List <Worker> allWorkers = null;
-        if (!time)
+        if (time.equals(EventDate.eventDate.PAST))
             allWorkers = learningDayService.getAssigneesByTopicIdsPast(ids);
-        if (time)
+        if (time.equals(EventDate.eventDate.FUTURE))
              allWorkers = learningDayService.getAssigneesByTopicIdsFuture(ids);
 
         for (Worker w: allWorkers) {
