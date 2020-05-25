@@ -15,7 +15,9 @@ public class MethodJournalRecord {
     @GeneratedValue
     private long id;
 
-    private String user;
+    private Long teamId;
+
+    private String userNameSurname;
 
     private String time;
 

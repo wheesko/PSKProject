@@ -44,10 +44,11 @@ public class MethodLogger {
         Object obj = joinPoint.proceed();
 
         MethodJournalRecord methodJournal = new MethodJournalRecord();
-        methodJournal.setUser(worker.getName() + " " + worker.getSurname());
+        methodJournal.setUserNameSurname(worker.getName() + " " + worker.getSurname());
         methodJournal.setTime(formatter.format(date));
         methodJournal.setClassName(classAndMethod[0]);
         methodJournal.setMethodName(classAndMethod[1]);
+        methodJournal.setTeamId(worker.getWorkingTeam().getId());
 
         methodJournalService.createRecord(methodJournal);
         return obj;
