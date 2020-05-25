@@ -1,7 +1,9 @@
 package com.VU.PSKProject.Service;
 
+import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
@@ -24,6 +26,9 @@ public class WorkerService {
 
     @Autowired
     private WorkerMapper workerMapper;
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
@@ -109,4 +114,17 @@ public class WorkerService {
         return workerRepository.findByUserId(userId).orElse(new Worker());
     }
 
+
+    public ResponseEntity<String> sendEmailToNewWorker(User u, Worker w){
+        String subject = "PSK_123 New worker";
+        String text = String.format("Hello,\n You've been invited to join %s. You can finish your registration by logging " +
+                "in to the application with your email address and temporary password.\n" +
+                "Temporary password: %s.\n Hope to see you soon!\n PSK_123", w.getWorkingTeam().getName(), w.getUser().getPassword());
+        try {
+            emailService.sendMessage(u.getEmail(), subject, text);
+            return ResponseEntity.ok("An email to the new worker has been sent!");
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body("Failed to send email to the worker!");
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Repository.UserRepository;
 import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Random;
 
 @Service
 @RequestMapping("/api")
@@ -34,7 +38,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUserFromEmail(String email){
-        String temporaryPassword = "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG"; // encoded "admin" string
+       // String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
+        String temporaryPassword = "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG";
         User u = new User(email, temporaryPassword, UserAuthority.WORKER);
         createUser(u);
         return u;
