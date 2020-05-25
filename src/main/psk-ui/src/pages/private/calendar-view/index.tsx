@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Calendar, Divider, Modal, Spin, Tag, Typography } from 'antd';
+import { Button, Calendar, Divider, Modal, Spin, Tag, Tooltip, Typography } from 'antd';
 import moment from 'moment';
 
 import { DAY_EVENT_LIST_EMPTY, MY_CALENDAR } from '../../../constants/otherConstants';
-import { EventForm } from './EventForm';
+import { EventForm } from './form/EventForm';
 import { LearningEvent } from '../../../models/learningEvent';
 import calendarService from '../../../api/calendar-service';
 
 import './CalendarStyles.css';
 import notificationService, { NotificationType } from '../../../service/notification-service';
+import { PlusOutlined } from '@ant-design/icons';
+import { NewEventForm } from "./form/AddEventForm";
 
 const { Title } = Typography;
 
@@ -20,6 +22,8 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	const [selectedDate, setSelectedDate] = useState<moment.Moment | undefined>(
 		undefined
 	);
+	const [addEventModalVisible, setAddEventModalVisibility] = useState<boolean>(false);
+
 	// status type is our example entity
 	const [modalListData, setModalListData] = useState<LearningEvent[]>([]);
 	const [calendarListData, setCalendarListData] = useState<LearningEvent[]>([]);
@@ -40,6 +44,14 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	function handleOnCancel (): void {
 		setModalVisibility(false);
 		setIsFormVisible(false);
+	}
+
+	function handleOnAddEventOk(): void {
+		setAddEventModalVisibility(false);
+	}
+
+	function handleOnAddEventCancel(): void {
+		setAddEventModalVisibility(false);
 	}
 
 	function handleSelect(date?: moment.Moment | undefined): void {
@@ -97,7 +109,6 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		});
 	}
 
-	// TODO: This return is extremely long - refactor it to smaller components or render functions
 	return (
 		<div>
 			<Title level={2} className={'myCalendarTitle'}>{MY_CALENDAR}</Title>
@@ -108,6 +119,33 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 					onChange={getMonthEvents}
 				/>
 			</Spin>
+			{renderDateCellModal()}
+			<div className="floating-plus-button">
+				<Tooltip placement="top" title={'Add new learning day'}>
+					<Button
+						size="large"
+						shape="circle"
+						className="add-learning-day-button"
+						onClick={() => setAddEventModalVisibility(true)}
+					>
+						<PlusOutlined className="add-learning-day-button"/>
+					</Button>
+				</Tooltip>
+			</div>
+			{renderAddEventModal()}
+		</div>
+	);
+
+	function onCreateDay() {
+		loadData(selectedDate === undefined ? moment() : selectedDate).then(learningEvents => {
+			setCalendarListData(learningEvents);
+			setModalVisibility(false);
+		});
+	}
+
+	//TODO: Refactor to component
+	function renderDateCellModal(): React.ReactNode {
+		return (
 			<Modal
 				title={
 					selectedDate === undefined
@@ -119,6 +157,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				visible={modalVisibility}
 				onOk={handleOnOk}
 				onCancel={handleOnCancel}
+				footer={null}
 			>
 				{modalListData.length === 0
 					? null
@@ -148,14 +187,20 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				)}
 				{isFormVisible ? <EventForm selectedDate={selectedDate} onCreateDay={onCreateDay}/> : null}
 			</Modal>
-		</div>
-	);
-
-	function onCreateDay() {
-		loadData(selectedDate === undefined ? moment() : selectedDate).then(learningEvents => {
-			setCalendarListData(learningEvents);
-			setModalVisibility(false);
-		});
+		);
+	}
+	
+	function renderAddEventModal(): React.ReactNode {
+		return (
+			<Modal
+				visible={addEventModalVisible}
+				onCancel={handleOnAddEventCancel}
+				onOk={handleOnAddEventOk}
+				footer={null}
+			>
+				<NewEventForm onCreateDay={onCreateDay}/>
+			</Modal>
+		);
 	}
 };
 // this method will be changed into a get request

@@ -28,3 +28,23 @@
 .events-cell-wrapper {
     height: 100%;
 }
+
+.floating-plus-button {
+    position: fixed;
+    right: 64px;
+    bottom: 32px;
+    z-index: 2147483640;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.add-learning-day-button {
+    background-color: rgb(0, 21, 41) !important;
+    color: rgba(255, 255, 255, 1) !important;
+}

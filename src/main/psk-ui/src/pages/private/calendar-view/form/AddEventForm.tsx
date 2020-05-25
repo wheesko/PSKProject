@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Card, Form, Input, Select, Spin } from 'antd';
+import { Button, Card, DatePicker, Form, Input, Select, Spin } from 'antd';
 import {
 	ADD_LEARNING_EVENT_COMMENT,
 	ADD_NEW_LEARNING_EVENT,
@@ -8,16 +8,16 @@ import {
 	EVENT_NAME,
 	INPUT_EVENT_NAME,
 	SAVE_LEARNING_EVENT
-} from '../../../constants/otherConstants';
+} from '../../../../constants/otherConstants';
 
-import { LearningTopic } from '../../../models/learningTopic';
-import topicService from '../../../api/topic-service';
-import notificationService, { NotificationType } from '../../../service/notification-service';
+import { LearningTopic } from '../../../../models/learningTopic';
+import topicService from '../../../../api/topic-service';
+import notificationService, { NotificationType } from '../../../../service/notification-service';
 
 import moment from 'moment';
 import './EventFormStyles.css';
-import { LearningDayCreateRequest } from '../../../api/model/learning-day-create-request';
-import learningDayService from '../../../api/learning-day-service';
+import { LearningDayCreateRequest } from '../../../../api/model/learning-day-create-request';
+import learningDayService from '../../../../api/learning-day-service';
 
 const formItemLayout = {
 	labelCol: {
@@ -30,24 +30,22 @@ const formItemLayout = {
 	}
 };
 
-interface EventFormProps {
-  selectedDate: moment.Moment | undefined;
-  onCreateDay: () => void;
+interface NewEventFormProps {
+    onCreateDay: () => void;
 }
 
-const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProps) => {
+const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEventFormProps) => {
 	const [form] = Form.useForm();
 	const [topics, setTopics] = useState<LearningTopic[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
-
-	const {
-		selectedDate,
-		onCreateDay
-	} = props;
-
+	
 	const onTopicChange = (value: number) => {
 		form.setFieldsValue({ topic: value });
 	};
+	
+	const {
+	    onCreateDay
+	} = props;
 
 	useEffect(() => {
 		setLoading(true);
@@ -67,14 +65,13 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 		<Card title={ADD_NEW_LEARNING_EVENT}>
 			<Spin spinning={loading}>
 				<Form.Provider
-					onFormFinish={name => {
-						if (selectedDate !== undefined)
-							createLearningDay({
-								dateTimeAt: selectedDate.format('yyyy-MM-DD HH:mm:ss'),
-								comment: form.getFieldsValue()['learningEventComment'],
-								topic: form.getFieldsValue()['learningEventTopic'],
-								name: form.getFieldsValue()['learningEventName']
-							});
+					onFormFinish={() => {
+						createLearningDay({
+							dateTimeAt: form.getFieldsValue()['learningEventDate'].format('yyyy-MM-DD HH:mm:ss'),
+							comment: form.getFieldsValue()['learningEventComment'],
+							topic: form.getFieldsValue()['learningEventTopic'],
+							name: form.getFieldsValue()['learningEventName']
+						});
 					}}
 				>
 					<Form
@@ -100,6 +97,12 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 									return <Select.Option key={topic.id} value={topic.id}>{topic.name}</Select.Option>;
 								})}
 							</Select>
+						</Form.Item>
+						<Form.Item label={'Date of event'} name="learningEventDate">
+							<DatePicker
+								placeholder={'Select date'}
+								allowClear
+							/>
 						</Form.Item>
 						<Form.Item label={COMMENT} name="learningEventComment">
 							<Input.TextArea
@@ -151,4 +154,4 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 	}
 };
 
-export { EventForm };
+export { NewEventForm };
