@@ -16,6 +16,7 @@ export const UPDATE_SESSION = 'UPDATE_SESSION';
 export const USER_LOGIN = 'USER_LOGIN';
 export const USER_LOGOUT = 'USER_LOGOUT';
 export const USER_TOKEN_UPDATE = 'USER_TOKEN_UPDATE';
+export const USER_REGISTER = 'USER_REGISTER';
 
 interface UpdateSessionAction {
 	type: typeof UPDATE_SESSION;
@@ -35,5 +36,9 @@ interface UserTokenUpdateAction {
 	type: typeof USER_TOKEN_UPDATE;
 	payload: UserState;
 }
+interface RegisterAction {
+	type: typeof USER_REGISTER;
+	payload: UserState;
+}
 
-export type UserActionTypes = UpdateSessionAction | LoginAction | LogoutAction | UserTokenUpdateAction;
+export type UserActionTypes = UpdateSessionAction | LoginAction | LogoutAction | UserTokenUpdateAction | RegisterAction;
