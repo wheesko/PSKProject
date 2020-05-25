@@ -3,6 +3,7 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Controller.Model.RefreshTokenRequest;
 import com.VU.PSKProject.Controller.Model.RefreshTokenResponse;
 import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Service.Model.FreshmanLoginResponseModel;
 import com.VU.PSKProject.Service.Model.LoginResponseModel;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.google.gson.Gson;
@@ -47,7 +48,12 @@ public class AuthenticationService {
         UserDTO userData = userService.getUserByEmail(user.getUsername());
         Worker workerData = workerService.getWorkerByUserId(userData.getId());
 
-        String loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
+        String loginResponseString = "";
+        if(((User) principal).getAuthorities().size() == 1 &&
+                ((User) principal).getAuthorities().toArray()[0].toString().equals("FRESHMAN"))
+            loginResponseString = new Gson().toJson(getLoginResponse(userData));
+        else
+            loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
 
         PrintWriter out = res.getWriter();
         res.setContentType("application/json");
@@ -126,8 +132,15 @@ public class AuthenticationService {
         lr.setRole(worker.getRole().getName());
         lr.setName(worker.getName());
         lr.setSurname(worker.getSurname());
-
         return lr;
+    }
+
+    private FreshmanLoginResponseModel getLoginResponse(UserDTO userDTO) {
+        FreshmanLoginResponseModel fr = new FreshmanLoginResponseModel();
+        fr.setEmail(userDTO.getEmail());
+        fr.setUserId(userDTO.getId());
+        fr.setUserAuthority(userDTO.getUserRole());
+        return fr;
     }
 
     public RefreshTokenResponse refreshAccessToken(RefreshTokenRequest refreshTokenRequest) {

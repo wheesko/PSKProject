@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -29,6 +30,9 @@ public class UserService implements UserDetailsService {
     private UserMapper userMapper;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     public UserService (UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -37,10 +41,8 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public User createUserFromEmail(String email){
-       // String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
-        String temporaryPassword = "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG";
-        User u = new User(email, temporaryPassword, UserAuthority.WORKER);
+    public User createUser(String email, String tempPassword){
+        User u = new User(email, passwordEncoder.encode(tempPassword), UserAuthority.FRESHMAN);
         createUser(u);
         return u;
     }

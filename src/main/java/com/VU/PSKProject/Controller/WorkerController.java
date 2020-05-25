@@ -78,16 +78,12 @@ public class WorkerController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createWorker(@RequestBody WorkerToCreateDTO workerDto) {
-        Worker worker = workerMapper.fromDTO(workerDto);
         ResponseEntity<String> response = workerService.validateWorkerData(workerDto);
-        if(!response.getStatusCode().is2xxSuccessful())
+
+        if(response.getStatusCode().isError())
             return response;
-        User u = userService.createUserFromEmail(workerDto.getEmail());
-        worker.setUser(u);
-        teamService.getTeamByManager(workerDto.getManagerId()).ifPresent(worker::setWorkingTeam);
-        workerService.createWorker(worker);
-        response = workerService.sendEmailToNewWorker(u, worker);
-        return response;
+
+        return workerService.createFreshmanWorker(workerDto);
     }
 
     @PutMapping("/update/{id}")
