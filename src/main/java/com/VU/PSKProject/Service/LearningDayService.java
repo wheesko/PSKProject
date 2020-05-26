@@ -75,7 +75,10 @@ public class LearningDayService {
         learningDayRepository.save(learningDay);
     }
 
-    public void updateLearningDay(LearningDay learningDay, Long learningDayId) {
+    public void updateLearningDay(LearningDay learningDay, Long learningDayId, UserDTO user) {
+        Worker worker = workerService.getWorkerByUserId(user.getId());
+        checkWorkerAvailability(worker, learningDay);
+
         learningDay.setId(learningDayId);
         learningDayRepository.save(learningDay);
     }

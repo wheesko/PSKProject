@@ -112,25 +112,25 @@ public class SampleDataDB {
 		topics.add(new Topic("Thinking sharp using Java", topics.get(3), "description", null));*/
 
         ArrayList<Topic> cppChildren = new ArrayList<>();
-        Topic gd = new Topic("Game development", null, "Intro to game dev", null);
-        Topic ge = new Topic("Game Engines", null, "Intro to game engines", null);
+        gd = new Topic("Game development", null, "Intro to game dev", null);
+        ge = new Topic("Game Engines", null, "Intro to game engines", null);
         cppChildren.add(gd);
         cppChildren.add(ge);
 
 
         ArrayList<Topic> oopChildren = new ArrayList<>();
-        Topic cpp = new Topic("C++ Programming", cppChildren, "Intro to C++", null);
-        Topic cs = new Topic("C# Programming", null, "Intro to C#", null);
+        cpp = new Topic("C++ Programming", cppChildren, "Intro to C++", null);
+        cs = new Topic("C# Programming", null, "Intro to C#", null);
         oopChildren.add(cpp);
         oopChildren.add(cs);
 
-        Topic oop = new Topic("OOP Programming", oopChildren, "Intro to OOP", null);
-        Topic ads = new Topic("Algorithms & Data structures", null, "Intro to ADS", null);
+        oop = new Topic("OOP Programming", oopChildren, "Intro to OOP", null);
+        ads = new Topic("Algorithms & Data structures", null, "Intro to ADS", null);
 
         ArrayList<Topic> cChildren = new ArrayList<>();
         cChildren.add(ads);
         cChildren.add(oop);
-        Topic c = new Topic("C Programming", cChildren, "Intro to C", null);
+        c = new Topic("C Programming", cChildren, "Intro to C", null);
 
 
         topics.add(gd);

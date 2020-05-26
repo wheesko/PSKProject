@@ -64,11 +64,13 @@ public class LearningDayController {
 
 
     @PutMapping("/update/{id}")
-    public void updateLearningEvent(@RequestBody LearningDayToCreateDTO learningDayDto, @PathVariable Long id) {
-        LearningDay learningDay = learningDayService.getLearningDayById(id);
+    public ResponseEntity<String> updateLearningEvent(@RequestBody LearningDayToCreateDTO learningDayDto, @PathVariable Long id, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        LearningDay learningDay =  learningDayMapper.fromDTO(learningDayDto);
         //workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
         PropertyUtils.customCopyProperties(learningDayDto, learningDay);
-        learningDayService.updateLearningDay(learningDay, id);
+        learningDayService.updateLearningDay(learningDay, id, user);
+        return ResponseEntity.ok("Learning Day has been updated successfully!");
     }
 	
     @DeleteMapping("/delete/{id}")
