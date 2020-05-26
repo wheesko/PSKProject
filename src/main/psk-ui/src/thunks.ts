@@ -47,24 +47,11 @@ export const thunkLogout = (): ThunkAction<void, AppState, null, Action<string>>
 };
 
 export const thunkRegister = (registerRequest: RegisterWorkerRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
-	workerService.registerWorker(registerRequest).then(response => {
-		// dispatch(userRegister())
-		console.log(response);
-		// const decodedResponse = jwt.decode(response?.headers.authorization.replace('Bearer ', ''),
-		// 	{ json: true });
-
-		// dispatch(userRegister({
-		// 	email: loginRequest.email,
-		// 	loggedIn: true,
-		// 	token: response?.headers.authorization.replace('Bearer ', ''),
-		// 	refreshToken: response?.headers.refreshtoken.replace('Bearer ', ''),
-		// 	authority: decodedResponse!.role[0].authority,
-		// 	role: { title: '', color: '' }
-		// }));
-
+	workerService.registerWorker(registerRequest).then(response  => {
 		notificationService.notify({
 			notificationType: NotificationType.SUCCESS,
 			message: 'Registration successful'
 		});
+		dispatch(userLogout());
 	});
 };

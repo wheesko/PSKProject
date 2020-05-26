@@ -11,20 +11,8 @@ class WorkerService {
 		this.restService = cancelSource.service;
 	}
 
-	public registerWorker = (registerWorkerRequest: RegisterWorkerRequest): Promise<void> => {
-		return this.restService
-			.post<void>(
-				'/workers/update', registerWorkerRequest
-			)
-			.then((response: AxiosResponse<void>) => {
-				console.log(response.data);
-				const decodedResponse = jwt.decode(response?.headers.authorization.replace('Bearer ', ''),
-					{ json: true });
-
-				console.log(decodedResponse);
-				console.log(decodedResponse!.role[0].authority);
-				return response.data;
-			});
+	public registerWorker = (registerWorkerRequest: RegisterWorkerRequest): Promise<AxiosResponse | null> => {
+		return this.restService.put<void>('/workers/registerWorker', registerWorkerRequest);
 	};
 }
 

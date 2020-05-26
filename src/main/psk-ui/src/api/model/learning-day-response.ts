@@ -1,9 +1,11 @@
+import { Authority } from '../../models/authority';
+import { Role } from '../../models/role';
+
 export interface LearningDayResponse {
-    id: number;
-    name: string;
-    comment: string;
-    dateTimeAt: string;
-    assignee: {
-        id: number;
-    };
+	email: string;
+	loggedIn: boolean;
+	token: string;
+	refreshToken: string;
+	authority: Authority;
+	role: Role;
 }

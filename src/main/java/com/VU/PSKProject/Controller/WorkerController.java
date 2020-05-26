@@ -10,6 +10,7 @@ import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -124,8 +125,8 @@ public class WorkerController {
     }
 
     @PutMapping("/registerWorker")
-    public ResponseEntity<UserToRegisterDTO> registerWorker(@RequestBody WorkerDTO workerDto, Principal principal) {
+    public ResponseEntity<UserToRegisterDTO> registerWorker(@RequestBody WorkerRegisterDTO workerRegisterDTO, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        return ResponseEntity.ok(workerService.registerWorker(user,workerDto));
+        return ResponseEntity.ok(workerService.registerWorker(user,workerRegisterDTO));
     }
 }

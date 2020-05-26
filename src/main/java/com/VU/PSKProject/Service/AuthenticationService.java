@@ -7,6 +7,7 @@ import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.FreshmanLoginResponseModel;
 import com.VU.PSKProject.Service.Model.LoginResponseModel;
 import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Service.Model.WorkerLoginResponseModel;
 import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -48,13 +49,23 @@ public class AuthenticationService {
         User user = (User) principal;
         UserDTO userData = userService.getUserByEmail(user.getUsername());
         Worker workerData = workerService.getWorkerByUserId(userData.getId());
-
+        ((User) principal).getAuthorities().forEach(a -> System.out.println(a));
         String loginResponseString = "";
-        if (((User) principal).getAuthorities().size() == 1 &&
-                ((User) principal).getAuthorities().toArray()[0].toString().equals("FRESHMAN"))
-            loginResponseString = new Gson().toJson(getLoginResponse(userData));
-        else
-            loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
+        if (((User) principal).getAuthorities().size() == 1) {
+            switch (((User) principal).getAuthorities().toArray()[0].toString()) {
+                case "FRESHMAN":
+                    loginResponseString = new Gson().toJson(getLoginResponse(userData));
+                    break;
+                case "LEAD":
+                    loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
+                    break;
+                case "WORKER":
+                    loginResponseString = new Gson().toJson(getWorkerLoginResponse(userData, workerData));
+                    break;
+                default:
+                    break;
+            }
+        }
 
         PrintWriter out = res.getWriter();
         res.setContentType("application/json");
@@ -148,6 +159,20 @@ public class AuthenticationService {
         fr.setSurname(worker.getSurname());
         fr.setRole(worker.getRole());
         return fr;
+    }
+
+    public WorkerLoginResponseModel getWorkerLoginResponse(UserDTO userDTO, Worker worker) {
+        WorkerLoginResponseModel wr = new WorkerLoginResponseModel();
+        wr.setEmail(userDTO.getEmail());
+        wr.setUserId(userDTO.getId());
+        wr.setUserAuthority(userDTO.getUserRole());
+        wr.setWorkerId(worker.getId());
+        wr.setWorkingTeamId(worker.getWorkingTeam().getId());
+        wr.setRole(worker.getRole() == null ? null : worker.getRole().getName());
+        wr.setName(worker.getName());
+        wr.setSurname(worker.getSurname());
+        return wr;
+
     }
 
     public RefreshTokenResponse refreshAccessToken(RefreshTokenRequest refreshTokenRequest) {
