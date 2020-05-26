@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Card, DatePicker, Form, Input, Select, Spin } from 'antd';
+import { Button, Card, DatePicker, Form, Input, Select, Spin, Typography } from 'antd';
 import {
 	ADD_LEARNING_EVENT_COMMENT,
-	ADD_NEW_LEARNING_EVENT,
 	COMMENT,
 	EVENT_NAME,
 	INPUT_EVENT_NAME,
-	SAVE_LEARNING_EVENT
 } from '../../../../constants/otherConstants';
 
 import { LearningTopic } from '../../../../models/learningTopic';
 import topicService from '../../../../api/topic-service';
 import notificationService, { NotificationType } from '../../../../service/notification-service';
+import learningDayService from '../../../../api/learning-day-service';
+import { LearningEvent } from '../../../../models/learningEvent';
+import moment from 'moment';
+import { LearningDayUpdateRequest } from '../../../../api/model/learning-day-update-request';
 
 import './EventFormStyles.css';
-import { LearningDayCreateRequest } from '../../../../api/model/learning-day-create-request';
-import learningDayService from '../../../../api/learning-day-service';
 
 const formItemLayout = {
 	labelCol: {
@@ -29,21 +29,24 @@ const formItemLayout = {
 	}
 };
 
-interface NewEventFormProps {
+interface EditEventFormProps {
     onCreateDay: () => void;
+    initialValues?: LearningEvent;
 }
 
-const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEventFormProps) => {
+const EditEventForm: React.FunctionComponent<EditEventFormProps> = (props: EditEventFormProps) => {
 	const [form] = Form.useForm();
 	const [topics, setTopics] = useState<LearningTopic[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
-	
+	const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState<boolean>(false);
+
 	const onTopicChange = (value: number) => {
 		form.setFieldsValue({ topic: value });
 	};
-	
+
 	const {
-	    onCreateDay
+		onCreateDay,
+		initialValues
 	} = props;
 
 	useEffect(() => {
@@ -51,6 +54,12 @@ const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEven
 		loadTopics().then(topics => {
 			setTopics(topics);
 			setLoading(false);
+			form.setFieldsValue({
+				learningEventTopic: initialValues?.topic.id,
+				learningEventName: initialValues?.name,
+				learningEventComment: initialValues?.comment,
+				learningEventDate: moment(initialValues?.dateTimeAt)
+			});
 		}
 		).catch(e => {
 			notificationService.notify({
@@ -61,11 +70,12 @@ const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEven
 	}, []);
 
 	return (
-		<Card title={ADD_NEW_LEARNING_EVENT}>
+		<Card title={'Edit this event'}>
 			<Spin spinning={loading}>
 				<Form.Provider
 					onFormFinish={() => {
-						createLearningDay({
+						update({
+							id: initialValues?.id ? initialValues.id : 0,
 							dateTimeAt: form.getFieldsValue()['learningEventDate'].format('yyyy-MM-DD HH:mm:ss'),
 							comment: form.getFieldsValue()['learningEventComment'],
 							topic: form.getFieldsValue()['learningEventTopic'],
@@ -110,19 +120,53 @@ const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEven
 								autoSize={{ minRows: 2, maxRows: 2 }}
 							/>
 						</Form.Item>
+						{isDeleteConfirmVisible &&
+							<Typography.Text className="confirm-delete-text">
+								Are you sure? Your action cannot be undone
+							</Typography.Text>
+						}
 						<Form.Item
 							wrapperCol={{
 								xs: { span: 24, offset: 0 },
 								sm: { span: 16, offset: 8 }
 							}}
+							className="edit-form-buttons"
 						>
-							<Button
-								className="event-form-buttons success"
-								type="primary"
-								htmlType="submit"
-							>
-								{SAVE_LEARNING_EVENT}
-							</Button>
+							{isDeleteConfirmVisible
+								? <>
+									<Button
+										onClick={deleteLearningDay}
+										className="event-form-buttons success"
+										type="primary"
+										danger
+									>
+										Yes
+									</Button>
+									<Button
+										onClick={hideDeleteConfirm}
+										className="event-form-buttons success"
+									>
+										No
+									</Button>
+								</>
+								:<>
+									<Button
+										className="event-form-buttons success"
+										type="primary"
+										htmlType="submit"
+									>
+										Save event
+									</Button>
+									<Button
+										className="event-form-buttons success"
+										danger
+										type="primary"
+										onClick={handleClickDelete}
+									>
+										Delete event
+									</Button>
+								</>
+							}
 						</Form.Item>
 					</Form>
 				</Form.Provider>
@@ -130,28 +174,55 @@ const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEven
 		</Card>
 	);
 
+	function handleClickDelete() {
+		setDeleteConfirmVisible(true);
+	}
+
+	function hideDeleteConfirm() {
+		setDeleteConfirmVisible(false);
+	}
+
 	function loadTopics(): Promise<LearningTopic[]> {
 		return topicService.getAllTopics();
 	}
 
-	function createLearningDay(dayRequest: LearningDayCreateRequest): Promise<void> {
+	function deleteLearningDay(): Promise<void> {
 		setLoading(true);
-		return learningDayService.createLearningDay(dayRequest).then(() => {
+		return learningDayService.deleteLearningDay(initialValues?.id ? initialValues.id : 0).then(() => {
 			setLoading(false);
 			notificationService.notify({
 				notificationType: NotificationType.SUCCESS,
-				message: 'Created Learning Day successfully'
+				message: 'Deleted Learning Day successfully'
 			});
 			onCreateDay();
 		}).catch(e => {
 			setLoading(false);
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
-				message: 'Could not create learning day',
+				message: 'Could not delete learning day',
+				description: e.response.data.message
+			});
+		});
+	}
+
+	function update(dayRequest: LearningDayUpdateRequest): Promise<void> {
+		setLoading(true);
+		return learningDayService.updateLearningDay(dayRequest).then(() => {
+			setLoading(false);
+			notificationService.notify({
+				notificationType: NotificationType.SUCCESS,
+				message: 'Updated Learning Day successfully'
+			});
+			onCreateDay();
+		}).catch(e => {
+			setLoading(false);
+			notificationService.notify({
+				notificationType: NotificationType.ERROR,
+				message: 'Could not update learning day',
 				description: e.response.data.message
 			});
 		});
 	}
 };
 
-export { NewEventForm };
+export { EditEventForm };

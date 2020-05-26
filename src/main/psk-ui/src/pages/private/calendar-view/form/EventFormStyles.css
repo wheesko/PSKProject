@@ -1,3 +1,23 @@
 .event-form-buttons {
     margin-right: 8px;
 }
+
+.edit-form-buttons div div div {
+    display:flex;
+    flex-direction: row;
+}
+
+.edit-form-buttons button {
+    width: 49%;
+}
+
+.edit-form-buttons button:last-child {
+    margin-right: 0;
+}
+
+.confirm-delete-text {
+    width: 100%;
+    display: block;
+    text-align: right;
+    margin-bottom: 5px;
+}

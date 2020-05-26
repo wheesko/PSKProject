@@ -11,6 +11,7 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Utils.DateUtils;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +32,6 @@ public class LearningDayService {
 
     @Autowired
     private TeamService teamService;
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private TopicService topicService;
@@ -75,7 +74,22 @@ public class LearningDayService {
         learningDayRepository.save(learningDay);
     }
 
-    public void updateLearningDay(LearningDay learningDay, Long learningDayId) {
+    public void updateLearningDay(
+        LearningDayToCreateDTO learningDayToUpdate,
+        Long learningDayId,
+        UserDTO user
+    ) {
+        Worker worker = workerService.getWorkerByUserId(user.getId());
+        List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
+        if (learningDays.stream().noneMatch(l -> l.getId().equals(learningDayId))) {
+            throw new LearningDayException("Worker has no such learning day");
+        }
+
+        LearningDay learningDay = getLearningDayById(learningDayId);
+        learningDay.setTopic(topicService.getTopic(learningDayToUpdate.getTopic())
+                .orElseThrow(() -> new LearningDayException("Could not find topic")));
+        //workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
+        PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay);
         learningDay.setId(learningDayId);
         learningDayRepository.save(learningDay);
     }
@@ -85,7 +99,13 @@ public class LearningDayService {
         return learningDayRepository.getOne(id);
     }
 
-    public void deleteLearningDay(Long id) {
+    public void deleteLearningDay(Long id, UserDTO user) {
+        Worker worker = workerService.getWorkerByUserId(user.getId());
+        List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
+        if (learningDays.stream().noneMatch(l -> l.getId().equals(id))) {
+            throw new LearningDayException("Worker has no such learning day");
+        }
+
         learningDayRepository.deleteById(id);
     }
 
