@@ -1,14 +1,19 @@
 package com.VU.PSKProject.Service;
 
+import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Utils.EventDate;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +30,15 @@ public class WorkerService {
     @Autowired
     private WorkerMapper workerMapper;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TeamService teamService;
+
+    @Autowired
+    private EmailServiceImpl emailService;
+
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
     }
@@ -33,6 +47,7 @@ public class WorkerService {
         return workerRepository.findById(id);
     }
 
+    @Transactional
     public void createWorker(Worker worker) {
         workerRepository.save(worker);
     }
@@ -109,4 +124,28 @@ public class WorkerService {
         return workerRepository.findByUserId(userId).orElse(new Worker());
     }
 
+
+    private ResponseEntity<String> sendEmailToNewWorker(User u, Worker w, String tempPassword){
+        String subject = "PSK_123 New worker";
+        String text = String.format("Hello,\n You've been invited to join %s. You can finish your registration by logging " +
+                "in to the application with your email address and temporary password.\n" +
+                "Temporary password: %s.\n Hope to see you soon!\n PSK_123", w.getWorkingTeam().getName(), tempPassword);
+        try {
+            emailService.sendMessage(u.getEmail(), subject, text);
+            return ResponseEntity.ok("An email to the new worker has been sent!");
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body("Failed to send email to the worker!");
+        }
+    }
+
+    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO){
+        String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
+        Worker worker = workerMapper.fromDTO(workerDTO);
+        User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);
+        worker.setUser(u);
+        teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        createWorker(worker);
+
+        return sendEmailToNewWorker(u, worker, temporaryPassword);
+    }
 }

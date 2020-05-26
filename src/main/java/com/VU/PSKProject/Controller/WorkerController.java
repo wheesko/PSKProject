@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
+import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
@@ -77,13 +78,12 @@ public class WorkerController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createWorker(@RequestBody WorkerToCreateDTO workerDto) {
-        Worker worker = workerMapper.fromDTO(workerDto);
         ResponseEntity<String> response = workerService.validateWorkerData(workerDto);
-        User u = userService.createUserFromEmail(workerDto.getEmail());
-        worker.setUser(u);
-        teamService.getTeamByManager(workerDto.getManagerId()).ifPresent(worker::setWorkingTeam);
-        workerService.createWorker(worker);
-        return response;
+
+        if(response.getStatusCode().isError())
+            return response;
+
+        return workerService.createFreshmanWorker(workerDto);
     }
 
     @PutMapping("/update/{id}")
