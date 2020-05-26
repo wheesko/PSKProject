@@ -116,7 +116,7 @@ public class TeamService {
                         (team.getId(), topicIds, manager, EventDate.eventDate.FUTURE).size());
 
                 teamCountDTO.setGoalsCount(workerGoalService.getWorkersByGoalsTeamManager
-                        (team.getId(), topicIds, manager.get()).size());
+                        (team.getId(), topicIds, manager).size());
 
                 teamCountDTOS.add(teamCountDTO);
             }

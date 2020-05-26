@@ -73,8 +73,7 @@ public class TopicController {
     }
 
     @GetMapping("exportWorkersTopicsByManagerId/{managerId}")
-    public void exportCSV(@PathVariable Long managerId) {
-       List<WorkerTopicsDTO> workerTopicsDTOS = topicService.getWorkersTopicsDTObyManager(managerId);
-
+    public void exportCSV(@PathVariable Long managerId, Principal principal) {
+       List<WorkerTopicsDTO> workerTopicsDTOS = topicService.getWorkersTopicsDTObyManager(userService.getUserByEmail(principal.getName()));
     }
 }

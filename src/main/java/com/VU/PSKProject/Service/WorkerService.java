@@ -38,10 +38,10 @@ public class WorkerService {
     private TeamService teamService;
 
     @Autowired
-    private TeamService teamService;
+    private EmailServiceImpl emailService;
 
     @Autowired
-    private EmailServiceImpl emailService;
+    private UserService userService;
 
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
