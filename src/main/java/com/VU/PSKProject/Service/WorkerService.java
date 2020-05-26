@@ -1,10 +1,16 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.User;
+import com.VU.PSKProject.Entity.User;
+import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
+import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
+import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Utils.EventDate;
@@ -28,10 +34,13 @@ public class WorkerService {
     private LearningDayService learningDayService;
 
     @Autowired
-    private WorkerMapper workerMapper;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    private UserMapper userMapper;
+
+    @Autowired
+    private WorkerMapper workerMapper;
 
     @Autowired
     private TeamService teamService;
@@ -124,6 +133,20 @@ public class WorkerService {
         return workerRepository.findByUserId(userId).orElse(new Worker());
     }
 
+    public UserToRegisterDTO registerWorker(UserDTO userDTO, WorkerDTO workerDTO) {
+        Worker worker = getWorkerByUserId(userDTO.getId());
+        worker.setName(workerDTO.getName());
+        worker.setSurname(workerDTO.getSurname());
+        // set UserAuthority to WORKER
+        User user = userMapper.fromDTO(userDTO);
+        user.setUserAuthority(UserAuthority.WORKER);
+        userService.updateUser(user);
+        workerRepository.save(worker);
+        UserToRegisterDTO updatedWorkerDTO = workerMapper.toRegisterDTO(worker);
+        updatedWorkerDTO.setEmail(worker.getUser().getEmail());
+        updatedWorkerDTO.setUserAuthority(UserAuthority.WORKER);
+        return updatedWorkerDTO;
+    }
 
     private ResponseEntity<String> sendEmailToNewWorker(User u, Worker w, String tempPassword){
         String subject = "PSK_123 New worker";

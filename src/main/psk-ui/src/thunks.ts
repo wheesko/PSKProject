@@ -48,9 +48,10 @@ export const thunkLogout = (): ThunkAction<void, AppState, null, Action<string>>
 
 export const thunkRegister = (registerRequest: RegisterWorkerRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
 	workerService.registerWorker(registerRequest).then(response => {
+		// dispatch(userRegister())
 		console.log(response);
-		const decodedResponse = jwt.decode(response?.headers.authorization.replace('Bearer ', ''),
-			{ json: true });
+		// const decodedResponse = jwt.decode(response?.headers.authorization.replace('Bearer ', ''),
+		// 	{ json: true });
 
 		// dispatch(userRegister({
 		// 	email: loginRequest.email,

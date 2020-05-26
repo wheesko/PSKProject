@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
@@ -29,5 +30,9 @@ public class WorkerMapper {
 
     public WorkerToGetDTO toGetDTO(Worker worker){
         return modelMapper.map(worker, WorkerToGetDTO.class);
+    }
+
+    public UserToRegisterDTO toRegisterDTO(Worker worker){
+        return modelMapper.map(worker, UserToRegisterDTO.class);
     }
 }

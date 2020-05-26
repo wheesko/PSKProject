@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
 import { TEAM_NAME } from '../../../constants/otherConstants';
-import { useDispatch } from 'react-redux';
-import { thunkLogin } from '../../../thunks';
+import {useDispatch, useSelector} from 'react-redux';
+import {thunkLogin, thunkRegister} from '../../../thunks';
 import '../../../App.css';
+import {RootState} from "../../../redux";
 
 const layout = {
 	labelCol: { span: 24 },
@@ -16,12 +17,13 @@ const { Content, Footer } = Layout;
 const { Title } = Typography;
 
 const RegisterPage: React.FunctionComponent<{}> = () => {
+	const worker = useSelector((state: RootState) => state.user);
 	const dispatch = useDispatch();
 	const [form] = Form.useForm();
 	const onFinish = () => {
-		dispatch(thunkLogin({
-			email: form.getFieldValue('email'),
-			password: form.getFieldValue('password')
+		dispatch(thunkRegister({
+			name: form.getFieldValue('name'),
+			surname: form.getFieldValue('surname')
 		}));
 	};
 
@@ -41,16 +43,16 @@ const RegisterPage: React.FunctionComponent<{}> = () => {
 					onFinishFailed={onFinishFailed}
 				>
 					<Form.Item
-						label="Email"
-						name="email"
-						rules={[{ required: true, message: 'Please input your email!' }]}
+						label="Name"
+						name="name"
+						rules={[{ required: true, message: 'Please input your name' }]}
 					>
 						<Input/>
 					</Form.Item>
 					<Form.Item
-						label="Password"
-						name="password"
-						rules={[{ required: true, message: 'Please input your password!' }]}
+						label="Surname"
+						name="surname"
+						rules={[{ required: true, message: 'Please enter your surname' }]}
 					>
 						<Input.Password/>
 					</Form.Item>
