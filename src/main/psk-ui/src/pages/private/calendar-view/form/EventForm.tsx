@@ -105,6 +105,7 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 							<Input.TextArea
 								placeholder={ADD_LEARNING_EVENT_COMMENT}
 								allowClear
+								autoSize={{ minRows: 2, maxRows: 2 }}
 							/>
 						</Form.Item>
 						<Form.Item
