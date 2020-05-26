@@ -44,5 +44,15 @@
       "name": "mail.pwd",
       "type": "java.lang.String",
       "description": "Description for mail.pwd."
+    },
+    {
+      "name": "worker.defaultConsecutiveLearningDayLimit",
+      "type": "java.lang.String",
+      "description": "Description for worker.defaultConsecutiveLearningDayLimit."
+    },
+    {
+      "name": "worker.defaultQuarterLearningDayLimit",
+      "type": "java.lang.String",
+      "description": "Description for worker.defaultQuarterLearningDayLimit."
     }
   ] }

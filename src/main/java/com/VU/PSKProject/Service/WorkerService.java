@@ -12,6 +12,7 @@ import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,6 +45,9 @@ public class WorkerService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Environment env;
+
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
     }
@@ -53,6 +58,10 @@ public class WorkerService {
 
     @Transactional
     public void createWorker(Worker worker) {
+        if(worker.getQuarterLearningDayLimit() == 0)
+            worker.setQuarterLearningDayLimit(Integer.parseInt(Objects.requireNonNull(env.getProperty("worker.defaultQuarterLearningDayLimit"))));
+        if(worker.getConsecutiveLearningDayLimit() == 0)
+            worker.setConsecutiveLearningDayLimit(Integer.parseInt(Objects.requireNonNull(env.getProperty("worker.defaultConsecutiveLearningDayLimit"))));
         workerRepository.save(worker);
     }
 
