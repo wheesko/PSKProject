@@ -6,9 +6,7 @@ import com.VU.PSKProject.Service.LearningDayService;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
-import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Service.UserService;
-import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,25 +23,21 @@ public class LearningDayController {
     private LearningDayService learningDayService;
 
     @Autowired
-    private WorkerService workerService;
-
-    @Autowired
     private LearningDayMapper learningDayMapper;
 
     @Autowired
     private UserService userService;
-	
-	@Autowired
-    private TopicService topicService;
+
 
     @GetMapping("/get/{workerId}")
     public List<LearningDayToReturnDTO> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
-    @GetMapping("/getByManagerId/{managerId}")
-    public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(@PathVariable Long managerId) {
-        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(managerId);
+    @GetMapping("/getByManagerId")
+    public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(user);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
 
@@ -54,24 +48,18 @@ public class LearningDayController {
         Principal principal
     ) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        List<LearningDay> learningDays = learningDayService.getMonthLearningDaysByWorkerId(year, month, user);
-        return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
+        return learningDayService.getMonthLearningDaysByWorkerId(year, month, user);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createLearningEventForWorker(@RequestBody LearningDayToCreateDTO learningDayDto) {
-        LearningDay learningDay = learningDayMapper.fromDTO(learningDayDto);
-        workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
-        topicService.getTopic(learningDayDto.getTopic()).ifPresent(learningDay::setTopic);
+    public ResponseEntity<String> createLearningEventForWorker(
+            @RequestBody LearningDayToCreateDTO learningDayToCreate,
+            Principal principal
+    ) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
 
-        ResponseEntity<String> resp = learningDayService.checkWorkerAvailability(learningDay.getAssignee(), learningDay);
-        if(resp.getStatusCode().is2xxSuccessful()) {
-            learningDayService.createLearningDay(learningDay);
-            return ResponseEntity.ok("Learning Day has been created successfully!");
-        }
-        else {
-            return resp;
-        }
+        learningDayService.createLearningDay(learningDayToCreate, user);
+        return ResponseEntity.ok("Learning Day has been created successfully!");
     }
 
 

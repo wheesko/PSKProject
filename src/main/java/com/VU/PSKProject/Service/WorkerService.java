@@ -1,17 +1,23 @@
 package com.VU.PSKProject.Service;
 
+import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
+import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Utils.EventDate;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +32,16 @@ public class WorkerService {
     private LearningDayService learningDayService;
 
     @Autowired
+    private WorkerMapper workerMapper;
+
+    @Autowired
     private TeamService teamService;
 
     @Autowired
-    private WorkerMapper workerMapper;
+    private TeamService teamService;
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
@@ -39,6 +51,7 @@ public class WorkerService {
         return workerRepository.findById(id);
     }
 
+    @Transactional
     public void createWorker(Worker worker) {
         workerRepository.save(worker);
     }
@@ -82,12 +95,12 @@ public class WorkerService {
         return learningDayService.getAssigneesByTopicIdsPast(ids);
     }
 
-    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, boolean time){
+    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, EventDate.eventDate time){
         List<Worker> workers = new ArrayList<>();
         List <Worker> allWorkers = null;
-        if (!time)
+        if (time.equals(EventDate.eventDate.PAST))
             allWorkers = learningDayService.getAssigneesByTopicIdsPast(ids);
-        if (time)
+        if (time.equals(EventDate.eventDate.FUTURE))
              allWorkers = learningDayService.getAssigneesByTopicIdsFuture(ids);
 
         for (Worker w: allWorkers) {
@@ -130,5 +143,29 @@ public class WorkerService {
     public void exportToCSV(List<WorkerToExportDTO> dataToExport, HttpServletResponse response) throws Exception {
         String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team,", "Managed team\n"};
         CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
+    }
+
+    private ResponseEntity<String> sendEmailToNewWorker(User u, Worker w, String tempPassword){
+        String subject = "PSK_123 New worker";
+        String text = String.format("Hello,\n You've been invited to join %s. You can finish your registration by logging " +
+                "in to the application with your email address and temporary password.\n" +
+                "Temporary password: %s.\n Hope to see you soon!\n PSK_123", w.getWorkingTeam().getName(), tempPassword);
+        try {
+            emailService.sendMessage(u.getEmail(), subject, text);
+            return ResponseEntity.ok("An email to the new worker has been sent!");
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body("Failed to send email to the worker!");
+        }
+    }
+
+    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO){
+        String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
+        Worker worker = workerMapper.fromDTO(workerDTO);
+        User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);
+        worker.setUser(u);
+        teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        createWorker(worker);
+
+        return sendEmailToNewWorker(u, worker, temporaryPassword);
     }
 }

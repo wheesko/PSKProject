@@ -6,6 +6,8 @@ import com.VU.PSKProject.Repository.TeamRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToGetDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Utils.EventDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,14 +53,12 @@ public class TeamService {
         return teamRepository.findByManagerId(managerId);
     }
 
-    public List<Team> getTeamsByTopicId(Long id, Long managerId){
-
-        Optional<Worker> manager = workerService.getWorker(managerId);
-
+    public List<Team> getTeamsByTopicId(Long id, UserDTO user){
+        Worker manager = workerService.getWorkerByUserId(user.getId());
         List <Team> teams = new ArrayList<>();
         List <Worker> workers = workerService.getWorkersByTopic(id);
         for (Worker worker: workers) {
-            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId().equals(worker.getWorkingTeam().getId()))
+            if(manager.getManagedTeam() != null && manager.getManagedTeam().getId().equals(worker.getWorkingTeam().getId()))
             {
                 if(worker.getWorkingTeam() != null){
                     if (!teams.contains(worker.getWorkingTeam())){
@@ -74,14 +74,13 @@ public class TeamService {
         }
         return teams;
     }
-    public List<Team> getTeamsByTopicIds(List<Long> ids, Long managerId){
-
-        Optional<Worker> manager = workerService.getWorker(managerId);
+    public List<Team> getTeamsByTopicIds(List<Long> ids, UserDTO user){
+        Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List <Team> teams = new ArrayList<>();
         List <Worker> workers = workerService.getWorkersByIds(ids);
         for (Worker worker: workers) {
-            if(manager.get().getManagedTeam() != null && manager.get().getManagedTeam().getId().equals(worker.getWorkingTeam().getId())){
+            if(manager.getManagedTeam() != null && manager.getManagedTeam().getId().equals(worker.getWorkingTeam().getId())){
                 if(worker.getWorkingTeam() != null) {
                     if (!teams.contains(worker.getWorkingTeam())){
                         teams.add(worker.getWorkingTeam());
@@ -97,25 +96,24 @@ public class TeamService {
         }
         return teams;
     }
-    public List<TeamCountDTO> getTeamsCountDTOByTopics( List<Long> topicIds, List<Long> teamIds, Long managerId){
-        // for this to werk we need to know manager id
-        Optional<Worker> manager = workerService.getWorker(managerId);
+    public List<TeamCountDTO> getTeamsCountDTOByTopics( List<Long> topicIds, List<Long> teamIds, UserDTO user){
+
+        Worker manager = workerService.getWorkerByUserId(user.getId());
 
         List<Team> teams = getAllTeams();
         List<TeamCountDTO> teamCountDTOS = new ArrayList<>();
         for (Team team: teams) {
-            if(teamIds.contains(team.getId()) && manager.get().getManagedTeam().getId().equals(team.getId())){
+            if(teamIds.contains(team.getId()) && manager.getManagedTeam().getId().equals(team.getId())){
                 TeamCountDTO teamCountDTO = new TeamCountDTO();
 
                 teamCountDTO.setId(team.getId());
                 teamCountDTO.setName(team.getName());
 
-                // false time means PAST, true means FUTURE
                 teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager.get(), false).size());
+                        (team.getId(), topicIds, manager, EventDate.eventDate.PAST).size());
 
                 teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager.get(), true).size());
+                        (team.getId(), topicIds, manager, EventDate.eventDate.FUTURE).size());
 
                 teamCountDTO.setGoalsCount(workerGoalService.getWorkersByGoalsTeamManager
                         (team.getId(), topicIds, manager.get()).size());

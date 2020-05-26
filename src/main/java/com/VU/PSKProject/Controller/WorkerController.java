@@ -3,7 +3,9 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
+import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,21 +43,17 @@ public class WorkerController {
         List<WorkerToGetDTO> workerDTOS = workerService.retrieveAllWorkers();
         return ResponseEntity.ok(workerDTOS);
     }
-    @GetMapping("/getByTopicAndManager/{topicId}/{managerId}")
-    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, @PathVariable Long managerId) {
-        Optional<Worker> manager = workerService.getWorker(managerId);
-
-        List<Worker> workers = workerService.getWorkersByTopic(topicId);
-        return manager.map(worker -> ResponseEntity.ok(workerService.extractByManager(workers, worker)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/getByTopic/{topicId}")
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByTopic(topicId),
+                workerService.getWorkerByUserId(user.getId())));
     }
-    @GetMapping("/getByTopicIdsAndManager/{topicIds}/{managerId}")
-    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, @PathVariable Long managerId) {
-        Optional<Worker> manager = workerService.getWorker(managerId);
-        List<Worker> workers = workerService.getWorkersByIds(topicIds);
-
-        return manager.map(worker -> ResponseEntity.ok(workerService.extractByManager(workers, worker)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/getByTopicIds/{topicIds}/")
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByIds(topicIds),
+                workerService.getWorkerByUserId(user.getId())));
     }
 
     @GetMapping("/exportTopicAndManager/{topicId}/{managerId}")
@@ -113,13 +112,12 @@ public class WorkerController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createWorker(@RequestBody WorkerToCreateDTO workerDto) {
-        Worker worker = workerMapper.fromDTO(workerDto);
         ResponseEntity<String> response = workerService.validateWorkerData(workerDto);
-        User u = userService.createUserFromEmail(workerDto.getEmail());
-        worker.setUser(u);
-        teamService.getTeamByManager(workerDto.getManagerId()).ifPresent(worker::setWorkingTeam);
-        workerService.createWorker(worker);
-        return response;
+
+        if(response.getStatusCode().isError())
+            return response;
+
+        return workerService.createFreshmanWorker(workerDto);
     }
 
     @PutMapping("/update/{id}")

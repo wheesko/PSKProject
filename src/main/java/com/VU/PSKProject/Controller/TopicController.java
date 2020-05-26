@@ -4,13 +4,17 @@ import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicDTO;
+import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Service.TopicService;
+import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +24,11 @@ public class TopicController {
     @Autowired
     private TopicService topicService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/getAll")
-    public List<Topic> getTopics() {
+    public List<TopicToReturnDTO> getTopics() {
         return topicService.getAllTopics();
     }
 
@@ -54,13 +61,15 @@ public class TopicController {
         topicService.deleteTopic(id);
     }
 
-    @GetMapping("/getTeamTopicsByManagerId/{managerId}")
-    public ResponseEntity<TeamTopicsDTO> getTeamsCountByTopics(@PathVariable Long managerId){
-        return ResponseEntity.ok(topicService.getTeamTopicsDTObyManager(managerId));
+    @GetMapping("/getTeamTopics")
+    public ResponseEntity<TeamTopicsDTO> getTeamsCountByTopics(Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return ResponseEntity.ok(topicService.getTeamTopicsDTObyManager(user));
     }
-    @GetMapping("/getWorkersTopicsByManagerId/{managerId}")
-    public ResponseEntity<List<WorkerTopicsDTO>> getWorkersTopicsByManager(@PathVariable Long managerId) {
-        return ResponseEntity.ok(topicService.getWorkersTopicsDTObyManager(managerId));
+    @GetMapping("/getWorkersTopics")
+    public ResponseEntity<List<WorkerTopicsDTO>> getWorkersTopicsByManager(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return ResponseEntity.ok(topicService.getWorkersTopicsDTObyManager(user));
     }
 
     @GetMapping("exportWorkersTopicsByManagerId/{managerId}")
