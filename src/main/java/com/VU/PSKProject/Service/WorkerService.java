@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -82,9 +83,7 @@ public class WorkerService {
         if(workerDTO.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("No email provided!");
         }
-        if(workerDTO.getManagerId() == null){
-            return ResponseEntity.badRequest().body("No manager provided!");
-        }
+
         return ResponseEntity.ok().build();
     }
     public List<Worker> getWorkersByTopic(Long topicId) {
@@ -158,12 +157,15 @@ public class WorkerService {
         }
     }
 
-    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO){
+    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO, Principal principal){
         String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
         Worker worker = workerMapper.fromDTO(workerDTO);
         User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);
         worker.setUser(u);
-        teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        if(workerDTO.getManagerId()!= null)
+            teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        else
+            teamService.getTeamByManager(userService.getUserByEmail(principal.getName()).getId()).ifPresent(worker::setWorkingTeam);
         createWorker(worker);
 
         return sendEmailToNewWorker(u, worker, temporaryPassword);
