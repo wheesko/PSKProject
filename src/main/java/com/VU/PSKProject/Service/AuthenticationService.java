@@ -2,6 +2,7 @@ package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Controller.Model.RefreshTokenRequest;
 import com.VU.PSKProject.Controller.Model.RefreshTokenResponse;
+import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.Model.FreshmanLoginResponseModel;
 import com.VU.PSKProject.Service.Model.LoginResponseModel;
@@ -49,7 +50,7 @@ public class AuthenticationService {
         Worker workerData = workerService.getWorkerByUserId(userData.getId());
 
         String loginResponseString = "";
-        if(((User) principal).getAuthorities().size() == 1 &&
+        if (((User) principal).getAuthorities().size() == 1 &&
                 ((User) principal).getAuthorities().toArray()[0].toString().equals("FRESHMAN"))
             loginResponseString = new Gson().toJson(getLoginResponse(userData));
         else
@@ -62,11 +63,11 @@ public class AuthenticationService {
         out.flush();
     }
 
-     public void addJWTToken(
-        HttpServletResponse response,
-        String username,
-        Collection<? extends GrantedAuthority> userRole
-     ) {
+    public void addJWTToken(
+            HttpServletResponse response,
+            String username,
+            Collection<? extends GrantedAuthority> userRole
+    ) {
 
         String jwtToken = generateAccessToken(username, userRole);
         String refreshToken = generateRefreshToken(username, userRole);
@@ -137,9 +138,15 @@ public class AuthenticationService {
 
     private FreshmanLoginResponseModel getLoginResponse(UserDTO userDTO) {
         FreshmanLoginResponseModel fr = new FreshmanLoginResponseModel();
-        fr.setEmail(userDTO.getEmail());
+        Worker worker = workerService.getWorkerByUserId(userDTO.getId());
         fr.setUserId(userDTO.getId());
+        fr.setWorkerId(worker.getId());
+        fr.setEmail(userDTO.getEmail());
         fr.setUserAuthority(userDTO.getUserRole());
+        fr.setWorkingTeamId(worker.getWorkingTeam().getId());
+        fr.setName(worker.getName());
+        fr.setSurname(worker.getSurname());
+        fr.setRole(worker.getRole());
         return fr;
     }
 
