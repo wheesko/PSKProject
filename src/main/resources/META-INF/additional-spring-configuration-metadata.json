@@ -1,0 +1,48 @@
+{
+  "properties": [
+    {
+      "name": "mail.transport.protocol",
+      "type": "java.lang.String",
+      "description": "Description for mail.transport.protocol."
+    },
+    {
+      "name": "mail.auth",
+      "type": "java.lang.String",
+      "description": "Description for mail.auth."
+    },
+    {
+      "name": "mail.starttls.enable",
+      "type": "java.lang.String",
+      "description": "Description for mail.starttls.enable."
+    },
+    {
+      "name": "mail.debug.enable",
+      "type": "java.lang.String",
+      "description": "Description for mail.debug.enable."
+    },
+    {
+      "name": "mail.ssl.trust",
+      "type": "java.lang.String",
+      "description": "Description for mail.ssl.trust."
+    },
+    {
+      "name": "mail.sender",
+      "type": "java.lang.String",
+      "description": "Description for mail.sender."
+    },
+    {
+      "name": "mail.server",
+      "type": "java.lang.String",
+      "description": "Description for mail.server."
+    },
+    {
+      "name": "mail.port",
+      "type": "java.lang.String",
+      "description": "Description for mail.port."
+    },
+    {
+      "name": "mail.pwd",
+      "type": "java.lang.String",
+      "description": "Description for mail.pwd."
+    }
+  ] }
