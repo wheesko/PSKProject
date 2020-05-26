@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,6 @@ public class TeamController {
     @Autowired
     private WorkerService workerService;
 
-    @Autowired
-    private WorkerGoalService workerGoalService;
     @Autowired
     private UserService userService;
 
@@ -67,6 +66,17 @@ public class TeamController {
                                                                     Principal principal){
         UserDTO user = userService.getUserByEmail(principal.getName());
         return ResponseEntity.ok(teamService.getTeamsCountDTOByTopics(topicIds,teamIds, user));
+    }
+
+    @GetMapping("/exportTeamsCountByTopics/{teamIds}/{topicIds}/{managerId}")
+    public void exportCSV(@PathVariable List<Long> topicIds,
+                          @PathVariable List<Long> teamIds,
+                          @PathVariable Long managerId,
+                          HttpServletResponse response, Principal principal)throws Exception{
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        List<TeamCountDTO> teams = teamService.getTeamsCountDTOByTopics(topicIds, teamIds, user);
+        teamService.exportToCSV(teams, response);
+
     }
 
     @GetMapping("/get/{id}")

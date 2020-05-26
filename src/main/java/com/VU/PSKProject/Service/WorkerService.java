@@ -3,15 +3,19 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -31,13 +35,13 @@ public class WorkerService {
     private WorkerMapper workerMapper;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private TeamService teamService;
 
     @Autowired
     private EmailServiceImpl emailService;
+
+    @Autowired
+    private UserService userService;
 
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
@@ -86,6 +90,7 @@ public class WorkerService {
     public List<Worker> getWorkersByTopic(Long topicId) {
         return learningDayService.getAssigneesByTopicIdPast(topicId);
     }
+
     public List<Worker> getWorkersByIds(List<Long> ids){
         return learningDayService.getAssigneesByTopicIdsPast(ids);
     }
@@ -105,8 +110,7 @@ public class WorkerService {
         }
         return workers;
     }
-
-    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager) {
+    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager){
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
 
         for (Worker w: workers) {
@@ -120,10 +124,26 @@ public class WorkerService {
         return workerDTOS;
     }
 
+    public List<WorkerToGetDTO> retrieveAllWorkers() {
+        List<Worker> workers = getAllWorkers();
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
+            workerDTOS.add(workerDTO);
+        }
+        return workerDTOS;
+    }
+
     public Worker getWorkerByUserId(Long userId) {
         return workerRepository.findByUserId(userId).orElse(new Worker());
     }
 
+    public void exportToCSV(List<WorkerToExportDTO> dataToExport, HttpServletResponse response) throws Exception {
+        String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team,", "Managed team\n"};
+        CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
+    }
 
     private ResponseEntity<String> sendEmailToNewWorker(User u, Worker w, String tempPassword){
         String subject = "PSK_123 New worker";

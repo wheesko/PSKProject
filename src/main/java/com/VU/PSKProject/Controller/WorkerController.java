@@ -8,6 +8,7 @@ import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +40,7 @@ public class WorkerController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
-        List<Worker> workers = workerService.getAllWorkers();
-        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
-        for (Worker w: workers) {
-            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
-            workerDTO.setEmail(w.getUser().getEmail());
-            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
-            workerDTOS.add(workerDTO);
-        }
+        List<WorkerToGetDTO> workerDTOS = workerService.retrieveAllWorkers();
         return ResponseEntity.ok(workerDTOS);
     }
     @GetMapping("/getByTopic/{topicId}")
@@ -60,12 +55,51 @@ public class WorkerController {
         return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByIds(topicIds),
                 workerService.getWorkerByUserId(user.getId())));
     }
+
+    @GetMapping("/exportTopicAndManager/{topicId}/{managerId}")
+    public void exportCSV(@PathVariable Long topicId, @PathVariable Long managerId, HttpServletResponse response) throws Exception{
+        Optional<Worker> manager = workerService.getWorker(managerId);
+        List<Worker> workers = workerService.getWorkersByTopic(topicId);
+        manager.ifPresent(m ->{
+            List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
+            try {
+                workerService.exportToCSV(workerToExportDTOS, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @GetMapping("/exportTopicsAndManager/{topicIds}/{managerId}")
+    public void exportCSV(@PathVariable List<Long> topicIds, @PathVariable Long managerId, HttpServletResponse response){
+        Optional<Worker> manager = workerService.getWorker(managerId);
+        List<Worker> workers = workerService.getWorkersByIds(topicIds);
+        manager.ifPresent(m ->{
+            List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
+            try {
+                workerService.exportToCSV(workerToExportDTOS, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @GetMapping("/exportAllToCSV/")
+    public void exportWorkers(HttpServletResponse response) {
+        List<WorkerToExportDTO> workersToExport = workerMapper.toExportList(workerService.retrieveAllWorkers());
+        try {
+            workerService.exportToCSV(workersToExport, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @GetMapping("/get/{id}")
-    public ResponseEntity<WorkerDTO> getWorker(@PathVariable Long id) {
+    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id) {
         Optional<Worker> worker = workerService.getWorker(id);
         if(worker.isPresent())
         {
-            WorkerDTO workerDTO = workerMapper.toDto(worker.get());
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
             return ResponseEntity.ok(workerDTO);
         }
@@ -113,13 +147,19 @@ public class WorkerController {
     }
 
     @GetMapping("managedTeams/{id}")
-    public ResponseEntity<Worker> getWorkerByManagedTeam(@PathVariable Long id) {
+    public ResponseEntity<WorkerToGetDTO> getWorkerByManagedTeam(@PathVariable Long id) {
         Optional<Worker> worker = workerService.findByManagedTeamId(id);
-        return worker.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return worker.map(value -> ResponseEntity.ok(workerMapper.toGetDTO(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("workingTeams/{id}")
-    public ResponseEntity<List<Worker>> getWorkersByWorkingTeam(@PathVariable Long id) {
-        return ResponseEntity.ok(workerService.findByWorkingTeamId(id));
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByWorkingTeam(@PathVariable Long id) {
+        List<Worker> workers = workerService.findByWorkingTeamId(id);
+        List<WorkerToGetDTO> workersToGet = new ArrayList<>();
+        for (Worker w : workers) {
+            workersToGet.add(workerMapper.toGetDTO(w));
+        }
+
+        return ResponseEntity.ok(workersToGet);
     }
 }
