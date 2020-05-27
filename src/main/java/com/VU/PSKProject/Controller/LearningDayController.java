@@ -37,8 +37,17 @@ public class LearningDayController {
     @GetMapping("/getByManagerId")
     public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(user);
-        return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
+        return learningDayService.getAllLearningDaysByManagerId(user);
+    }
+
+    @GetMapping("/getByManagerId/{year}/{month}")
+    public List<LearningDayToReturnDTO> getAllMonthLearningEventsByManagerId(
+            @PathVariable String year,
+            @PathVariable String month,
+            Principal principal
+    ) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return learningDayService.getAllMonthLearningDaysByManagerId(user, year, month);
     }
 
     @GetMapping("/get/{year}/{month}")
