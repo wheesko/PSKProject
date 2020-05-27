@@ -76,22 +76,9 @@ public class LearningDayService {
         learningDayRepository.save(learningDay);
     }
 
-    public void updateLearningDay(
-        LearningDayToCreateDTO learningDayToUpdate,
-        Long learningDayId,
-        UserDTO user
-    ) {
+    public void updateLearningDay(LearningDay learningDay, Long learningDayId, UserDTO user) {
         Worker worker = workerService.getWorkerByUserId(user.getId());
-        List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
-        if (learningDays.stream().noneMatch(l -> l.getId().equals(learningDayId))) {
-            throw new LearningDayException("Worker has no such learning day");
-        }
-
-        LearningDay learningDay = getLearningDayById(learningDayId);
-        learningDay.setTopic(topicService.getTopic(learningDayToUpdate.getTopic())
-                .orElseThrow(() -> new LearningDayException("Could not find topic")));
-        //workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
-        PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay);
+        checkWorkerAvailability(worker, learningDay);
         learningDay.setId(learningDayId);
         learningDayRepository.save(learningDay);
     }
