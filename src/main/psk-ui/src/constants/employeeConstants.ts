@@ -13,6 +13,7 @@ export const EMPLOYEE_ROLE = 'Role';
 export const EMPLOYEE_GOALS = 'Goals';
 export const GOALS_INFO = 'You can set initial goals for the employee';
 export const YOUR_EMPLOYEES = 'Your Employees';
+export const YOUR_COLLEAGUES = 'Your Colleagues';
 export const REMOVE_EMPLOYEE = 'Remove employee';
 export const EDIT_EMPLOYEE_DETAILS = 'Edit employee details';
 export const DELETE_WARNING = 'Are you sure you want to remove ';

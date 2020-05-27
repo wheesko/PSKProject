@@ -3,9 +3,11 @@ import React from 'react';
 import { Form, Input, Button, Alert, notification, } from 'antd';
 import {
 	EMPLOYEE_EMAIL,
-	EMPLOYEE_EMAIL_REQUIRED,  INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
+	EMPLOYEE_EMAIL_REQUIRED, INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
 } from '../../../constants/employeeConstants';
 import './editable-table/EditableTableStyles.css';
+import workerService from '../../../api/worker-service';
+import notificationService, {NotificationType} from "../../../service/notification-service";
 
 const formItemLayout = {
 	labelCol: {
@@ -31,6 +33,20 @@ const NewTeamMemberForm: React.FunctionComponent<{}> = () => {
 			description: errorMessage
 		});
 	};
+
+	function sendEmployeeInvite() {
+		workerService.addEmployee({ email: form.getFieldsValue()['email'], role: '' }).then(() => {
+			openSuccessNotificationWithIcon();
+			form.resetFields();
+		}).catch((error) => {
+			notificationService.notify({
+				notificationType: NotificationType.ERROR,
+				message: 'Failed to send invite!',
+				description: error.toString()
+			});
+		});
+	}
+
 	return (
 		<>
 			<Alert
@@ -51,15 +67,7 @@ const NewTeamMemberForm: React.FunctionComponent<{}> = () => {
 				}
 				className="infoAlert"/>
 			<Form.Provider
-				onFormFinish={() => {
-					form.resetFields();
-					// send invite to provided email
-					// check for some backend response
-					//try...
-					openSuccessNotificationWithIcon();
-					//catch
-					// openErrorNotificationWithIcon('errorMessage')
-				}}
+				onFormFinish={sendEmployeeInvite}
 			>
 				<Form
 					form={form}

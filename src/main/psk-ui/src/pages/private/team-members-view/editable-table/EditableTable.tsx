@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Table,  Popconfirm, Form, Tooltip, Button, Modal } from 'antd';
-import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Employee } from '../../../../models/employee';
+import React, {useEffect, useState} from 'react';
+import {Table, Popconfirm, Form, Tooltip, Button, Modal, Tag} from 'antd';
+import {ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {Employee} from '../../../../models/employee';
 import {
 	DELETE_WARNING,
 	DELETE_WARNING_INFO,
@@ -9,22 +9,30 @@ import {
 	REMOVE_EMPLOYEE
 } from '../../../../constants/employeeConstants';
 import './EditableTableStyles.css';
-import { myEmployees } from '../../../../tools/mockData';
-import { THIS_ACTION_CANNOT_BE_UNDONE } from '../../../../constants/otherConstants';
-import { EditableCell } from './EditableCell';
+// import {myEmployees} from '../../../../tools/mockData';
+import {THIS_ACTION_CANNOT_BE_UNDONE} from '../../../../constants/otherConstants';
+import {EditableCell} from './EditableCell';
+import {LearningEvent} from '../../../../models/learningEvent';
+import {Role} from "../../../../models/role";
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
-const EditableTable = () => {
+interface EditableTableProps {
+	employeeList: Employee[];
+}
+
+const EditableTable: React.FunctionComponent<EditableTableProps> = (props: EditableTableProps) => {
 	const [form] = Form.useForm();
-
-	const [data, setData] = useState(myEmployees);
+	const [data, setData] = useState<Employee[]>([]);
+	useEffect(() => {
+		setData(props.employeeList);
+	}, [props.employeeList.length])
 	const [editingKey, setEditingKey] = useState(-1);
 
 	const isEditing = (record: Employee) => record.id === editingKey;
 
 	const edit = (record: Employee) => {
-		form.setFieldsValue({ quarterConstraint: 0, goals: [], ...record });
+		form.setFieldsValue({quarterConstraint: 0, goals: [], ...record});
 		setEditingKey(record.id);
 	};
 
@@ -48,10 +56,12 @@ const EditableTable = () => {
 				});
 				// SEND UPDATE EMPLOYEE REQUEST HERE
 				// dispatch(updateEmployee(item));
+				console.log("Set data to: ", newData)
 				setData(newData);
 				setEditingKey(-1);
 			} else {
 				newData.push(row);
+				console.log("Set data to: ", newData)
 				setData(newData);
 				// SEND UPDATE EMPLOYEE REQUEST HERE
 				// dispatch(updateEmployee(row));
@@ -64,11 +74,18 @@ const EditableTable = () => {
 
 	const columns = [
 		{
-			title: 'Employee',
+			title: 'Name',
 			dataIndex: 'name',
 			key: 'name',
 			editable: false,
-			width: '17%',
+			width: '8.5%',
+		},
+		{
+			title: 'Surname',
+			dataIndex: 'surname',
+			key: 'surname',
+			editable: false,
+			width: '8.5%',
 		},
 		{
 			title: 'Email',
@@ -86,8 +103,8 @@ const EditableTable = () => {
 		},
 		{
 			title: 'Quarter constraint',
-			dataIndex: 'quarterConstraint',
-			key: 'quarterConstraint',
+			dataIndex: 'quarterLearningDayLimit',
+			key: 'quarterLearningDayLimit',
 			editable: true,
 			width: '5%',
 		},
@@ -97,6 +114,10 @@ const EditableTable = () => {
 			key: 'role',
 			editable: true,
 			width: '15%',
+			render: (role: Role) => {
+				return <Tag color={role.color}>{role.name}</Tag>
+
+			}
 			// TODO: fix displaying role (need to create usable state interfaces)
 			// render: (role: Role): React.ReactNode => {
 			// 	return (
@@ -143,7 +164,7 @@ const EditableTable = () => {
 
 				return editable ? (
 					<span>
-						<Button type="link" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
+						<Button type="link" onClick={() => save(record.id)} style={{marginRight: 8}}>
               Save
 
 						</Button>
@@ -236,4 +257,4 @@ const EditableTable = () => {
 	);
 };
 
-export { EditableTable };
+export {EditableTable};
