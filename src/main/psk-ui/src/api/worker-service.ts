@@ -52,7 +52,10 @@ class WorkerService {
 					managerId: record?.managerId,
 					name: record?.name,
 					quarterLearningDayLimit: record?.quarterLearningDayLimit,
-					role: { name: record?.role.name, color: getRoleColor(record?.role.name) },
+					role: record.role === null ? { name: '', color: '' } : {
+						name: record?.role.name,
+						color: getRoleColor(record?.role.name)
+					},
 					surname: record?.surname,
 					team: record?.workingTeam.name,
 					workingTeam: record?.workingTeam,
@@ -62,7 +65,7 @@ class WorkerService {
 	};
 
 	public addEmployee = (addEmployeeRequest: AddEmployeeRequest): Promise<AxiosResponse | null> => {
-		return this.restService.post<void>('/workers/createWorker', addEmployeeRequest);
+		return this.restService.post<void>('/workers/create', addEmployeeRequest);
 	};
 
 }

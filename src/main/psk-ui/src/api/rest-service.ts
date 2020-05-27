@@ -29,7 +29,6 @@ class RestService {
     		return config.url.includes('refreshToken') || config.url?.includes('login')
     			? appendAuthorizationHeader(config, getCurrentJWT())
     			: this.checkTokens().then(() => {
-    				console.log('refreshToken return');
     				return appendAuthorizationHeader(config, getCurrentJWT());
     			});
     	});

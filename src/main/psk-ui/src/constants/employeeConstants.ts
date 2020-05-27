@@ -7,6 +7,7 @@ export const EMPLOYEE_EMAIL = 'Email';
 export const EMPLOYEE_NAME_REQUIRED = 'Name is required';
 export const EMPLOYEE_SURNAME_REQUIRED = 'Surname is required';
 export const EMPLOYEE_EMAIL_REQUIRED = 'Employee email is required';
+export const EMPLOYEE_ROLE_REQUIRED = 'Employee role is required';
 export const EMPLOYEE_QUARTER_CONSTRAINT = 'Quarter constraint';
 export const QUARTER_CONSTRAINT_INFO = 'This is the number of days an employee can have learning days in a years quarter';
 export const EMPLOYEE_ROLE = 'Role';

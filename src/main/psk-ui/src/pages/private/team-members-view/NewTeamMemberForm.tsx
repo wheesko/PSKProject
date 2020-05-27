@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Form, Input, Button, Alert, notification, } from 'antd';
+import { Form, Input, Button, Alert, notification, Spin, } from 'antd';
 import {
 	EMPLOYEE_EMAIL,
-	EMPLOYEE_EMAIL_REQUIRED, INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
+	EMPLOYEE_EMAIL_REQUIRED, EMPLOYEE_ROLE, INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
 } from '../../../constants/employeeConstants';
 import './editable-table/EditableTableStyles.css';
 import workerService from '../../../api/worker-service';
-import notificationService, {NotificationType} from "../../../service/notification-service";
+import notificationService, { NotificationType } from '../../../service/notification-service';
 
 const formItemLayout = {
 	labelCol: {
@@ -20,25 +20,32 @@ const formItemLayout = {
 	}
 };
 
-const NewTeamMemberForm: React.FunctionComponent<{}> = () => {
+interface NewTeamMemberFormProps {
+	managerId: number;
+}
+
+const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (props: NewTeamMemberFormProps) => {
+	const [isSending, setIsSending] = useState<boolean>(false);
+
 	const [form] = Form.useForm();
 	const openSuccessNotificationWithIcon = () => {
 		notification['success']({
 			message: 'Email invite sent!',
 		});
 	};
-	const openErrorNotificationWithIcon = (errorMessage: string) => {
-		notification['error']({
-			message: 'Invite unsuccessful!',
-			description: errorMessage
-		});
-	};
 
 	function sendEmployeeInvite() {
-		workerService.addEmployee({ email: form.getFieldsValue()['email'], role: '' }).then(() => {
+		setIsSending(true);
+		workerService.addEmployee({
+			email: form.getFieldsValue()['email'],
+			role: form.getFieldsValue()['role'],
+			'managerId': props.managerId
+		}).then(() => {
+			setIsSending(false);
 			openSuccessNotificationWithIcon();
 			form.resetFields();
 		}).catch((error) => {
+			setIsSending(false);
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
 				message: 'Failed to send invite!',
@@ -66,38 +73,47 @@ const NewTeamMemberForm: React.FunctionComponent<{}> = () => {
 					</>
 				}
 				className="infoAlert"/>
-			<Form.Provider
-				onFormFinish={sendEmployeeInvite}
-			>
-				<Form
-					form={form}
-					{...formItemLayout}
-					initialValues={{ remember: true }}
-					name="learningEventForm"
+			<Spin spinning={isSending} size="small">
+				<Form.Provider
+					onFormFinish={sendEmployeeInvite}
 				>
-					<Form.Item
-						label={EMPLOYEE_EMAIL}
-						name="email"
-						rules={[{ required: true, message: EMPLOYEE_EMAIL_REQUIRED, type: 'email' }]}
+					<Form
+						form={form}
+						{...formItemLayout}
+						initialValues={{ remember: true }}
+						name="newTeamMemberForm"
 					>
-						<Input allowClear/>
-					</Form.Item>
-					<Form.Item
-						wrapperCol={{
-							xs: { span: 24, offset: 0 },
-							sm: { span: 16, offset: 8 }
-						}}
-					>
-						<Button
-							className="event-form-buttons success"
-							type="primary"
-							htmlType="submit"
+						<Form.Item
+							label={EMPLOYEE_EMAIL}
+							name="email"
+							rules={[{ required: true, message: EMPLOYEE_EMAIL_REQUIRED, type: 'email' }]}
 						>
-							{INVITE_NEW_EMPLOYEE}
-						</Button>
-					</Form.Item>
-				</Form>
-			</Form.Provider>
+							<Input allowClear/>
+						</Form.Item>
+						<Form.Item
+							label={EMPLOYEE_ROLE}
+							name="role"
+							rules={[{ required: true, message: EMPLOYEE_EMAIL_REQUIRED }]}
+						>
+							<Input allowClear placeholder={'e.g. Backend Engineer'}/>
+						</Form.Item>
+						<Form.Item
+							wrapperCol={{
+								xs: { span: 24, offset: 0 },
+								sm: { span: 16, offset: 8 }
+							}}
+						>
+							<Button
+								className="event-form-buttons success"
+								type="primary"
+								htmlType="submit"
+							>
+								{INVITE_NEW_EMPLOYEE}
+							</Button>
+						</Form.Item>
+					</Form>
+				</Form.Provider>
+			</Spin>
 		</>
 	);
 };

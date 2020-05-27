@@ -167,6 +167,46 @@ public class SampleDataDB {
         learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() + (1000*3600*100)) , workers.get(0),ads));
         learningDayRepository.saveAll(learningDayList);
     }
+
+    public void saveTopicsLast(){
+        ArrayList<Topic> devTopics = new ArrayList<>();
+
+        Topic Angular = new Topic("Learn Angular", null, "Angular study", null);
+        Topic React = new Topic("Learn React", null, "React study", null);
+        Topic Vue = new Topic("Learn Vue", null, "Vue study", null);
+        ArrayList<Topic> fe = new ArrayList<>();
+        fe.add(Angular);
+        fe.add(React);
+        fe.add(Vue);
+        Topic Fe = new Topic("Learn Frontend", fe, "Frontend study", null);
+
+        Topic ios = new Topic("Learn ios", null, "ios study", null);
+        Topic android = new Topic("Learn android", null, "android study", null);
+        Topic nativePlatform = new Topic("Learn nativePlatform", null, "nativePlatform study", null);
+        ArrayList<Topic> mob = new ArrayList<>();
+        mob.add(ios);
+        mob.add(android);
+        mob.add(nativePlatform);
+        Topic mobile = new Topic("Learn mobile", mob, "Frontend mobile", null);
+
+        devTopics.add(Fe);
+        devTopics.add(mobile);
+        Topic MobileDev = new Topic("Learn Mobile development", devTopics, "Mobile development course", null);
+
+        ArrayList<Topic> allTopics = new ArrayList<>();
+        allTopics.add(Angular);
+        allTopics.add(React);
+        allTopics.add(Vue);
+        allTopics.add(Fe);
+        allTopics.add(ios);
+        allTopics.add(android);
+        allTopics.add(nativePlatform);
+        allTopics.add(mobile);
+        allTopics.add(MobileDev);
+
+        topicRepository.saveAll(allTopics);
+    }
+
     public void saveWorkersLast(){
         workerRepository.saveAll(Arrays.asList(
                 new Worker("qwerk", "qwurk", users.get(2), null, teams.get(0),  roles.get(1),

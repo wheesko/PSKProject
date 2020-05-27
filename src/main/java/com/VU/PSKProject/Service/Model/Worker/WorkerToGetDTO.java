@@ -1,5 +1,6 @@
 package com.VU.PSKProject.Service.Model.Worker;
 
+import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Service.Model.RoleDTO;
 import com.opencsv.bean.CsvIgnore;
 import lombok.Getter;
@@ -25,6 +26,6 @@ public class WorkerToGetDTO {
     private Integer quarterLearningDayLimit;
     private Integer consecutiveLearningDayLimit;
 
-    //private List<LearningDayDTO> learningDays;
+    private List<LearningDayDTO> learningDays;
     private List<WorkerGoalDTO> goals;
 }

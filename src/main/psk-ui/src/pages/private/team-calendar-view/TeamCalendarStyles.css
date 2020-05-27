@@ -2,9 +2,15 @@
     /*float: left;*/
     text-align: start;
 }
+
 .teamCalendar {
     height: 100%;
 }
+
 .employee-learning-event-item {
     padding: 4px 0 4px 0 !important;
+}
+
+.ant-picker-calendar-header .ant-picker-calendar-mode-switch {
+    display: none !important;
 }

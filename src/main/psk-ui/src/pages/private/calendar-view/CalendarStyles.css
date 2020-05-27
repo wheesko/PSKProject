@@ -48,3 +48,7 @@
     background-color: rgb(0, 21, 41) !important;
     color: rgba(255, 255, 255, 1) !important;
 }
+
+.ant-picker-calendar-header .ant-picker-calendar-mode-switch {
+    display: none !important;
+}

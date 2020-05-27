@@ -80,8 +80,9 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			destroyOnClose
 			cancelButtonProps={{ style: { display: 'none' } }}
 			okText={DONE}
+			afterClose={getManagedTeam}
 		>
-			<NewTeamMemberForm/>
+			<NewTeamMemberForm managerId={currentWorker.workerId}/>
 		</Modal>
 	</>;
 };

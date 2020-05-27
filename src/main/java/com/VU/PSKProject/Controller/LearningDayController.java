@@ -7,6 +7,7 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.UserService;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,17 @@ public class LearningDayController {
     @GetMapping("/getByManagerId")
     public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        List<LearningDay> learningDays = learningDayService.getAllLearningDaysByManagerId(user);
-        return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
+        return learningDayService.getAllLearningDaysByManagerId(user);
+    }
+
+    @GetMapping("/getByManagerId/{year}/{month}")
+    public List<LearningDayToReturnDTO> getAllMonthLearningEventsByManagerId(
+            @PathVariable String year,
+            @PathVariable String month,
+            Principal principal
+    ) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        return learningDayService.getAllMonthLearningDaysByManagerId(user, year, month);
     }
 
     @GetMapping("/get/{year}/{month}")
@@ -64,13 +74,13 @@ public class LearningDayController {
 
 
     @PutMapping("/update/{id}")
-    public void updateLearningEvent(
-            @RequestBody LearningDayToCreateDTO learningDayDto,
-            @PathVariable Long id,
-            Principal principal
-    ) {
+    public ResponseEntity<String> updateLearningEvent(@RequestBody LearningDayToCreateDTO learningDayDto, @PathVariable Long id, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        learningDayService.updateLearningDay(learningDayDto, id, user);
+        LearningDay learningDay =  learningDayMapper.fromDTO(learningDayDto);
+        //workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
+        PropertyUtils.customCopyProperties(learningDayDto, learningDay);
+        learningDayService.updateLearningDay(learningDay, id, user);
+        return ResponseEntity.ok("Learning Day has been updated successfully!");
     }
 	
     @DeleteMapping("/delete/{id}")
