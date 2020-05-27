@@ -3,6 +3,7 @@ import { RestService } from './rest-service';
 import { LearningDayRequest } from './model/learning-day-request';
 import { AxiosResponse } from 'axios';
 import { LearningEvent } from '../models/learningEvent';
+import { TeamLearningDaysResponse } from './model/team-learning-days-response';
 
 class CalendarService {
     private readonly restService: RestService;
@@ -19,7 +20,17 @@ class CalendarService {
     		.then((response: AxiosResponse<LearningEvent[]>) => {
     			return response.data;
     		});
-    }; 
+    };
+
+	public getTeamMonthLearningDays = (request: LearningDayRequest): Promise<TeamLearningDaysResponse[]> => {
+		return this.restService
+			.get<TeamLearningDaysResponse[]>(
+				`/learningDays/getByManagerId/${request.selectedYear}/${request.selectedMonth}`
+			)
+			.then((response: AxiosResponse<TeamLearningDaysResponse[]>) => {
+				return response.data;
+			});
+	};
 }
 
 const calendarService = new CalendarService();
