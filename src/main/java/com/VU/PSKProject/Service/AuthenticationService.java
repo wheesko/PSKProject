@@ -2,12 +2,9 @@ package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Controller.Model.RefreshTokenRequest;
 import com.VU.PSKProject.Controller.Model.RefreshTokenResponse;
-import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Service.Model.FreshmanLoginResponseModel;
 import com.VU.PSKProject.Service.Model.LoginResponseModel;
 import com.VU.PSKProject.Service.Model.UserDTO;
-import com.VU.PSKProject.Service.Model.WorkerLoginResponseModel;
 import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -49,24 +46,8 @@ public class AuthenticationService {
         User user = (User) principal;
         UserDTO userData = userService.getUserByEmail(user.getUsername());
         Worker workerData = workerService.getWorkerByUserId(userData.getId());
-        ((User) principal).getAuthorities().forEach(a -> System.out.println(a));
         String loginResponseString = "";
-        if (((User) principal).getAuthorities().size() == 1) {
-            switch (((User) principal).getAuthorities().toArray()[0].toString()) {
-                case "FRESHMAN":
-                    loginResponseString = new Gson().toJson(getLoginResponse(userData));
-                    break;
-                case "LEAD":
-                    loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
-                    break;
-                case "WORKER":
-                    loginResponseString = new Gson().toJson(getWorkerLoginResponse(userData, workerData));
-                    break;
-                default:
-                    break;
-            }
-        }
-
+        loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
         PrintWriter out = res.getWriter();
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");
@@ -140,39 +121,11 @@ public class AuthenticationService {
         lr.setUserAuthority(userDTO.getUserRole());
         lr.setWorkerId(worker.getId());
         lr.setWorkingTeamid(worker.getWorkingTeam().getId());
-        lr.setManagedTeamId(worker.getManagedTeam().getId());
-        lr.setRole(worker.getRole().getName());
+        lr.setManagedTeamId(worker.getManagedTeam() == null ? null : worker.getManagedTeam().getId());
+        lr.setRole(worker.getRole() == null ? null : worker.getRole().getName());
         lr.setName(worker.getName());
         lr.setSurname(worker.getSurname());
         return lr;
-    }
-
-    private FreshmanLoginResponseModel getLoginResponse(UserDTO userDTO) {
-        FreshmanLoginResponseModel fr = new FreshmanLoginResponseModel();
-        Worker worker = workerService.getWorkerByUserId(userDTO.getId());
-        fr.setUserId(userDTO.getId());
-        fr.setWorkerId(worker.getId());
-        fr.setEmail(userDTO.getEmail());
-        fr.setUserAuthority(userDTO.getUserRole());
-        fr.setWorkingTeamId(worker.getWorkingTeam().getId());
-        fr.setName(worker.getName());
-        fr.setSurname(worker.getSurname());
-        fr.setRole(worker.getRole());
-        return fr;
-    }
-
-    public WorkerLoginResponseModel getWorkerLoginResponse(UserDTO userDTO, Worker worker) {
-        WorkerLoginResponseModel wr = new WorkerLoginResponseModel();
-        wr.setEmail(userDTO.getEmail());
-        wr.setUserId(userDTO.getId());
-        wr.setUserAuthority(userDTO.getUserRole());
-        wr.setWorkerId(worker.getId());
-        wr.setWorkingTeamId(worker.getWorkingTeam().getId());
-        wr.setRole(worker.getRole() == null ? null : worker.getRole().getName());
-        wr.setName(worker.getName());
-        wr.setSurname(worker.getSurname());
-        return wr;
-
     }
 
     public RefreshTokenResponse refreshAccessToken(RefreshTokenRequest refreshTokenRequest) {
