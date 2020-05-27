@@ -28,6 +28,7 @@ public class PskProjectApplication {
 		sampleDataDB.saveTopics();
 		sampleDataDB.saveTeams();
 		sampleDataDB.saveWorkers();
+		sampleDataDB.saveTopicsLast();
 		sampleDataDB.saveLearningDays();
 		sampleDataDB.saveWorkersLast(); // idk if this is necessary or can move to saveWorkers*/
 		return  args -> { };

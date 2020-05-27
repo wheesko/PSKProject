@@ -57,3 +57,7 @@ Click authorize and insert JWT in format (get it from postman or frontend)
 Bearer <YOUR_JWT_VALUE>
 ```
 You should now be able to call them, provided your JWT was correct and not expired
+
+# Working with database
+
+Database tables are auto-generated using hibernate.ddl-auto. On the initial project launch, make sure it is set to *create* in *application.properties*. On further launches, change this setting to *update*
