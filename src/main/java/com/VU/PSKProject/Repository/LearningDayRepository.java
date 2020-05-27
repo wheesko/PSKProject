@@ -17,6 +17,8 @@ public interface LearningDayRepository extends JpaRepository<LearningDay, Long> 
 
     List<LearningDay> findAllByDateTimeAtBetweenAndAssigneeId(Timestamp dateFrom, Timestamp dateTo, Long workerId);
 
+    List<LearningDay> findAllByDateTimeAtBetweenAndAssigneeIdIn(Timestamp dateFrom, Timestamp dateTo, List<Long> workerId);
+
     List<LearningDay> findAllByAssigneeIdIn(List<Long> workerIds);
 
 

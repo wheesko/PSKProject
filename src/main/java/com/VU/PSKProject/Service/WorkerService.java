@@ -1,24 +1,31 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.User;
+import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
+import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
+import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +41,12 @@ public class WorkerService {
     private LearningDayService learningDayService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private WorkerMapper workerMapper;
 
     @Autowired
@@ -43,10 +56,10 @@ public class WorkerService {
     private EmailServiceImpl emailService;
 
     @Autowired
-    private UserService userService;
+    private Environment env;
 
     @Autowired
-    private Environment env;
+    private PasswordEncoder passwordEncoder;
 
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
@@ -91,9 +104,7 @@ public class WorkerService {
         if(workerDTO.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("No email provided!");
         }
-        if(workerDTO.getManagerId() == null){
-            return ResponseEntity.badRequest().body("No manager provided!");
-        }
+
         return ResponseEntity.ok().build();
     }
     public List<Worker> getWorkersByTopic(Long topicId) {
@@ -149,6 +160,21 @@ public class WorkerService {
         return workerRepository.findByUserId(userId).orElse(new Worker());
     }
 
+    public UserToRegisterDTO registerWorker(UserDTO userDTO, WorkerRegisterDTO workerRegisterDTO) {
+        Worker worker = getWorkerByUserId(userDTO.getId());
+        worker.setName(workerRegisterDTO.getName());
+        worker.setSurname(workerRegisterDTO.getSurname());
+        // set UserAuthority to WORKER
+        User user = userMapper.fromDTO(userDTO);
+        user.setUserAuthority(UserAuthority.WORKER);
+        user.setPassword(passwordEncoder.encode(workerRegisterDTO.getPassword()));
+        userService.updateUser(user);
+        workerRepository.save(worker);
+        UserToRegisterDTO updatedWorkerDTO = workerMapper.toRegisterDTO(worker);
+        updatedWorkerDTO.setEmail(worker.getUser().getEmail());
+        updatedWorkerDTO.setUserAuthority(UserAuthority.WORKER);
+        return updatedWorkerDTO;
+    }
     public void exportToCSV(List<WorkerToExportDTO> dataToExport, HttpServletResponse response) throws Exception {
         String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team,", "Managed team\n"};
         CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
@@ -167,12 +193,15 @@ public class WorkerService {
         }
     }
 
-    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO){
+    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO, Principal principal){
         String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
         Worker worker = workerMapper.fromDTO(workerDTO);
         User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);
         worker.setUser(u);
-        teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        if(workerDTO.getManagerId()!= null)
+            teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        else
+            teamService.getTeamByManager(userService.getUserByEmail(principal.getName()).getId()).ifPresent(worker::setWorkingTeam);
         createWorker(worker);
 
         return sendEmailToNewWorker(u, worker, temporaryPassword);

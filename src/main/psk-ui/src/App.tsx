@@ -1,9 +1,7 @@
 import React from 'react';
-import { Layout, Button } from 'antd';
+import { Button, Layout } from 'antd';
 
-import {
-	TEAM_NAME,
-} from './constants/otherConstants';
+import { TEAM_NAME, } from './constants/otherConstants';
 
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,12 +12,14 @@ import { Routes } from './routes/routes';
 import { thunkLogout } from './thunks';
 import history from './history';
 import notificationService, { NotificationType } from './service/notification-service';
+import { Authority } from './models/authority';
+import { RegisterPage } from './pages/public/register';
 
 const { Content, Footer, Sider } = Layout;
 
 const App: React.FunctionComponent<{}> = () => {
 	// TS infers `isOn` is boolean
-	const user = useSelector( (state: RootState) => state.user);
+	const user = useSelector((state: RootState) => state.user);
 
 	const dispatch = useDispatch();
 
@@ -27,32 +27,34 @@ const App: React.FunctionComponent<{}> = () => {
 		dispatch(thunkLogout());
 		// when logging out, change current url to '/'
 		history.push('/');
-		notificationService.notify( {
+		notificationService.notify({
 			notificationType: NotificationType.SUCCESS,
 			message: 'Logged out successfully'
 		});
 	};
-	
+
 	return (
 		!user.loggedIn
 			? <LoginPage/>
-			: <div className="App">
-				<Layout id="root-layout">
-					<Sider id="sider">
-						<SideMenu/>
-						<Button onClick={logout} className="logout-button">
+			: user.authority === Authority.FRESHMAN
+				? <RegisterPage/>
+				: <div className="App">
+					<Layout id="root-layout">
+						<Sider id="sider">
+							<SideMenu/>
+							<Button onClick={logout} className="logout-button">
 							Logout
-						</Button>
-					</Sider>
-					<Layout
-						id="main-content-layout">
-						<Content>
-							<Routes/>
-						</Content>
-						<Footer>Powered By: {TEAM_NAME}</Footer>
+							</Button>
+						</Sider>
+						<Layout
+							id="main-content-layout">
+							<Content>
+								<Routes/>
+							</Content>
+							<Footer>Powered By: {TEAM_NAME}</Footer>
+						</Layout>
 					</Layout>
-				</Layout>
-			</div>
+				</div>
 	);
 };
 

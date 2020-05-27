@@ -3,7 +3,6 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Controller.Model.RefreshTokenRequest;
 import com.VU.PSKProject.Controller.Model.RefreshTokenResponse;
 import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Service.Model.FreshmanLoginResponseModel;
 import com.VU.PSKProject.Service.Model.LoginResponseModel;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.google.gson.Gson;
@@ -47,14 +46,8 @@ public class AuthenticationService {
         User user = (User) principal;
         UserDTO userData = userService.getUserByEmail(user.getUsername());
         Worker workerData = workerService.getWorkerByUserId(userData.getId());
-
         String loginResponseString = "";
-        if(((User) principal).getAuthorities().size() == 1 &&
-                ((User) principal).getAuthorities().toArray()[0].toString().equals("FRESHMAN"))
-            loginResponseString = new Gson().toJson(getLoginResponse(userData));
-        else
-            loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
-
+        loginResponseString = new Gson().toJson(getLoginResponse(userData, workerData));
         PrintWriter out = res.getWriter();
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");
@@ -62,11 +55,11 @@ public class AuthenticationService {
         out.flush();
     }
 
-     public void addJWTToken(
-        HttpServletResponse response,
-        String username,
-        Collection<? extends GrantedAuthority> userRole
-     ) {
+    public void addJWTToken(
+            HttpServletResponse response,
+            String username,
+            Collection<? extends GrantedAuthority> userRole
+    ) {
 
         String jwtToken = generateAccessToken(username, userRole);
         String refreshToken = generateRefreshToken(username, userRole);
@@ -128,19 +121,11 @@ public class AuthenticationService {
         lr.setUserAuthority(userDTO.getUserRole());
         lr.setWorkerId(worker.getId());
         lr.setWorkingTeamid(worker.getWorkingTeam().getId());
-        lr.setManagedTeamId(worker.getManagedTeam().getId());
-        lr.setRole(worker.getRole().getName());
+        lr.setManagedTeamId(worker.getManagedTeam() == null ? null : worker.getManagedTeam().getId());
+        lr.setRole(worker.getRole() == null ? null : worker.getRole().getName());
         lr.setName(worker.getName());
         lr.setSurname(worker.getSurname());
         return lr;
-    }
-
-    private FreshmanLoginResponseModel getLoginResponse(UserDTO userDTO) {
-        FreshmanLoginResponseModel fr = new FreshmanLoginResponseModel();
-        fr.setEmail(userDTO.getEmail());
-        fr.setUserId(userDTO.getId());
-        fr.setUserAuthority(userDTO.getUserRole());
-        return fr;
     }
 
     public RefreshTokenResponse refreshAccessToken(RefreshTokenRequest refreshTokenRequest) {

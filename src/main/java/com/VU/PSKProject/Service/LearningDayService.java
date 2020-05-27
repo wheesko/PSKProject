@@ -11,6 +11,7 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Utils.DateUtils;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LearningDayService {
@@ -31,8 +34,6 @@ public class LearningDayService {
 
     @Autowired
     private TeamService teamService;
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private TopicService topicService;
@@ -78,7 +79,6 @@ public class LearningDayService {
     public void updateLearningDay(LearningDay learningDay, Long learningDayId, UserDTO user) {
         Worker worker = workerService.getWorkerByUserId(user.getId());
         checkWorkerAvailability(worker, learningDay);
-
         learningDay.setId(learningDayId);
         learningDayRepository.save(learningDay);
     }
@@ -88,35 +88,54 @@ public class LearningDayService {
         return learningDayRepository.getOne(id);
     }
 
-    public void deleteLearningDay(Long id) {
+    public void deleteLearningDay(Long id, UserDTO user) {
+        Worker worker = workerService.getWorkerByUserId(user.getId());
+        List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
+        if (learningDays.stream().noneMatch(l -> l.getId().equals(id))) {
+            throw new LearningDayException("Worker has no such learning day");
+        }
+
         learningDayRepository.deleteById(id);
     }
 
-    public List<LearningDay> getAllLearningDaysByManagerId(UserDTO user) {
+    public List<LearningDayToReturnDTO> getAllLearningDaysByManagerId(UserDTO user) {
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
-        // get all workers
-         //Worker workerId = workerRepository.findByManagedTeamId(managerId);
+        Optional<Team> team = teamService.getTeamByManager(manager.getId());
 
-        // get all learning days
-        //return learningDayRepository.findByWorkers(workerIds);
+        if (team.isPresent()){
+            List<Long> workerIds = workerService.findByWorkingTeamId(team.get().getId()).stream()
+                    .map(Worker::getId)
+                    .collect(Collectors.toList());
 
-        Team team;
-
-        if(teamService.getTeamByManager(manager.getId()).isPresent()){
-            team = teamService.getTeamByManager(manager.getId()).get();
-        }else{
-            // handle it better mybe?
-            throw new RuntimeException();
+            return learningDayMapper.mapLearningDayListToReturnDTO(
+                    learningDayRepository.findAllByAssigneeIdIn(workerIds)
+            );
+        } else {
+            throw new LearningDayException("Team not found");
         }
+    }
 
-        List<Worker> workers = workerService.findByWorkingTeamId(team.getId());
-        List<Long> ids = new ArrayList<>();
-        for (Worker w: workers) {
-            ids.add(w.getId());
+    public List<LearningDayToReturnDTO> getAllMonthLearningDaysByManagerId(UserDTO user, String year, String month) {
+        Worker manager = workerService.getWorkerByUserId(user.getId());
+
+        Optional<Team> team = teamService.getTeamByManager(manager.getId());
+
+        Timestamp dateFrom = Timestamp.valueOf(DateUtils.stringsToDate(year, month, "1").minusDays(7));
+        String lastDay = DateUtils.getLastDayOfMonth(year, month);
+        Timestamp dateTo = Timestamp.valueOf(DateUtils.stringsToDate(year, month, lastDay).plusDays(7));
+
+        if (team.isPresent()){
+            List<Long> workerIds = workerService.findByWorkingTeamId(team.get().getId()).stream()
+                    .map(Worker::getId)
+                    .collect(Collectors.toList());
+
+            return learningDayMapper.mapLearningDayListToReturnDTO(
+                    learningDayRepository.findAllByDateTimeAtBetweenAndAssigneeIdIn(dateFrom, dateTo, workerIds)
+            );
+        } else {
+            throw new LearningDayException("Team not found");
         }
-
-        return learningDayRepository.findAllByAssigneeIdIn(ids);
     }
 
     private void checkWorkerAvailability(Worker worker, LearningDay learningDay) {
