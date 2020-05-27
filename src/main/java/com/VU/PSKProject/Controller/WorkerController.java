@@ -111,13 +111,13 @@ public class WorkerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createWorker(@RequestBody WorkerToCreateDTO workerDto) {
+    public ResponseEntity<String> createWorker(@RequestBody WorkerToCreateDTO workerDto, Principal principal) {
         ResponseEntity<String> response = workerService.validateWorkerData(workerDto);
 
         if(response.getStatusCode().isError())
             return response;
 
-        return workerService.createFreshmanWorker(workerDto);
+        return workerService.createFreshmanWorker(workerDto, principal);
     }
 
     @PutMapping("/update/{id}")
