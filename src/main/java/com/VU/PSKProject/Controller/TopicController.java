@@ -1,7 +1,7 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Topic;
-import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
+import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicDTO;
 import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
@@ -38,7 +38,7 @@ public class TopicController {
     }
 
     @GetMapping("/getCovered/{workerId}")
-    public List<CoveredTopicsTreeNodeDTO> getTopicsCoveredByWorker(@PathVariable Long workerId) {
+    public List<CoveredTopicDTO> getTopicsCoveredByWorker(@PathVariable Long workerId) {
         return topicService.getAllWorkerCoveredTopics(workerId);
     }
 
@@ -70,5 +70,10 @@ public class TopicController {
     public ResponseEntity<List<WorkerTopicsDTO>> getWorkersTopicsByManager(Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         return ResponseEntity.ok(topicService.getWorkersTopicsDTObyManager(user));
+    }
+
+    @GetMapping("exportWorkersTopicsByManagerId/{managerId}")
+    public void exportCSV(@PathVariable Long managerId, Principal principal) {
+       List<WorkerTopicsDTO> workerTopicsDTOS = topicService.getWorkersTopicsDTObyManager(userService.getUserByEmail(principal.getName()));
     }
 }

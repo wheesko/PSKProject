@@ -1,29 +1,34 @@
 package com.VU.PSKProject.Service;
 
 import com.VU.PSKProject.Entity.User;
-import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -51,6 +56,9 @@ public class WorkerService {
     private EmailServiceImpl emailService;
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public List<Worker> getAllWorkers() {
@@ -63,6 +71,10 @@ public class WorkerService {
 
     @Transactional
     public void createWorker(Worker worker) {
+        if(worker.getQuarterLearningDayLimit() == 0)
+            worker.setQuarterLearningDayLimit(Integer.parseInt(Objects.requireNonNull(env.getProperty("worker.defaultQuarterLearningDayLimit"))));
+        if(worker.getConsecutiveLearningDayLimit() == 0)
+            worker.setConsecutiveLearningDayLimit(Integer.parseInt(Objects.requireNonNull(env.getProperty("worker.defaultConsecutiveLearningDayLimit"))));
         workerRepository.save(worker);
     }
 
@@ -92,14 +104,13 @@ public class WorkerService {
         if(workerDTO.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("No email provided!");
         }
-        if(workerDTO.getManagerId() == null){
-            return ResponseEntity.badRequest().body("No manager provided!");
-        }
+
         return ResponseEntity.ok().build();
     }
     public List<Worker> getWorkersByTopic(Long topicId) {
         return learningDayService.getAssigneesByTopicIdPast(topicId);
     }
+
     public List<Worker> getWorkersByIds(List<Long> ids){
         return learningDayService.getAssigneesByTopicIdsPast(ids);
     }
@@ -119,8 +130,7 @@ public class WorkerService {
         }
         return workers;
     }
-
-    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager) {
+    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager){
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
 
         for (Worker w: workers) {
@@ -130,6 +140,18 @@ public class WorkerService {
                 workerDTO.setManagerId(manager.getId());
                 workerDTOS.add(workerDTO);
             }
+        }
+        return workerDTOS;
+    }
+
+    public List<WorkerToGetDTO> retrieveAllWorkers() {
+        List<Worker> workers = getAllWorkers();
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        for (Worker w: workers) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
+            workerDTOS.add(workerDTO);
         }
         return workerDTOS;
     }
@@ -153,6 +175,10 @@ public class WorkerService {
         updatedWorkerDTO.setUserAuthority(UserAuthority.WORKER);
         return updatedWorkerDTO;
     }
+    public void exportToCSV(List<WorkerToExportDTO> dataToExport, HttpServletResponse response) throws Exception {
+        String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team,", "Managed team\n"};
+        CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
+    }
 
     private ResponseEntity<String> sendEmailToNewWorker(User u, Worker w, String tempPassword){
         String subject = "PSK_123 New worker";
@@ -167,12 +193,15 @@ public class WorkerService {
         }
     }
 
-    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO){
+    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO, Principal principal){
         String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
         Worker worker = workerMapper.fromDTO(workerDTO);
         User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);
         worker.setUser(u);
-        teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        if(workerDTO.getManagerId()!= null)
+            teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
+        else
+            teamService.getTeamByManager(userService.getUserByEmail(principal.getName()).getId()).ifPresent(worker::setWorkingTeam);
         createWorker(worker);
 
         return sendEmailToNewWorker(u, worker, temporaryPassword);

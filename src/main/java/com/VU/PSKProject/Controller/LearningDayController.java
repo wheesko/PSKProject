@@ -7,7 +7,6 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.UserService;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +33,7 @@ public class LearningDayController {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDayMapper.mapLearningDayListToReturnDTO(learningDays);
     }
+
     @GetMapping("/getByManagerId")
     public List<LearningDayToReturnDTO> getAllLearningEventsByManagerId(Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
@@ -64,15 +64,18 @@ public class LearningDayController {
 
 
     @PutMapping("/update/{id}")
-    public void updateLearningEvent(@RequestBody LearningDayToCreateDTO learningDayDto, @PathVariable Long id) {
-        LearningDay learningDay = learningDayService.getLearningDayById(id);
-        //workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
-        PropertyUtils.customCopyProperties(learningDayDto, learningDay);
-        learningDayService.updateLearningDay(learningDay, id);
+    public void updateLearningEvent(
+            @RequestBody LearningDayToCreateDTO learningDayDto,
+            @PathVariable Long id,
+            Principal principal
+    ) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        learningDayService.updateLearningDay(learningDayDto, id, user);
     }
 	
     @DeleteMapping("/delete/{id}")
-    public void deleteLearningEvent(@PathVariable Long id) {
-        learningDayService.deleteLearningDay(id);
+    public void deleteLearningEvent(@PathVariable Long id, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        learningDayService.deleteLearningDay(id, user);
     }
 }

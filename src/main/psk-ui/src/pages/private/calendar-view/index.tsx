@@ -11,7 +11,8 @@ import calendarService from '../../../api/calendar-service';
 import './CalendarStyles.css';
 import notificationService, { NotificationType } from '../../../service/notification-service';
 import { PlusOutlined } from '@ant-design/icons';
-import { NewEventForm } from "./form/AddEventForm";
+import { NewEventForm } from './form/AddEventForm';
+import { EditEventForm } from './form/EditEventForm';
 
 const { Title } = Typography;
 
@@ -23,6 +24,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		undefined
 	);
 	const [addEventModalVisible, setAddEventModalVisibility] = useState<boolean>(false);
+	const [editEventFormVisible, setEditEventVisibility] = useState<boolean>(false);
 
 	// status type is our example entity
 	const [modalListData, setModalListData] = useState<LearningEvent[]>([]);
@@ -39,11 +41,13 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 	function handleOnOk(): void {
 		setModalVisibility(false);
 		setIsFormVisible(false);
+		setEditEventVisibility(false);
 	}
 
 	function handleOnCancel (): void {
 		setModalVisibility(false);
 		setIsFormVisible(false);
+		setEditEventVisibility(false);
 	}
 
 	function handleOnAddEventOk(): void {
@@ -143,6 +147,14 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		});
 	}
 
+	function onUpdateDay() {
+		loadData(selectedDate === undefined ? moment() : selectedDate).then(learningEvents => {
+			setCalendarListData(learningEvents);
+			setModalVisibility(false);
+			setEditEventVisibility(false);
+		});
+	}
+
 	//TODO: Refactor to component
 	function renderDateCellModal(): React.ReactNode {
 		return (
@@ -150,44 +162,95 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				title={
 					selectedDate === undefined
 						? null
-						: `${selectedDate.get('year')}-${selectedDate.get(
-							'month'
-						)}-${selectedDate.get('date')}`
+						: selectedDate.format('yyyy-MM-DD')
 				}
 				visible={modalVisibility}
 				onOk={handleOnOk}
 				onCancel={handleOnCancel}
 				footer={null}
 			>
-				{modalListData.length === 0
-					? null
-					: modalListData.map(item => (
-						<>
-							<li key={item.id}>
-								<Typography.Paragraph>Topic name: {item.topic.name}</Typography.Paragraph>
-								<Typography.Paragraph>Description: {item.topic.description}</Typography.Paragraph>
-								<Typography.Paragraph>Comments: {item.comment}</Typography.Paragraph>
-							</li>
-							<Divider/>
-						</>
-					))}
-				{selectedDate === undefined ? null : calendarListData.length === 0 ? (
-					<p>{DAY_EVENT_LIST_EMPTY}</p>
-				) : null}
-				{isFormVisible ? null : (
-					<Button
-						className={'ant-btn ant-btn-primary'}
-						onClick={() => {
-							setIsFormVisible(true);
-						}}
-						disabled={modalListData.length !== 0}
-					>
-						Add event
-					</Button>
-				)}
-				{isFormVisible ? <EventForm selectedDate={selectedDate} onCreateDay={onCreateDay}/> : null}
+				{!editEventFormVisible && renderModalLearningDayData()}
+				{
+					selectedDate === undefined ? null : calendarListData.length === 0 ? (
+						<p>{DAY_EVENT_LIST_EMPTY}</p>
+					) : null
+				}
+				{renderAddEventButton()}
+				{
+					isFormVisible
+						?
+						<EventForm
+							selectedDate={selectedDate}
+							onCreateDay={onCreateDay}
+					  	/>
+						: null
+				}
+				{
+					editEventFormVisible
+						? <EditEventForm
+							initialValues={getInitialEditValues()}
+							onCreateDay={onUpdateDay}
+						/>
+						: null
+				}
+				{renderEditFormButton()}
 			</Modal>
 		);
+	}
+
+	function openEditForm() {
+		setEditEventVisibility(true);
+	}
+
+	function closeEditForm() {
+		setEditEventVisibility(false);
+	}
+
+	function getInitialEditValues() {
+		return modalListData[0];
+	}
+	
+	function renderEditFormButton(): React.ReactNode {
+		return modalListData.length === 0
+			? null
+			: editEventFormVisible
+				? <Button onClick={closeEditForm} type="primary">
+					Cancel
+				</Button>
+		  		: <Button onClick={openEditForm} type="primary">
+					Edit event
+				</Button>;
+	}
+
+ 	function renderAddEventButton(): React.ReactNode {
+		return (isFormVisible || modalListData.length !== 0)
+			? null
+			: (
+				<Button
+					className={'ant-btn ant-btn-primary'}
+					onClick={() => {
+						setIsFormVisible(true);
+					}}
+					disabled={modalListData.length !== 0}
+				>
+					Add event
+				</Button>
+			);
+	}
+	
+	function renderModalLearningDayData(): React.ReactNode {
+		return modalListData.length === 0
+			? null
+			: modalListData.map(item => (
+				<>
+					<li key={item.id}>
+						<Typography.Paragraph>Topic name: {item.topic.name}</Typography.Paragraph>
+						<Typography.Paragraph>Description: {item.topic.description}</Typography.Paragraph>
+						<Typography.Paragraph>Comments: {item.comment}</Typography.Paragraph>
+					</li>
+					<Divider/>
+				</>
+			));
 	}
 	
 	function renderAddEventModal(): React.ReactNode {

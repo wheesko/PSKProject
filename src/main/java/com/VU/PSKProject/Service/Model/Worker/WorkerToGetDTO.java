@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Service.Model.Worker;
 
 import com.VU.PSKProject.Service.Model.RoleDTO;
+import com.opencsv.bean.CsvIgnore;
 import lombok.Getter;
 import lombok.Setter;
 

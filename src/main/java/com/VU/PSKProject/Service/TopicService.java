@@ -4,16 +4,19 @@ import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TopicRepository;
+import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
-import com.VU.PSKProject.Service.Model.CoveredTopicsTreeNodeDTO;
+import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +66,8 @@ public class TopicService {
         return topicRepository.findById(id);
     }
 
-    public List<CoveredTopicsTreeNodeDTO> getAllWorkerCoveredTopics(Long workerId) {
+    public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId)
+    {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDays.stream().map(l -> topicMapper.toTreeNodeDTO(l.getTopic())).collect(Collectors.toList());
     }
@@ -131,4 +135,11 @@ public class TopicService {
         }
         return teamTopicsDTO;
     }
+
+    public void exportToCSV(List<WorkerToExportDTO> dataToExport, HttpServletResponse response) throws Exception {
+        //TODO: implement this. but how?
+        /*String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team,", "Managed team\n"};
+        CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);*/
+    }
+
 }
