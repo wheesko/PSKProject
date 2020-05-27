@@ -56,27 +56,27 @@ public class SampleDataDB {
         ));
 
         users.add(new User(
-                "worker",
-                "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
-                UserAuthority.WORKER
-        ));
-
-        users.add(new User(
                 "admin1",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.LEAD
         ));
 
         users.add(new User(
+                "worker",
+                "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
+                UserAuthority.WORKER
+        ));
+
+        users.add(new User(
                 "root",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
-                UserAuthority.LEAD
+                UserAuthority.WORKER
         ));
 
         users.add(new User(
                 "root1",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
-                UserAuthority.LEAD
+                UserAuthority.WORKER
         ));
 
         userRepository.saveAll(users);
@@ -148,10 +148,10 @@ public class SampleDataDB {
         teamRepository.saveAll(teams);
     }
     public void saveWorkers(){
-        workers.add(new Worker("werk", "wurk", users.get(0), teams.get(0), teams.get(0), roles.get(0),
+        workers.add(new Worker("John", "Wick", users.get(0), teams.get(0), teams.get(0), roles.get(0),
                 5, 5,
                 null, null));
-        workers.add(new Worker("twerk", "twurk", users.get(1), teams.get(1), teams.get(1), roles.get(0),
+        workers.add(new Worker("Tony", "Stark", users.get(1), teams.get(1), teams.get(0), roles.get(0),
                 5, 5,
                 null, null));
         workerRepository.saveAll(workers);
@@ -209,13 +209,13 @@ public class SampleDataDB {
 
     public void saveWorkersLast(){
         workerRepository.saveAll(Arrays.asList(
-                new Worker("qwerk", "qwurk", users.get(2), null, teams.get(0),  roles.get(1),
+                new Worker("Alice", "A.", users.get(2), null, teams.get(1),  roles.get(1),
                         5, 5,
                         null, null),
-                new Worker("swerk", "swurk", users.get(3), null, teams.get(0),  roles.get(1),
+                new Worker("Bob", "B.", users.get(3), null, teams.get(1),  roles.get(1),
                         5, 5,
                         null, null),
-                new Worker("kwerk", "kwurk", users.get(4), null, teams.get(1), roles.get(0),
+                new Worker("Jack", "D.", users.get(4), null, teams.get(1), roles.get(0),
                         5, 5,
                         null, null)
         ));

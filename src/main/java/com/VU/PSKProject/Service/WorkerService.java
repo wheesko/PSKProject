@@ -206,4 +206,15 @@ public class WorkerService {
 
         return sendEmailToNewWorker(u, worker, temporaryPassword);
     }
+
+    public boolean checkWorkerLeadRelationship(Worker lead, Worker worker){
+        if(worker.getWorkingTeam().getManager().getId().equals(lead.getId()))
+            return true;
+
+        if(lead.getId().equals(worker.getId()))
+            return false;
+
+        Worker tempManager = worker.getWorkingTeam().getManager();
+        return checkWorkerLeadRelationship(lead, tempManager);
+    }
 }
