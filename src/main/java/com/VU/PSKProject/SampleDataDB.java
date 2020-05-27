@@ -79,6 +79,24 @@ public class SampleDataDB {
                 UserAuthority.WORKER
         ));
 
+        users.add(new User(
+                "root2",
+                "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
+                UserAuthority.WORKER
+        ));
+
+        users.add(new User(
+                "root3",
+                "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
+                UserAuthority.WORKER
+        ));
+
+        users.add(new User(
+                "root3",
+                "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
+                UserAuthority.LEAD
+        ));
+
         userRepository.saveAll(users);
     }
     public void saveRoles(){
@@ -143,8 +161,9 @@ public class SampleDataDB {
         topicRepository.saveAll(topics);
     }
     public void saveTeams(){
-        teams.add(new Team("Noobs", null, null, null));
-        teams.add(new Team("EvenBiggerNoobs", null, null, null));
+        teams.add(new Team("Devs", null, null, null));
+        teams.add(new Team("Testers", null, null, null));
+        teams.add(new Team("HRs", null, null, null));
         teamRepository.saveAll(teams);
     }
     public void saveWorkers(){
@@ -152,6 +171,9 @@ public class SampleDataDB {
                 5, 5,
                 null, null));
         workers.add(new Worker("Tony", "Stark", users.get(1), teams.get(1), teams.get(0), roles.get(0),
+                5, 5,
+                null, null));
+        workers.add(new Worker("Tony", "Montana", users.get(7), teams.get(2), teams.get(2), roles.get(0),
                 5, 5,
                 null, null));
         workerRepository.saveAll(workers);
@@ -216,6 +238,12 @@ public class SampleDataDB {
                         5, 5,
                         null, null),
                 new Worker("Jack", "D.", users.get(4), null, teams.get(1), roles.get(0),
+                        5, 5,
+                        null, null),
+                new Worker("Jack", "Murphy", users.get(5), null, teams.get(2), roles.get(0),
+                        5, 5,
+                        null, null),
+                new Worker("John", "Connor", users.get(6), null, teams.get(2), roles.get(0),
                         5, 5,
                         null, null)
         ));

@@ -211,10 +211,10 @@ public class WorkerService {
         if(worker.getWorkingTeam().getManager().getId().equals(lead.getId()))
             return true;
 
-        if(lead.getId().equals(worker.getId()))
+        Worker tempManager = worker.getWorkingTeam().getManager();
+        if(tempManager.getWorkingTeam().getId().equals(tempManager.getManagedTeam().getId()))
             return false;
 
-        Worker tempManager = worker.getWorkingTeam().getManager();
         return checkWorkerLeadRelationship(lead, tempManager);
     }
 }
