@@ -1,5 +1,6 @@
 package com.VU.PSKProject.Controller;
 
+import com.VU.PSKProject.Controller.Model.TopicCreateRequest;
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -43,10 +45,9 @@ public class TopicController {
     }
 
     @PostMapping("/create")
-    public void createTopic(@RequestBody TopicDTO topicDto) {
-        Topic topic = new Topic();
-        PropertyUtils.customCopyProperties(topicDto, topic);
-        topicService.createTopic(topic);
+    @Transactional
+    public void createTopic(@RequestBody TopicCreateRequest topicToCreate) {
+        topicService.createTopic(topicToCreate);
     }
 
     @PutMapping("/update/{id}")
