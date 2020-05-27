@@ -7,22 +7,11 @@ const LandingPage: React.FunctionComponent<{}> = () => {
 		<div className="LandingPage">
 			<Row gutter={[48, 48]} justify="center">
 				<Col xs={12}>
-					Initial test page
-				</Col>
-			</Row>
-			<Row gutter={[48, 48]} justify="center">
-				<Col xs={12}>
-					<Button onClick={handleClick} type="primary" block={true}>
-						clicker
-					</Button>
+					Welcome to PSK_123 calendar app!
 				</Col>
 			</Row>
 		</div>
 	);
-};
-
-const handleClick = (): void => {
-	console.log("why am i still here");
 };
 
 export { LandingPage };

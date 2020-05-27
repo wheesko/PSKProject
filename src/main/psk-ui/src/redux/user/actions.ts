@@ -1,4 +1,4 @@
-import { UserState, UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, USER_TOKEN_UPDATE } from './types';
+import {UserState, UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, USER_TOKEN_UPDATE, USER_REGISTER} from './types';
 
 export function updateSession(newSession: UserState) {
 	return {
@@ -17,6 +17,13 @@ export function userLogin(newState: UserState) {
 export function userLogout() {
 	return {
 		type: USER_LOGOUT
+	};
+}
+
+export function userRegister(newState: UserState) {
+	return {
+		type: USER_REGISTER,
+		payload: newState
 	};
 }
 
