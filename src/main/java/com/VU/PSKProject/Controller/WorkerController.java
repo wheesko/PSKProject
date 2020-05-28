@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.User;
+import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
@@ -15,6 +16,7 @@ import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,13 +99,23 @@ public class WorkerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id) {
+    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+
+        if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
         Optional<Worker> worker = workerService.getWorker(id);
         if(worker.isPresent())
         {
             WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
-            return ResponseEntity.ok(workerDTO);
+
+            //TODO: check if it's really our worker
+            if(workerService.checkWorkerLeadRelationship(workerService.getWorkerByUserId(user.getId()), worker.get()))
+                return ResponseEntity.ok(workerDTO);
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         else {
             HttpHeaders headers = new HttpHeaders();

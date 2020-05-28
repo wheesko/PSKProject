@@ -13,7 +13,9 @@ public class UserMapper {
     private ModelMapper modelMapper;
 
     public UserDTO toDTO(User user) {
-        return modelMapper.map(user, UserDTO.class);
+        UserDTO dto =  modelMapper.map(user, UserDTO.class);
+        dto.setUserRole(user.getUserAuthority().toString());
+        return dto;
     }
 
     public User fromDTO(UserDTO userDTO) {
