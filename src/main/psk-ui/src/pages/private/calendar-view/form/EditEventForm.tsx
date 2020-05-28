@@ -40,7 +40,6 @@ const EditEventForm: React.FunctionComponent<EditEventFormProps> = (props: EditE
 	const [loading, setLoading] = useState<boolean>(false);
 	const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState<boolean>(false);
 	const [selectedTopic, setSelectedTopic] = useState<LearningTopic>();
-	const [height, setHeight] = useState<number>(32);
 
 	const onTopicChange = (value: number) => {
 		form.setFieldsValue({ topic: value });
@@ -140,12 +139,11 @@ const EditEventForm: React.FunctionComponent<EditEventFormProps> = (props: EditE
 								allowClear
 							/>
 						</Form.Item>
-						<Form.Item label={COMMENT} name="learningEventComment" style={{ height: height }}>
+						<Form.Item label={COMMENT} name="learningEventComment">
 							<Input.TextArea
 								placeholder={ADD_LEARNING_EVENT_COMMENT}
 								allowClear
-								onResize={({ width, height }) => setHeight(height)}
-								autoSize={{ maxRows: 10 }}
+								autoSize={{ minRows: 2, maxRows: 2 }}
 							/>
 						</Form.Item>
 						{isDeleteConfirmVisible &&

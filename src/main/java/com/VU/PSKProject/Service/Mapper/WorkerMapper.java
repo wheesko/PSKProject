@@ -53,6 +53,13 @@ public class WorkerMapper {
         return toDTO(worker);
     }
 
+    public WorkerToGetDTO workerToGetDTO(Worker worker) {
+        return modelMapper.map(worker, WorkerToGetDTO.class);
+    }
+
+    public WorkerToGetDTOManagerDTO toGetDTOManagerDTO (Worker worker) {
+        return modelMapper.map(worker, WorkerToGetDTOManagerDTO.class);
+    }
 
     public UserToRegisterDTO toRegisterDTO(Worker worker){
         return modelMapper.map(worker, UserToRegisterDTO.class);

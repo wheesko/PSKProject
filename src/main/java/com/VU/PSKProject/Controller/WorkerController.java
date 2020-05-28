@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
+
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
@@ -30,8 +31,10 @@ public class WorkerController {
     @Autowired
     private UserService userService;
 
+
     @Autowired
     private WorkerMapper workerMapper;
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
@@ -116,6 +119,7 @@ public class WorkerController {
             headers.add("Message", "Worker with id " + id + " could not be found");
             return ResponseEntity.notFound().headers(headers).build();
         }
+        return workerService.getWorkerById(id, user);
     }
 
     @PostMapping("/create")

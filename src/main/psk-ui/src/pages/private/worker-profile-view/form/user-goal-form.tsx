@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Card, Col, Form, Input, Row, Select, Spin, Typography } from 'antd';
-import {
-	ADD_LEARNING_EVENT_COMMENT,
-	ADD_NEW_LEARNING_EVENT,
-	COMMENT,
-	EVENT_NAME,
-	INPUT_EVENT_NAME,
-	SAVE_LEARNING_EVENT
-} from '../../../../constants/otherConstants';
+import { Button, Card, Col, Form, Row, Select, Spin, Typography } from 'antd';
+import { INPUT_EVENT_NAME } from '../../../../constants/otherConstants';
 
 import { LearningTopic } from '../../../../models/learningTopic';
 import topicService from '../../../../api/topic-service';
 import notificationService, { NotificationType } from '../../../../service/notification-service';
-
-import moment from 'moment';
-import './EventFormStyles.css';
-import { LearningDayCreateRequest } from '../../../../api/model/learning-day-create-request';
-import learningDayService from '../../../../api/learning-day-service';
+import { WorkerGoalCreateRequest } from '../../../../api/model/worker-goal-create-request';
+import workerService from '../../../../api/worker-service';
 
 const formItemLayout = {
 	labelCol: {
@@ -31,19 +21,19 @@ const formItemLayout = {
 };
 
 interface EventFormProps {
-  selectedDate: moment.Moment | undefined;
-  onCreateDay: () => void;
+    workerId: number;
+    onSubmit: () => void;
 }
 
-const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProps) => {
+const UserGoalForm: React.FunctionComponent<EventFormProps> = (props: EventFormProps) => {
 	const [form] = Form.useForm();
 	const [topics, setTopics] = useState<LearningTopic[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [selectedTopic, setSelectedTopic] = useState<LearningTopic>();
 
 	const {
-		selectedDate,
-		onCreateDay
+		workerId,
+		onSubmit
 	} = props;
 
 	const onTopicChange = (value: number) => {
@@ -66,17 +56,14 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 	}, []);
 
 	return (
-		<Card title={ADD_NEW_LEARNING_EVENT}>
+		<Card title={'Assign new goal'}>
 			<Spin spinning={loading}>
 				<Form.Provider
 					onFormFinish={name => {
-						if (selectedDate !== undefined)
-							createLearningDay({
-								dateTimeAt: selectedDate.format('yyyy-MM-DD HH:mm:ss'),
-								comment: form.getFieldsValue()['learningEventComment'],
-								topic: form.getFieldsValue()['learningEventTopic'],
-								name: form.getFieldsValue()['learningEventName']
-							});
+						createLearningGoal({
+							topic: form.getFieldsValue()['learningEventTopic'],
+							worker: workerId
+						});
 					}}
 				>
 					<Form
@@ -86,13 +73,6 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 						name="learningEventForm"
 					>
 						<Form.Item
-							label={EVENT_NAME}
-							name="learningEventName"
-							rules={[{ required: true, message: INPUT_EVENT_NAME }]}
-						>
-							<Input allowClear />
-						</Form.Item>
-						<Form.Item
 							label={'Topic'}
 							name="learningEventTopic"
 							rules={[{ required: true, message: INPUT_EVENT_NAME }]}
@@ -101,7 +81,7 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 								onChange={onTopicChange}
 								showSearch
 								filterOption={(input, option) =>
-									option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 								}
 							>
 								{topics.map(topic => {
@@ -114,7 +94,7 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 								? <Row>
 									<Col xs={24} sm={8}>
 										<Typography.Text className="topic-description-text-first">
-											Topic description:
+                                            Topic description:
 										</Typography.Text>
 									</Col>
 									<Col xs={24} sm={16}>
@@ -126,13 +106,6 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 								: null
 							}
 						</Typography.Paragraph>
-						<Form.Item label={COMMENT} name="learningEventComment">
-							<Input.TextArea
-								placeholder={ADD_LEARNING_EVENT_COMMENT}
-								allowClear
-								autoSize={{ minRows: 2, maxRows: 2 }}
-							/>
-						</Form.Item>
 						<Form.Item
 							wrapperCol={{
 								xs: { span: 24, offset: 0 },
@@ -144,7 +117,7 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 								type="primary"
 								htmlType="submit"
 							>
-								{SAVE_LEARNING_EVENT}
+								Assign goal
 							</Button>
 						</Form.Item>
 					</Form>
@@ -156,25 +129,23 @@ const EventForm: React.FunctionComponent<EventFormProps> = (props: EventFormProp
 	function loadTopics(): Promise<LearningTopic[]> {
 		return topicService.getAllTopics();
 	}
-
-	function createLearningDay(dayRequest: LearningDayCreateRequest): Promise<void> {
-		setLoading(true);
-		return learningDayService.createLearningDay(dayRequest).then(() => {
-			setLoading(false);
-			notificationService.notify({
-				notificationType: NotificationType.SUCCESS,
-				message: 'Created Learning Day successfully'
+	
+	function createLearningGoal(goal: WorkerGoalCreateRequest): Promise<void> {
+	    return workerService.assignGoal(goal)
+			.then(() => {
+				notificationService.notify({
+					notificationType: NotificationType.SUCCESS,
+					message: 'Goal created'
+				});
+				onSubmit();
+			})
+			.catch(() => {
+				notificationService.notify({
+					notificationType: NotificationType.ERROR,
+					message: 'Could not create goal'
+				});
 			});
-			onCreateDay();
-		}).catch(e => {
-			setLoading(false);
-			notificationService.notify({
-				notificationType: NotificationType.ERROR,
-				message: 'Could not create learning day',
-				description: e.response.data.message
-			});
-		});
 	}
 };
 
-export { EventForm };
+export { UserGoalForm };

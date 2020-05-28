@@ -9,6 +9,8 @@ export interface UserState {
 	role: Role;
 	authority: Authority;
 	refreshToken: string;
+	name: string;
+	surname: string;
 }
 
 // Describing the different ACTION NAMES available

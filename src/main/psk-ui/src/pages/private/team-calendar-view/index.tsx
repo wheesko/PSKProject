@@ -54,7 +54,7 @@ const TeamCalendarView: React.FunctionComponent<{}> = () => {
 				<ul className="events">
 					{calendarListData ? getListData(value).map(item => (
 						<li key={item.id}>
-							<Tag color={'red'}>
+							<Tag color={item.learned ? 'green' : 'red'}>
 								{item.assignee.name} {item.assignee.surname}
 								<br/>
 								{item.topic.name}

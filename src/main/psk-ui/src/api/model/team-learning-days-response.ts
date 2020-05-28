@@ -5,6 +5,7 @@ export interface TeamLearningDaysResponse {
     name: string;
     comment: string;
     dateTimeAt: string;
+    learned: boolean;
     assignee: Assignee;
     topic: LearningTopic;
 }

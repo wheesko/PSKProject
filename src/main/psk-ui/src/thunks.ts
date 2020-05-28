@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { AppState } from './redux';
 import { LoginRequest } from './api/model/login-request';
 import authenticationService from './api/authentication-service';
-import {userLogin, userLogout, userRegister} from './redux/user/actions';
+import { userLogin, userLogout, userRegister } from './redux/user/actions';
 import notificationService, { NotificationType } from './service/notification-service';
 import { RegisterWorkerRequest } from './api/model/register-worker-request';
 import workerService from './api/worker-service';
@@ -22,7 +22,9 @@ export const thunkLogin = (
 			token: response?.headers.authorization.replace('Bearer ', ''),
 			refreshToken: response?.headers.refreshtoken.replace('Bearer ', ''),
 			authority: decodedResponse!.role[0].authority,
-			role: { title: '', color: '' }
+			role: { title: '', color: '' },
+			name: response?.data.name,
+			surname: response?.data.surname
 		}));
 
 		notificationService.notify({

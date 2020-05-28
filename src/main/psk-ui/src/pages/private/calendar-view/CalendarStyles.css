@@ -52,3 +52,7 @@
 .ant-picker-calendar-header .ant-picker-calendar-mode-switch {
     display: none !important;
 }
+
+.learned-button {
+    margin-left: 6px;
+}
