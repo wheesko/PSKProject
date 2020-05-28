@@ -141,22 +141,22 @@ public class WorkerService {
         return workers;
     }
 
-    public List<WorkerToGetDTOStripped> extractByManager(List<Worker> workers, Worker manager) {
-        List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
+    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager) {
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
 
         for (Worker w : workers) {
             if (w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())) {
-                workerDTOS.add(workerMapper.toDTOStripped(w));
+                workerDTOS.add(workerMapper.toDTO(w));
             }
         }
         return workerDTOS;
     }
 
-    public List<WorkerToGetDTOStripped> retrieveAllWorkers() {
+    public List<WorkerToGetDTO> retrieveAllWorkers() {
         List<Worker> workers = getAllWorkers();
-        List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
         for (Worker w : workers) {
-            workerDTOS.add(workerMapper.toDTOStripped(w));
+            workerDTOS.add(workerMapper.toDTO(w));
         }
         return workerDTOS;
     }
