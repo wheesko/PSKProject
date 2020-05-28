@@ -65,4 +65,7 @@ public class Worker {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<WorkerGoal> goals = new ArrayList<>();
+
+    @Version
+    private int version;
 }

@@ -42,4 +42,6 @@ public class Team {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<TeamGoal> goals;
+    @Version
+    private int version;
 }

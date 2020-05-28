@@ -5,6 +5,7 @@ import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
+import com.VU.PSKProject.Service.Exception.WorkerException;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.transaction.Transactional;
@@ -79,12 +81,16 @@ public class WorkerService {
     }
 
     public void updateWorker(Long id, Worker worker) {
-        // calling save() on an object with predefined id will update the corresponding database record
-        // rather than inserting a new one
-        if (workerRepository.findById(id).isPresent()){
-            worker.setId(id);
-            workerRepository.save(worker);
+        try{
+            if (workerRepository.findById(id).isPresent()){
+                worker.setId(id);
+                workerRepository.save(worker);
+            }
         }
+        catch (OptimisticLockException e){
+            throw new WorkerException("This worker was recently modified.");
+        }
+
     }
 
     public void deleteWorker(Long id) {
