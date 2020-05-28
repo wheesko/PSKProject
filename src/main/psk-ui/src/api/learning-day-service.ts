@@ -39,6 +39,16 @@ class LearningDayService {
 			.then((response: AxiosResponse<void>) => {
 				return response.data;
 			});
+	};
+
+	public markAsLearned = (id: number): Promise<void> => {
+		return this.restService
+			.put<void>(
+				`/learningDays/setLearned/${id}`
+			)
+			.then((response: AxiosResponse<void>) => {
+				return response.data;
+			});
 	}
 }
 

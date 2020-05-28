@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
+import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
@@ -19,6 +20,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/workers")
@@ -31,7 +33,16 @@ public class WorkerController {
     private UserService userService;
 
     @Autowired
+    private TeamService teamService;
+
+    @Autowired
+    private LearningDayService learningDayService;
+
+    @Autowired
     private WorkerMapper workerMapper;
+
+    @Autowired
+    private LearningDayMapper learningDayMapper;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkers() {
@@ -94,17 +105,25 @@ public class WorkerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<WorkerToGetDTOStripped> getWorker(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
 
         if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         Optional<Worker> worker = workerService.getWorker(id);
-        if(worker.isPresent())
-        {
-            WorkerToGetDTOStripped workerDTO = workerMapper.toGetDTO(worker.get());
+        if(worker.isPresent()) {
+            WorkerToGetDTO workerDTO = workerMapper.workerToGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
+            workerDTO.setLearningDays(learningDayService.getAllLearningDaysByWorkerId(worker.get().getId()).stream()
+                    .map(learningDayMapper::toDTO)
+                    .collect(Collectors.toList())
+            );
+
+            workerDTO.setManager(workerMapper.toGetDTOManagerDTO(worker.get().getWorkingTeam().getManager()));
+            workerDTO.getManager().setEmail(worker.get().getWorkingTeam().getManager().getUser().getEmail());
+
+
 
             if(workerService.checkWorkerLeadRelationship(workerService.getWorkerByUserId(user.getId()), worker.get()))
                 return ResponseEntity.ok(workerDTO);

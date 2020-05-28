@@ -7,7 +7,9 @@ const initialState: UserState = {
 	token: '',
 	role: { title: '', color: '' },
 	authority: Authority.UNASSIGNED,
-	refreshToken: ''
+	refreshToken: '',
+	name: '',
+	surname: ''
 };
 
 export function userReducer(

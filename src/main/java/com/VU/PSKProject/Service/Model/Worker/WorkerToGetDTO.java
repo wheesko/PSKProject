@@ -26,6 +26,8 @@ public class WorkerToGetDTO {
     private Integer quarterLearningDayLimit;
     private Integer consecutiveLearningDayLimit;
 
+    private WorkerToGetDTOManagerDTO manager;
+
     private List<LearningDayDTO> learningDays;
     private List<WorkerGoalDTO> goals;
 }
