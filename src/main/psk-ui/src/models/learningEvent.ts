@@ -5,6 +5,7 @@ export interface LearningEvent {
 	id: number;
 	name: string;
 	description: string;
+	learned: boolean;
 	comment: string;
 	dateTimeAt: string;
 	topic: LearningTopic;

@@ -27,7 +27,7 @@ export const thunkLogin = (
 			token: response?.headers.authorization.replace('Bearer ', ''),
 			refreshToken: response?.headers.refreshtoken.replace('Bearer ', ''),
 			authority: decodedResponse!.role[0].authority,
-			role: { name: response?.data?.role, color: getRoleColor(response?.data?.role) },
+			role: { title: response?.data?.role, color: getRoleColor(response?.data?.role) },
 			surname: response?.data.surname
 
 		}));

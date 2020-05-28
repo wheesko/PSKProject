@@ -1,11 +1,12 @@
 package com.VU.PSKProject.Service;
 
-import com.VU.PSKProject.Entity.User;
-import com.VU.PSKProject.Entity.UserAuthority;
-import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Entity.*;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
+import com.VU.PSKProject.Service.Exception.WorkerException;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
+import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
+import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
@@ -15,10 +16,13 @@ import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.transaction.Transactional;
@@ -31,6 +35,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class WorkerService {
+
+    private final class WorkerServiceException extends RuntimeException {
+        WorkerServiceException(String message) {
+            super(message);
+        }
+    }
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -59,6 +69,18 @@ public class WorkerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private LearningDayMapper learningDayMapper;
+
+    @Autowired
+    private WorkerGoalService workerGoalService;
+
+    @Autowired
+    private TopicMapper topicMapper;
+
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
     }
@@ -76,13 +98,46 @@ public class WorkerService {
         workerRepository.save(worker);
     }
 
-    public void updateWorker(Long id, Worker worker) {
-        // calling save() on an object with predefined id will update the corresponding database record
-        // rather than inserting a new one
-        if (workerRepository.findById(id).isPresent()) {
-            worker.setId(id);
-            workerRepository.save(worker);
+    public ResponseEntity<WorkerToGetDTO> getWorkerById(Long id, UserDTO user) {
+        Optional<Worker> worker = getWorker(id);
+        if(worker.isPresent()) {
+            WorkerToGetDTO workerDTO = workerMapper.workerToGetDTO(worker.get());
+            workerDTO.setEmail(worker.get().getUser().getEmail());
+            workerDTO.setLearningDays(learningDayService.getAllLearningDaysByWorkerId(worker.get().getId()).stream()
+                    .map(learningDayMapper::toDTO)
+                    .collect(Collectors.toList())
+            );
+            workerDTO.setGoals(worker.get().getGoals().stream()
+                    .map(goal -> topicMapper.toReturnDto(workerGoalService.getWorkerGoal(goal.getId()).get().getTopic()))
+                    .collect(Collectors.toList()));
+
+            workerDTO.setManager(workerMapper.toGetDTOManagerDTO(worker.get().getWorkingTeam().getManager()));
+            workerDTO.getManager().setEmail(worker.get().getWorkingTeam().getManager().getUser().getEmail());
+
+
+
+            if(checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
+                return ResponseEntity.ok(workerDTO);
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "Worker with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
+    }
+
+    public void updateWorker(Long id, Worker worker) {
+        try {
+            if (workerRepository.findById(id).isPresent()) {
+                worker.setId(id);
+                workerRepository.save(worker);
+            }
+        } catch (OptimisticLockException e) {
+            throw new WorkerException("This worker was recently modified.");
+        }
+
     }
 
     public void deleteWorker(Long id) {
@@ -157,10 +212,7 @@ public class WorkerService {
 
         for (Worker w : workers) {
             if (w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())) {
-                WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
-                workerDTO.setEmail(w.getUser().getEmail());
-                workerDTO.setManagerId(manager.getId());
-                workerDTOS.add(workerDTO);
+                workerDTOS.add(workerMapper.toDTO(w));
             }
         }
         return workerDTOS;
@@ -170,10 +222,7 @@ public class WorkerService {
         List<Worker> workers = getAllWorkers();
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
         for (Worker w : workers) {
-            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
-            workerDTO.setEmail(w.getUser().getEmail());
-            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
-            workerDTOS.add(workerDTO);
+            workerDTOS.add(workerMapper.toDTO(w));
         }
         return workerDTOS;
     }
@@ -217,25 +266,30 @@ public class WorkerService {
     }
 
     public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO, Principal principal) {
+
+        if (userService.getUserByEmail(workerDTO.getEmail()).getEmail() != null)
+            throw new WorkerServiceException("Email already taken");
+
         String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
         Worker worker = workerMapper.fromDTO(workerDTO);
         User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);
         worker.setUser(u);
-        if (workerDTO.getManagerId() != null)
-            teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
-        else
-            teamService.getTeamByManager(userService.getUserByEmail(principal.getName()).getId()).ifPresent(worker::setWorkingTeam);
+        Worker managerWorker = getWorkerByUserId(userService.getUserByEmail(principal.getName()).getId());
+        teamService.getTeamByManager(managerWorker.getId()).ifPresent(worker::setWorkingTeam);
+        if (workerDTO.getRole() == null || workerDTO.getRole().getRoleName().length() == 0)
+            throw new WorkerException("Role not provided");
+        Role workerRole = roleService.findOrCreateRole(workerDTO.getRole().getRoleName());
+        worker.setRole(workerRole);
         createWorker(worker);
-
         return sendEmailToNewWorker(u, worker, temporaryPassword);
     }
 
-    public boolean checkWorkerLeadRelationship(Worker lead, Worker worker){
-        if(worker.getWorkingTeam().getManager().getId().equals(lead.getId()))
+    public boolean checkWorkerLeadRelationship(Worker lead, Worker worker) {
+        if (worker.getWorkingTeam().getManager().getId().equals(lead.getId()))
             return true;
 
         Worker tempManager = worker.getWorkingTeam().getManager();
-        if(tempManager.getWorkingTeam().getId().equals(tempManager.getManagedTeam().getId()))
+        if (tempManager.getWorkingTeam().getId().equals(tempManager.getManagedTeam().getId()))
             return false;
 
         return checkWorkerLeadRelationship(lead, tempManager);

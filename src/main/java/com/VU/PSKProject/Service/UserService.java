@@ -61,4 +61,9 @@ public class UserService implements UserDetailsService {
     public UserDTO getUserByEmail(String email) {
        return userMapper.toDTO(userRepository.findByEmail(email).orElse(new User()));
     }
+    public boolean checkIfManager(UserDTO user){
+        if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
+            return false;
+        return  true;
+    }
 }

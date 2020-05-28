@@ -77,13 +77,6 @@ public class  WorkerGoalController {
             return ResponseEntity.badRequest().headers(headers).build();
         }
     }
-
-    @PutMapping("/update/{id}")
-    public void updateWorkerGoal(@RequestBody WorkerGoalDTO workerGoalDto, @PathVariable Long id){
-        WorkerGoal workerGoal = new WorkerGoal();
-        PropertyUtils.customCopyProperties(workerGoalDto, workerGoal);
-        workerGoalService.updateWorkerGoal(id, workerGoal);
-    }
     @DeleteMapping("/delete/{id}")
     public void deleteWorkerGoal(@PathVariable Long id){
         workerGoalService.deleteWorkerGoal(id);

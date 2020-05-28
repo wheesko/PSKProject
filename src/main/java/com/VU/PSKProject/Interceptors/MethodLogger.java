@@ -41,16 +41,24 @@ public class MethodLogger {
         String[] classAndMethod = joinPoint.getSignature().toString().split(".* com\\.VU\\.PSKProject\\.Controller\\.");
         classAndMethod = classAndMethod[1].split("\\.");
 
-        Object obj = joinPoint.proceed();
 
         MethodJournalRecord methodJournal = new MethodJournalRecord();
         methodJournal.setUserNameSurname(worker.getName() + " " + worker.getSurname());
         methodJournal.setTime(formatter.format(date));
         methodJournal.setClassName(classAndMethod[0]);
         methodJournal.setMethodName(classAndMethod[1]);
-        methodJournal.setTeamId(worker.getWorkingTeam().getId());
+        try{
+            methodJournal.setTeamId(worker.getWorkingTeam().getId());
+        }
+        catch (Exception e){
+
+        }
+
 
         methodJournalService.createRecord(methodJournal);
+
+        Object obj = joinPoint.proceed();
+
         return obj;
     }
 }

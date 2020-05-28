@@ -20,19 +20,25 @@ public class Topic {
     private String description;
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            mappedBy = "topic"
     )
     private List<TeamGoal> teamGoals;
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            mappedBy = "topic"
     )
     private List<WorkerGoal> workerGoals;
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = true
+            orphanRemoval = true,
+            mappedBy = "topic"
     )
     private List<RoleGoal> roleGoals;
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
+    private List<LearningDay> learningDays;
 
     public Topic(){
 

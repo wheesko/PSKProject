@@ -7,4 +7,9 @@ import lombok.Setter;
 @Setter
 public class LearningDayAssigneeDTO {
     private Long id;
+
+    public LearningDayAssigneeDTO(Long id) {
+        this.id = id;
+    }
 }
+

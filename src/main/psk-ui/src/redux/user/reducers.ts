@@ -2,12 +2,12 @@ import { UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, USER_TOKEN_UPDATE, UserActionT
 import { Authority } from '../../models/authority';
 
 const initialState: UserState = {
-	name: '', 
+	name: '',
 	surname: '',
 	loggedIn: false,
 	email: '',
 	token: '',
-	role: { name: '', color: '' },
+	role: { title: '', color: '' },
 	authority: Authority.UNASSIGNED,
 	refreshToken: '',
 	managedTeamId: 0,

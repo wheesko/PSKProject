@@ -5,6 +5,7 @@ export interface TeamLearningDaysResponse {
     name: string;
     comment: string;
     dateTimeAt: string;
+    learned: boolean;
     assignee: Assignee;
     topic: LearningTopic;
 }
@@ -16,7 +17,7 @@ export interface Assignee {
     email: string;
     role: {
         id: number;
-        name: string;
+        title: string;
     };
     managedTeam: Team;
     workingTeam: Team;

@@ -2,7 +2,7 @@ import { Goal } from './goal';
 import { LearningTopic } from './learningTopic';
 import { LearningEvent } from './learningEvent';
 import { Role } from './role';
-import {Authority} from "./authority";
+import { Authority } from './authority';
 
 export interface Worker {
 	id: number | null;

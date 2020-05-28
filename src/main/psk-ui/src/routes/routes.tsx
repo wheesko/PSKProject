@@ -13,7 +13,7 @@ import {
 	KEY_TOPICS, KEY_WORKING_TEAM
 } from '../constants/routeKeyConstants';
 import { CalendarView } from '../pages/private/calendar-view';
-import { ProfileView } from '../pages/private/profile-view';
+import { ProfileView } from '../pages/private/my-profile-view';
 import { TeamCalendarView } from '../pages/private/team-calendar-view';
 import { TeamMembersView } from '../pages/private/team-members-view';
 import { InfoView } from '../pages/private/info-view';
@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { Authority } from '../models/authority';
 import { RegisterPage } from '../pages/public/register';
+import { WorkerProfileView } from '../pages/private/worker-profile-view/worker-profile-view';
 import { WorkingTeamView } from '../pages/private/working-team-view';
 
 const Routes: React.FunctionComponent<{}> = () => {
@@ -54,6 +55,7 @@ const Routes: React.FunctionComponent<{}> = () => {
 			<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`}/>
 			<Route exact path={`/${KEY_TOPICS}/${KEY_TOPIC_TREE}`} component={TopicTreeView}/>
 			<Route exact path={`/${KEY_TOPICS}/${KEY_NEW_TOPIC}`} component={NewTopicView}/>
+			<Route path={`/${KEY_PROFILE}/:workerId`} component={WorkerProfileView}/>
 		</Switch>
 	);
 };

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 
 @Entity(name = "user")
 @Getter
@@ -17,8 +18,8 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    @Column(unique=true)
     private String email;
+
     private String password;
     @Enumerated(EnumType.STRING)
     private UserAuthority userAuthority;

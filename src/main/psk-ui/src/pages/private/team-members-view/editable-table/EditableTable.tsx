@@ -115,7 +115,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			editable: true,
 			width: '15%',
 			render: (role: Role) => {
-				return <Tag color={role.color}>{role.name}</Tag>
+				return <Tag color={role.color}>{role.title}</Tag>
 
 			}
 			// TODO: fix displaying role (need to create usable state interfaces)

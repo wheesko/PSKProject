@@ -6,13 +6,13 @@ import { Employee } from '../models/employee';
 import { getRoleColor } from './roleColorPicker';
 
 export const roles: Role[] = [
-	{ name: 'Java developer', color: 'blue' },
-	{ name: 'Business analyst', color: 'gold' },
-	{ name: 'Test engineer', color: 'green', },
-	{ name: 'Software process manager', color: 'purple', },
-	{ name: 'Front-end engineer', color: 'volcano' },
-	{ name: 'Back-end engineer', color: 'lime' },
-	{ name: 'Database engineer', color: 'geekblue' }];
+	{ title: 'Java developer', color: 'blue' },
+	{ title: 'Business analyst', color: 'gold' },
+	{ title: 'Test engineer', color: 'green', },
+	{ title: 'Software process manager', color: 'purple', },
+	{ title: 'Front-end engineer', color: 'volcano' },
+	{ title: 'Back-end engineer', color: 'lime' },
+	{ title: 'Database engineer', color: 'geekblue' }];
 
 export const defaultQuarterConstraint = 3;
 
@@ -35,7 +35,7 @@ export const workerList: Worker[] = [
 		id: 2,
 		name: 'Lukas',
 		surname: 'Michnevic',
-		role: roles.find((role => role.name === 'Back-end engineer')),
+		role: roles.find((role => role.title === 'Back-end engineer')),
 		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
@@ -50,7 +50,7 @@ export const workerList: Worker[] = [
 		id: 3,
 		name: 'Vytautas',
 		surname: 'Rudys',
-		role: roles.find((role => role.name === 'Back-end engineer')),
+		role: roles.find((role => role.title === 'Back-end engineer')),
 		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
@@ -88,7 +88,7 @@ export const myEmployees: Employee[] = [
 		managerId: 3,
 		name: 'Povilas',
 		quarterLearningDayLimit: 3,
-		role: { name: 'Front-end Engineer', color: getRoleColor('Front-end Engineer') },
+		role: { title: 'Front-end Engineer', color: getRoleColor('Front-end Engineer') },
 		surname: 'Tamosauskas',
 		team: psk123Team.name,
 	}, {
@@ -100,7 +100,7 @@ export const myEmployees: Employee[] = [
 		managerId: 3,
 		name: 'Lukas',
 		quarterLearningDayLimit: 3,
-		role: { name: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
+		role: { title: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
 		surname: 'Michnevic',
 		team: psk123Team.name,
 		id: 2,
@@ -113,7 +113,7 @@ export const myEmployees: Employee[] = [
 		workingTeam: psk123Team,
 		managerId: -1,
 		quarterLearningDayLimit: 3,
-		role: { name: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
+		role: { title: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
 		surname: 'Rudys',
 		team: psk123Team.name,
 		id: 3,
@@ -127,7 +127,7 @@ export const myEmployees: Employee[] = [
 		workingTeam: psk123Team,
 		managerId: -1,
 		quarterLearningDayLimit: 3,
-		role: { name: 'Database engineer', color: getRoleColor('Database engineer') },
+		role: { title: 'Database engineer', color: getRoleColor('Database engineer') },
 		surname: 'Dijokas',
 		team: psk123Team.name,
 		id: 4,
@@ -141,7 +141,7 @@ export const myEmployees: Employee[] = [
 		workingTeam: psk123Team,
 		managerId: -1,
 		quarterLearningDayLimit: 3,
-		role: { name: 'Backend engineer', color: getRoleColor('Backend engineer') },
+		role: { title: 'Backend engineer', color: getRoleColor('Backend engineer') },
 		surname: 'Golotylecas',
 		team: psk123Team.name,
 		id: 5,
@@ -154,6 +154,7 @@ export const learningEvents: LearningEvent[] = [
 		name: 'Building apps with Redux',
 		description: 'Some very very cool description',
 		dateTimeAt: '',
+		learned: false,
 		topic: {
 			id: 0,
 			name: 'Web topic',
@@ -170,6 +171,8 @@ export const learningEvents: LearningEvent[] = [
 		name: 'JPA basics',
 		description: 'Some very very cool description',
 		dateTimeAt: '',
+		learned: false,
+
 		topic: {
 			id: 1,
 			name: 'Java topic',
@@ -186,6 +189,8 @@ export const learningEvents: LearningEvent[] = [
 		name: 'Automated testing',
 		description: 'Learning automated testing with selenium and webdriver',
 		dateTimeAt: '',
+		learned: false,
+
 		topic: {
 			id: 2,
 			name: 'Testing',

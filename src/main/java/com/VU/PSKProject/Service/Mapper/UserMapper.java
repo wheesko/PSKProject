@@ -13,8 +13,8 @@ public class UserMapper {
     private ModelMapper modelMapper;
 
     public UserDTO toDTO(User user) {
-        UserDTO dto =  modelMapper.map(user, UserDTO.class);
-        dto.setUserRole(user.getUserAuthority().toString());
+        UserDTO dto = modelMapper.map(user, UserDTO.class);
+        dto.setUserRole(user.getUserAuthority() == null ? null : user.getUserAuthority().toString());
         return dto;
     }
 

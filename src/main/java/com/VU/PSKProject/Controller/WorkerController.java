@@ -3,13 +3,10 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
+
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
-import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Service.Model.Worker.*;
 import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +30,10 @@ public class WorkerController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private TeamService teamService;
 
     @Autowired
     private WorkerMapper workerMapper;
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
@@ -47,12 +43,16 @@ public class WorkerController {
     @GetMapping("/getByTopic/{topicId}")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByTopic(topicId),
                 workerService.getWorkerByUserId(user.getId())));
     }
     @GetMapping("/getByTopicIds/{topicIds}/")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByIds(topicIds),
                 workerService.getWorkerByUserId(user.getId())));
     }
@@ -107,7 +107,11 @@ public class WorkerController {
         {
             WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
-            return ResponseEntity.ok(workerDTO);
+
+            if(workerService.checkWorkerLeadRelationship(workerService.getWorkerByUserId(user.getId()), worker.get()))
+                return ResponseEntity.ok(workerDTO);
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         else {
             HttpHeaders headers = new HttpHeaders();
@@ -138,6 +142,23 @@ public class WorkerController {
 
             workerService.updateWorker(id, worker.get());
             return ResponseEntity.ok("Worker updated successfully");
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "Worker with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
+    }
+
+    @PutMapping("/updateWorkerLimits/{id}")
+    public ResponseEntity<String> updateWorkerLimits(@RequestBody WorkerLimitsDTO workerLimitsDTO, @PathVariable Long id){
+        Optional<Worker> worker = workerService.getWorker(id);
+        if(worker.isPresent())
+        {
+            PropertyUtils.customCopyProperties(workerLimitsDTO, worker.get());
+
+            workerService.updateWorker(id, worker.get());
+            return ResponseEntity.ok("Worker limits updated successfully");
         }
         else {
             HttpHeaders headers = new HttpHeaders();
