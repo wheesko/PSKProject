@@ -4,6 +4,8 @@ import com.VU.PSKProject.Entity.Team;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TeamRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
+import com.VU.PSKProject.Service.Exception.TeamException;
+import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Model.Team.TeamCountDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToGetDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
@@ -11,6 +13,7 @@ import com.VU.PSKProject.Utils.EventDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +23,38 @@ import java.util.Optional;
 public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
-
     @Autowired
     private WorkerService workerService;
     @Autowired
     private WorkerGoalService workerGoalService;
+    @Autowired
+    private TeamMapper teamMapper;
 
-    public List<Team> getAllTeams(){
-        return teamRepository.findAll();
+    public List<TeamToGetDTO> getAllTeams(){
+        List<Team> teams = teamRepository.findAll();
+        List<TeamToGetDTO> teamDTOS = new ArrayList<>();
+        for (Team t: teams) {
+            TeamToGetDTO teamDTO = teamMapper.toDto(t);
+            teamDTOS.add(teamDTO);
+        }
+        return teamDTOS;
     }
 
-    public void createTeam(Team team){
+    public void createTeam(Team team) {
         teamRepository.save(team);
     }
 
     public void updateTeam(Long id, Team team){
-        if(teamRepository.findById(id).isPresent()) {
-            team.setId(id);
-            teamRepository.save(team);
+        try{
+            if(teamRepository.findById(id).isPresent()) {
+                team.setId(id);
+                teamRepository.save(team);
+            }
         }
+        catch (OptimisticLockException e){
+            throw new TeamException("This team was recently modified.");
+        }
+
     }
 
     public void deleteTeam(Long id){
@@ -100,7 +116,7 @@ public class TeamService {
 
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
-        List<Team> teams = getAllTeams();
+        List<Team> teams = teamRepository.findAll();
         List<TeamCountDTO> teamCountDTOS = new ArrayList<>();
         for (Team team: teams) {
             if(teamIds.contains(team.getId()) && manager.getManagedTeam().getId().equals(team.getId())){

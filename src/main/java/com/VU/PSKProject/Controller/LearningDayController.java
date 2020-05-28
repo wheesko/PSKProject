@@ -7,7 +7,6 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.UserService;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,14 +71,10 @@ public class LearningDayController {
         return ResponseEntity.ok("Learning Day has been created successfully!");
     }
 
-
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateLearningEvent(@RequestBody LearningDayToCreateDTO learningDayDto, @PathVariable Long id, Principal principal) {
+    public ResponseEntity<String> updateLearningEvent(@RequestBody LearningDayToCreateDTO learningDayToCreateDTO, @PathVariable Long id, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        LearningDay learningDay =  learningDayMapper.fromDTO(learningDayDto);
-        //workerService.getWorker(learningDayDto.getAssignee()).ifPresent(learningDay::setAssignee);
-        PropertyUtils.customCopyProperties(learningDayDto, learningDay);
-        learningDayService.updateLearningDay(learningDay, id, user);
+        learningDayService.updateLearningDay(learningDayToCreateDTO, id, user);
         return ResponseEntity.ok("Learning Day has been updated successfully!");
     }
 	
