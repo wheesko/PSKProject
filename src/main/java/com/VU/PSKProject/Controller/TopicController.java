@@ -11,6 +11,7 @@ import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,16 +65,20 @@ public class TopicController {
     @GetMapping("/getTeamTopics")
     public ResponseEntity<TeamTopicsDTO> getTeamsCountByTopics(Principal principal){
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(topicService.getTeamTopicsDTObyManager(user));
     }
     @GetMapping("/getWorkersTopics")
     public ResponseEntity<List<WorkerTopicsDTO>> getWorkersTopicsByManager(Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(topicService.getWorkersTopicsDTObyManager(user));
     }
 
-    @GetMapping("exportWorkersTopicsByManagerId/{managerId}")
-    public void exportCSV(@PathVariable Long managerId, Principal principal) {
+    @GetMapping("exportWorkersTopicsByManagerId")
+    public void exportCSV(Principal principal) {
        List<WorkerTopicsDTO> workerTopicsDTOS = topicService.getWorkersTopicsDTObyManager(userService.getUserByEmail(principal.getName()));
     }
 }

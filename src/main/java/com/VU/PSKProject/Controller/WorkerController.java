@@ -1,10 +1,8 @@
 package com.VU.PSKProject.Controller;
 
-import com.VU.PSKProject.Entity.User;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
-import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
@@ -37,9 +35,6 @@ public class WorkerController {
     private UserService userService;
 
     @Autowired
-    private TeamService teamService;
-
-    @Autowired
     private WorkerMapper workerMapper;
 
     @GetMapping("/getAll")
@@ -50,12 +45,16 @@ public class WorkerController {
     @GetMapping("/getByTopic/{topicId}")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByTopic(topicId),
                 workerService.getWorkerByUserId(user.getId())));
     }
     @GetMapping("/getByTopicIds/{topicIds}/")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByIds(topicIds),
                 workerService.getWorkerByUserId(user.getId())));
     }
