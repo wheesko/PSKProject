@@ -64,6 +64,9 @@ public class WorkerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RoleService roleService;
+
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
     }
@@ -74,21 +77,20 @@ public class WorkerService {
 
     @Transactional
     public void createWorker(Worker worker) {
-        if(worker.getQuarterLearningDayLimit() == 0)
+        if (worker.getQuarterLearningDayLimit() == 0)
             worker.setQuarterLearningDayLimit(Integer.parseInt(Objects.requireNonNull(env.getProperty("worker.defaultQuarterLearningDayLimit"))));
-        if(worker.getConsecutiveLearningDayLimit() == 0)
+        if (worker.getConsecutiveLearningDayLimit() == 0)
             worker.setConsecutiveLearningDayLimit(Integer.parseInt(Objects.requireNonNull(env.getProperty("worker.defaultConsecutiveLearningDayLimit"))));
         workerRepository.save(worker);
     }
 
     public void updateWorker(Long id, Worker worker) {
-        try{
-            if (workerRepository.findById(id).isPresent()){
+        try {
+            if (workerRepository.findById(id).isPresent()) {
                 worker.setId(id);
                 workerRepository.save(worker);
             }
-        }
-        catch (OptimisticLockException e){
+        } catch (OptimisticLockException e) {
             throw new WorkerException("This worker was recently modified.");
         }
 
@@ -108,35 +110,37 @@ public class WorkerService {
     }
 
     public ResponseEntity<String> validateWorkerData(WorkerToCreateDTO workerDTO) {
-        if(workerDTO.getEmail().isEmpty()){
+        if (workerDTO.getEmail().isEmpty()) {
             return ResponseEntity.badRequest().body("No email provided!");
         }
 
         return ResponseEntity.ok().build();
     }
+
     public List<Worker> getWorkersByTopic(Long topicId) {
         return learningDayService.getAssigneesByTopicIdPast(topicId);
     }
 
-    public List<Worker> getWorkersByIds(List<Long> ids){
+    public List<Worker> getWorkersByIds(List<Long> ids) {
         return learningDayService.getAssigneesByTopicIdsPast(ids);
     }
 
-    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, EventDate.eventDate time){
+    public List<Worker> getWorkersByTopicsTeamManager(Long teamId, List<Long> ids, Worker manager, EventDate.eventDate time) {
         List<Worker> workers = new ArrayList<>();
-        List <Worker> allWorkers = null;
+        List<Worker> allWorkers = null;
         if (time.equals(EventDate.eventDate.PAST))
             allWorkers = learningDayService.getAssigneesByTopicIdsPast(ids);
         if (time.equals(EventDate.eventDate.FUTURE))
-             allWorkers = learningDayService.getAssigneesByTopicIdsFuture(ids);
+            allWorkers = learningDayService.getAssigneesByTopicIdsFuture(ids);
 
-        for (Worker w: allWorkers) {
-            if(!workers.contains(w) && teamId.equals(manager.getManagedTeam().getId()) && teamId.equals(w.getWorkingTeam().getId())){
+        for (Worker w : allWorkers) {
+            if (!workers.contains(w) && teamId.equals(manager.getManagedTeam().getId()) && teamId.equals(w.getWorkingTeam().getId())) {
                 workers.add(w);
             }
         }
         return workers;
     }
+
     public List<WorkerToGetDTOStripped> extractByManager(List<Worker> workers, Worker manager) {
         List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
 
@@ -151,7 +155,7 @@ public class WorkerService {
     public List<WorkerToGetDTOStripped> retrieveAllWorkers() {
         List<Worker> workers = getAllWorkers();
         List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
-        for (Worker w: workers) {
+        for (Worker w : workers) {
             workerDTOS.add(workerMapper.toDTOStripped(w));
         }
         return workerDTOS;
@@ -176,12 +180,13 @@ public class WorkerService {
         updatedWorkerDTO.setUserAuthority(UserAuthority.WORKER);
         return updatedWorkerDTO;
     }
+
     public void exportToCSV(List<WorkerToExportDTO> dataToExport, HttpServletResponse response) throws Exception {
         String[] headers = {"Name,", "Surname,", "Email,", "Role,", "Team,", "Managed team\n"};
         CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
     }
 
-    private ResponseEntity<String> sendEmailToNewWorker(User u, Worker w, String tempPassword){
+    private ResponseEntity<String> sendEmailToNewWorker(User u, Worker w, String tempPassword) {
         String subject = "PSK_123 New worker";
         String text = String.format("Hello,\n You've been invited to join %s. You can finish your registration by logging " +
                 "in to the application with your email address and temporary password.\n" +
@@ -189,34 +194,34 @@ public class WorkerService {
         try {
             emailService.sendMessage(u.getEmail(), subject, text);
             return ResponseEntity.ok("An email to the new worker has been sent!");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Failed to send email to the worker!");
         }
     }
 
-    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO, Principal principal){
-        if(userService.getUserByEmail(workerDTO.getEmail()) != null)
+    public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO, Principal principal) {
+
+        if (userService.getUserByEmail(workerDTO.getEmail()).getEmail() != null)
             throw new WorkerServiceException("Email already taken");
 
         String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
         Worker worker = workerMapper.fromDTO(workerDTO);
         User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);
         worker.setUser(u);
-        if(workerDTO.getManagerId()!= null)
-            teamService.getTeamByManager(workerDTO.getManagerId()).ifPresent(worker::setWorkingTeam);
-        else
-            teamService.getTeamByManager(userService.getUserByEmail(principal.getName()).getId()).ifPresent(worker::setWorkingTeam);
+        Worker managerWorker = getWorkerByUserId(userService.getUserByEmail(principal.getName()).getId());
+        teamService.getTeamByManager(managerWorker.getId()).ifPresent(worker::setWorkingTeam);
+        Role workerRole = roleService.findOrCreateRole(workerDTO.getRole().getRoleName());
+        worker.setRole(workerRole);
         createWorker(worker);
-
         return sendEmailToNewWorker(u, worker, temporaryPassword);
     }
 
-    public boolean checkWorkerLeadRelationship(Worker lead, Worker worker){
-        if(worker.getWorkingTeam().getManager().getId().equals(lead.getId()))
+    public boolean checkWorkerLeadRelationship(Worker lead, Worker worker) {
+        if (worker.getWorkingTeam().getManager().getId().equals(lead.getId()))
             return true;
 
         Worker tempManager = worker.getWorkingTeam().getManager();
-        if(tempManager.getWorkingTeam().getId().equals(tempManager.getManagedTeam().getId()))
+        if (tempManager.getWorkingTeam().getId().equals(tempManager.getManagedTeam().getId()))
             return false;
 
         return checkWorkerLeadRelationship(lead, tempManager);
