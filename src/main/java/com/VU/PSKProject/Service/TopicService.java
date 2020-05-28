@@ -46,6 +46,10 @@ public class TopicService {
                 .collect(Collectors.toList());
     }
 
+    private List<Topic> getAll() {
+        return topicRepository.findAll();
+    }
+
     public void createTopic(TopicCreateRequest topicCreateRequest) {
         Topic topic = new Topic();
         topic.setDescription(topicCreateRequest.getDescription());
@@ -62,6 +66,14 @@ public class TopicService {
            topicRepository.save(topic);
            topicRepository.save(parentTopic);
         } else {
+            Topic parentTopic = getAll().stream().filter(t -> t.getName().equals("Devbridge development"))
+                    .findFirst().get();
+
+            List<Topic> childTopics = parentTopic.getChildrenTopics();
+            childTopics.add(topic);
+            parentTopic.setChildrenTopics(childTopics);
+            topicRepository.save(topic);
+            topicRepository.save(parentTopic);
             topicRepository.save(topic);
         }
     }
@@ -83,10 +95,14 @@ public class TopicService {
         return topicRepository.findById(id);
     }
 
-    public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId)
-    {
+    public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId) {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
         return learningDays.stream().map(l -> topicMapper.toTreeNodeDTO(l.getTopic())).collect(Collectors.toList());
+    }
+
+    public List<CoveredTopicDTO> getFullTree() {
+        return getAll().stream().filter(topic -> topic.getName().equals("Devbridge development"))
+                .map(topic -> topicMapper.toTreeNodeDTO(topic)).collect(Collectors.toList());
     }
 
     public List<Topic> getTeamTopicsAndGoals(Worker manager, EventDate.eventDate time){

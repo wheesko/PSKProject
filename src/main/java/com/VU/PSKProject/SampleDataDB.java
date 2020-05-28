@@ -129,7 +129,7 @@ public class SampleDataDB {
 		topics.add(new Topic("Java is bad for your vision", topics.get(1), "description", null));
 		topics.add(new Topic("Thinking sharp using Java", topics.get(3), "description", null));*/
 
-        ArrayList<Topic> cppChildren = new ArrayList<>();
+        /*ArrayList<Topic> cppChildren = new ArrayList<>();
         gd = new Topic("Game development", null, "Intro to game dev", null);
         ge = new Topic("Game Engines", null, "Intro to game engines", null);
         cppChildren.add(gd);
@@ -150,14 +150,13 @@ public class SampleDataDB {
         cChildren.add(oop);
         c = new Topic("C Programming", cChildren, "Intro to C", null);
 
-
         topics.add(gd);
         topics.add(ge);
         topics.add(cpp);
         topics.add(cs);
         topics.add(oop);
         topics.add(ads);
-        topics.add(c);
+        topics.add(c);*/
         topicRepository.saveAll(topics);
     }
     public void saveTeams(){
@@ -211,9 +210,12 @@ public class SampleDataDB {
         mob.add(nativePlatform);
         Topic mobile = new Topic("Learn mobile", mob, "Frontend mobile", null);
 
-        devTopics.add(Fe);
-        devTopics.add(mobile);
-        Topic MobileDev = new Topic("Learn Mobile development", devTopics, "Mobile development course", null);
+        Topic rootTopic = new Topic("Devbridge development",null, "Devbridge development", null);
+
+        ArrayList<Topic> rootChildTopics = new ArrayList<>();
+        rootChildTopics.addAll(Arrays.asList(Fe, mobile));
+
+        rootTopic.setChildrenTopics(rootChildTopics);
 
         ArrayList<Topic> allTopics = new ArrayList<>();
         allTopics.add(Angular);
@@ -224,7 +226,7 @@ public class SampleDataDB {
         allTopics.add(android);
         allTopics.add(nativePlatform);
         allTopics.add(mobile);
-        allTopics.add(MobileDev);
+        allTopics.add(rootTopic);
 
         topicRepository.saveAll(allTopics);
     }
