@@ -37,12 +37,12 @@ public class WorkerController {
 
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkers() {
-        List<WorkerToGetDTOStripped> workerDTOS = workerService.retrieveAllWorkers();
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
+        List<WorkerToGetDTO> workerDTOS = workerService.retrieveAllWorkers();
         return ResponseEntity.ok(workerDTOS);
     }
     @GetMapping("/getByTopic/{topicId}")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         if(!userService.checkIfManager(user))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -50,7 +50,7 @@ public class WorkerController {
                 workerService.getWorkerByUserId(user.getId())));
     }
     @GetMapping("/getByTopicIds/{topicIds}/")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         if(!userService.checkIfManager(user))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -103,6 +103,22 @@ public class WorkerController {
         if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+        Optional<Worker> worker = workerService.getWorker(id);
+        if(worker.isPresent())
+        {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
+            workerDTO.setEmail(worker.get().getUser().getEmail());
+
+            if(workerService.checkWorkerLeadRelationship(workerService.getWorkerByUserId(user.getId()), worker.get()))
+                return ResponseEntity.ok(workerDTO);
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "Worker with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
         return workerService.getWorkerById(id, user);
     }
 
@@ -160,15 +176,15 @@ public class WorkerController {
     }
 
     @GetMapping("managedTeams/{id}")
-    public ResponseEntity<WorkerToGetDTOStripped> getWorkerByManagedTeam(@PathVariable Long id) {
+    public ResponseEntity<WorkerToGetDTO> getWorkerByManagedTeam(@PathVariable Long id) {
         Optional<Worker> worker = workerService.findByManagedTeamId(id);
         return worker.map(value -> ResponseEntity.ok(workerMapper.toGetDTO(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("workingTeams/{id}")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByWorkingTeam(@PathVariable Long id) {
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByWorkingTeam(@PathVariable Long id) {
         List<Worker> workers = workerService.findByWorkingTeamId(id);
-        List<WorkerToGetDTOStripped> workersToGet = new ArrayList<>();
+        List<WorkerToGetDTO> workersToGet = new ArrayList<>();
         for (Worker w : workers) {
             workersToGet.add(workerMapper.toGetDTO(w));
         }

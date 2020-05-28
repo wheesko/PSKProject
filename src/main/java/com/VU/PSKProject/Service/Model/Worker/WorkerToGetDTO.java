@@ -31,4 +31,17 @@ public class WorkerToGetDTO {
 
     private List<LearningDayDTO> learningDays;
     private List<TopicToReturnDTO> goals;
+
+    public WorkerToGetDTO(Long id, String name, String surname, String email, Integer quarterLearningDayLimit, Integer consecutiveLearningDayLimit) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.quarterLearningDayLimit = quarterLearningDayLimit;
+        this.consecutiveLearningDayLimit = consecutiveLearningDayLimit;
+    }
+    public WorkerToGetDTO(){
+
+    }
+
 }
