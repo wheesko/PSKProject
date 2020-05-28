@@ -210,6 +210,8 @@ public class WorkerService {
         worker.setUser(u);
         Worker managerWorker = getWorkerByUserId(userService.getUserByEmail(principal.getName()).getId());
         teamService.getTeamByManager(managerWorker.getId()).ifPresent(worker::setWorkingTeam);
+        if (workerDTO.getRole() == null || workerDTO.getRole().getRoleName().length() == 0)
+            throw new WorkerException("Role not provided");
         Role workerRole = roleService.findOrCreateRole(workerDTO.getRole().getRoleName());
         worker.setRole(workerRole);
         createWorker(worker);
