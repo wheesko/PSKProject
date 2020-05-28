@@ -148,6 +148,23 @@ public class WorkerController {
         }
     }
 
+    @PutMapping("/updateWorkerLimits/{id}")
+    public ResponseEntity<String> updateWorkerLimits(@RequestBody WorkerLimitsDTO workerLimitsDTO, @PathVariable Long id){
+        Optional<Worker> worker = workerService.getWorker(id);
+        if(worker.isPresent())
+        {
+            PropertyUtils.customCopyProperties(workerLimitsDTO, worker.get());
+
+            workerService.updateWorker(id, worker.get());
+            return ResponseEntity.ok("Worker limits updated successfully");
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "Worker with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
+    }
+
     // cascading needs to be fixed
     @DeleteMapping("/delete/{id}")
     public void deleteWorker(@PathVariable Long id) {
