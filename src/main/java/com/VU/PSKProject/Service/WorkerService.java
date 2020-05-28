@@ -31,6 +31,12 @@ import java.util.Optional;
 @Service
 public class WorkerService {
 
+    private final class WorkerServiceException extends RuntimeException {
+        WorkerServiceException(String message) {
+            super(message);
+        }
+    }
+
     @Autowired
     private WorkerRepository workerRepository;
 
@@ -189,6 +195,9 @@ public class WorkerService {
     }
 
     public ResponseEntity<String> createFreshmanWorker(WorkerToCreateDTO workerDTO, Principal principal){
+        if(userService.getUserByEmail(workerDTO.getEmail()) != null)
+            throw new WorkerServiceException("Email already taken");
+
         String temporaryPassword = RandomStringUtils.randomAlphanumeric(7);
         Worker worker = workerMapper.fromDTO(workerDTO);
         User u = userService.createUser(workerDTO.getEmail(), temporaryPassword);

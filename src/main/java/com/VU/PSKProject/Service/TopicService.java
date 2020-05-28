@@ -1,9 +1,11 @@
 package com.VU.PSKProject.Service;
 
+import com.VU.PSKProject.Controller.Model.TopicCreateRequest;
 import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TopicRepository;
+import com.VU.PSKProject.Service.Exception.TopicServiceException;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
@@ -44,8 +46,24 @@ public class TopicService {
                 .collect(Collectors.toList());
     }
 
-    public void createTopic(Topic topic) {
-        topicRepository.save(topic);
+    public void createTopic(TopicCreateRequest topicCreateRequest) {
+        Topic topic = new Topic();
+        topic.setDescription(topicCreateRequest.getDescription());
+        topic.setName(topicCreateRequest.getName());
+
+        if (topicCreateRequest.getParentTopicId() != null) {
+           Topic parentTopic = getTopic(topicCreateRequest.getParentTopicId()).orElseThrow(() -> {
+              throw new TopicServiceException("Topic not found");
+           });
+
+           List<Topic> childTopics = parentTopic.getChildrenTopics();
+           childTopics.add(topic);
+           parentTopic.setChildrenTopics(childTopics);
+           topicRepository.save(topic);
+           topicRepository.save(parentTopic);
+        } else {
+            topicRepository.save(topic);
+        }
     }
 
     public void updateTopic(Long id, Topic topic) {

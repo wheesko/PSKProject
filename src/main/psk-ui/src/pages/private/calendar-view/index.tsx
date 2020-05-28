@@ -119,7 +119,6 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 			<Spin spinning={isLoading} size="large">
 				<Calendar
 					dateCellRender={DateCellRenderer}
-					monthCellRender={renderMonthCell}
 					onChange={getMonthEvents}
 				/>
 			</Spin>
@@ -144,6 +143,8 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		loadData(selectedDate === undefined ? moment() : selectedDate).then(learningEvents => {
 			setCalendarListData(learningEvents);
 			setModalVisibility(false);
+			setEditEventVisibility(false);
+			setIsFormVisible(false);
 		});
 	}
 
@@ -266,24 +267,5 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 		);
 	}
 };
-// this method will be changed into a get request
-
-function getMonthData (value: moment.Moment): number | null {
-	if (value.month() === 8) {
-		return 1394;
-	}
-	return null;
-}
-
-function renderMonthCell(value: moment.Moment): React.ReactNode {
-	const num = getMonthData(value);
-
-	return num ? (
-		<div className="notes-month">
-			<section>{num}</section>
-			<span>Backlog number</span>
-		</div>
-	) : null;
-}
 
 export { CalendarView };

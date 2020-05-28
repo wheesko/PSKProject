@@ -7,11 +7,43 @@
     font-size: 20px;
 }
 
-.newTopicCard * {
-    align-items: start ;
-}
-
 #subtopic-item-container {
     display: flex;
     justify-content: space-between;
+}
+
+.topic-description-text {
+    height: 32px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    width: 100%;
+    display: inline-block;
+    text-align: left;
+}
+
+.topic-description-text-first {
+    text-align: right;
+    width: 100%;
+    display: block;
+    padding-right: 7px;
+    color: rgba(0, 0, 0, 0.85) !important;
+    min-height: 32px;
+    font-size: 14px !important;
+}
+
+.submit-topic-button {
+    float: left;
+}
+
+.checkbox {
+    text-align: left;
+}
+
+.select-parent-topic {
+    text-align: left;
+}
+
+.topic-description {
+    display: inline-block;
+    height: fit-content;
 }

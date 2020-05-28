@@ -2,6 +2,7 @@ import { CancelSource } from './cancel-source';
 import { RestService } from './rest-service';
 import { AxiosResponse } from 'axios';
 import { LearningTopic } from '../models/learningTopic';
+import { TopicCreateRequest } from './model/topic-create-request';
 
 class TopicService {
     private readonly restService: RestService;
@@ -19,6 +20,16 @@ class TopicService {
     			return response.data;
     		});
     };
+
+	public createNewTopic = (topicCreateRequest: TopicCreateRequest): Promise<void> => {
+		return this.restService
+			.post<void>(
+				'/topics/create', topicCreateRequest
+			)
+			.then((response: AxiosResponse<void>) => {
+				return response.data;
+			});
+	};
 }
 
 const topicService = new TopicService();
