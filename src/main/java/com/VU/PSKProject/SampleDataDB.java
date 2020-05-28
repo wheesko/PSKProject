@@ -49,50 +49,50 @@ public class SampleDataDB {
         teamRepository.deleteAll();
     }
     public void saveUsers(){
-        users.add(new User(
-                "admin",
+      users.add(new User(
+                "admin@psk.com",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.LEAD
         ));
 
         users.add(new User(
-                "admin1",
+                "NedStark@outlook.com",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.LEAD
         ));
 
         users.add(new User(
-                "worker",
+                "AliceInthewonderland@gmail.com",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.WORKER
         ));
 
         users.add(new User(
-                "root",
+                "BobBarcley@alibaba.com",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.WORKER
         ));
 
         users.add(new User(
-                "root1",
+                "SuperJack@yandex.ru",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.WORKER
         ));
 
         users.add(new User(
-                "root2",
+                "MurphyJack123@gmail.com",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.WORKER
         ));
 
         users.add(new User(
-                "root3",
+                "ConorJohn1981@gmail.com",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.WORKER
         ));
 
         users.add(new User(
-                "root3",
+                "TonyMontana@outlook.com",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.LEAD
         ));
