@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { Form, Input, Button, Alert, notification, Spin, } from 'antd';
+import {Form, Input, Button, Alert, notification, Spin,} from 'antd';
 import {
 	EMPLOYEE_EMAIL,
 	EMPLOYEE_EMAIL_REQUIRED, EMPLOYEE_ROLE, INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
 } from '../../../constants/employeeConstants';
 import './editable-table/EditableTableStyles.css';
 import workerService from '../../../api/worker-service';
-import notificationService, { NotificationType } from '../../../service/notification-service';
+import notificationService, {NotificationType} from '../../../service/notification-service';
 
 const formItemLayout = {
 	labelCol: {
-		xs: { span: 24 },
-		sm: { span: 8 }
+		xs: {span: 24},
+		sm: {span: 8}
 	},
 	wrapperCol: {
-		xs: { span: 24 },
-		sm: { span: 16 }
+		xs: {span: 24},
+		sm: {span: 16}
 	}
 };
 
@@ -38,8 +38,7 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 		setIsSending(true);
 		workerService.addEmployee({
 			email: form.getFieldsValue()['email'],
-			role: form.getFieldsValue()['role'],
-			'managerId': props.managerId
+			role: {roleName: form.getFieldsValue()['role']}
 		}).then(() => {
 			setIsSending(false);
 			openSuccessNotificationWithIcon();
@@ -80,27 +79,27 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 					<Form
 						form={form}
 						{...formItemLayout}
-						initialValues={{ remember: true }}
+						initialValues={{remember: true}}
 						name="newTeamMemberForm"
 					>
 						<Form.Item
 							label={EMPLOYEE_EMAIL}
 							name="email"
-							rules={[{ required: true, message: EMPLOYEE_EMAIL_REQUIRED, type: 'email' }]}
+							rules={[{required: true, message: EMPLOYEE_EMAIL_REQUIRED, type: 'email'}]}
 						>
 							<Input allowClear/>
 						</Form.Item>
 						<Form.Item
 							label={EMPLOYEE_ROLE}
 							name="role"
-							rules={[{ required: true, message: EMPLOYEE_EMAIL_REQUIRED }]}
+							rules={[{required: true, message: EMPLOYEE_EMAIL_REQUIRED}]}
 						>
 							<Input allowClear placeholder={'e.g. Backend Engineer'}/>
 						</Form.Item>
 						<Form.Item
 							wrapperCol={{
-								xs: { span: 24, offset: 0 },
-								sm: { span: 16, offset: 8 }
+								xs: {span: 24, offset: 0},
+								sm: {span: 16, offset: 8}
 							}}
 						>
 							<Button
@@ -118,4 +117,4 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 	);
 };
 
-export { NewTeamMemberForm };
+export {NewTeamMemberForm};
