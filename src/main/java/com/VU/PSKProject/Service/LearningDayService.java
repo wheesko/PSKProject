@@ -8,6 +8,7 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Utils.DateUtils;
+import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,16 +86,17 @@ public class LearningDayService {
             throw new LearningDayException("Worker has no such learning day");
         }
 
-        LearningDay learningDay = getLearningDayById(learningDayId);
-        learningDay.setTopic(topicService.getTopic(learningDayToUpdate.getTopic())
-                .orElseThrow(() -> new LearningDayException("Could not find topic")));
-        PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay);
-        learningDay.setId(learningDayId);
-        try{
-            learningDayRepository.save(learningDay);
-        }
-        catch (OptimisticLockException e){
-            throw new LearningDayException("This was recently modified.");
+        Optional<LearningDay> learningDay = getLearningDayById(learningDayId);
+        if(learningDay.isPresent()) {
+            learningDay.get().setTopic(topicService.getTopic(learningDayToUpdate.getTopic())
+                    .orElseThrow(() -> new LearningDayException("Could not find topic")));
+            PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay);
+            learningDay.get().setId(learningDayId);
+            try {
+                learningDayRepository.save(learningDay.get());
+            } catch (OptimisticLockException e) {
+                throw new LearningDayException("This was recently modified.");
+            }
         }
 
     }
