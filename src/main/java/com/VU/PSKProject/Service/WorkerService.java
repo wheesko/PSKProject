@@ -101,7 +101,7 @@ public class WorkerService {
     public ResponseEntity<WorkerToGetDTO> getWorkerById(Long id, UserDTO user) {
         Optional<Worker> worker = getWorker(id);
         if(worker.isPresent()) {
-            WorkerToGetDTO workerDTO = workerMapper.workerToGetDTO(worker.get());
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
             workerDTO.setLearningDays(learningDayService.getAllLearningDaysByWorkerId(worker.get().getId()).stream()
                     .map(learningDayMapper::toDTO)
