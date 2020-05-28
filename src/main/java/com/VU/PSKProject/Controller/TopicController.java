@@ -45,6 +45,11 @@ public class TopicController {
         return topicService.getAllWorkerCoveredTopics(workerId);
     }
 
+    @GetMapping("/getTopicTree")
+    public List<CoveredTopicDTO> getTopicTree() {
+        return topicService.getFullTree();
+    }
+
     @PostMapping("/create")
     @Transactional
     public void createTopic(@RequestBody TopicCreateRequest topicToCreate) {
