@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.OptimisticLockException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -88,15 +90,23 @@ public class LearningDayService {
 
         Optional<LearningDay> learningDay = getLearningDayById(learningDayId);
         if(learningDay.isPresent()) {
+            SimpleDateFormat smf = new SimpleDateFormat("yyyyMMdd");
+
+            Timestamp oldDate = learningDay.get().getDateTimeAt();
+
             learningDay.get().setTopic(topicService.getTopic(learningDayToUpdate.getTopic())
                     .orElseThrow(() -> new LearningDayException("Could not find topic")));
-            PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay);
+            PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay.get());
             learningDay.get().setId(learningDayId);
             try {
+                if(!smf.format(oldDate).equals(smf.format(learningDay.get().getDateTimeAt())))
+                    checkWorkerAvailability(worker, learningDay.get());
                 learningDayRepository.save(learningDay.get());
             } catch (OptimisticLockException e) {
                 throw new LearningDayException("This was recently modified.");
             }
+        }else{
+            throw new LearningDayException("Could not find such learning day");
         }
 
     }
