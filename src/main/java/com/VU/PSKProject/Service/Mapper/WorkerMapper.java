@@ -5,7 +5,7 @@ import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Entity.WorkerGoal;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayAssigneeDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
-import com.VU.PSKProject.Service.Model.TopicDTO;
+import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
 import com.VU.PSKProject.Service.RoleService;
 import com.VU.PSKProject.Service.TeamService;
@@ -96,17 +96,15 @@ public class WorkerMapper {
 
         }
         List<LearningDayDTO> days = new ArrayList<>();
-        List<WorkerGoalDTO> goals = new ArrayList<>();
+        List<TopicToReturnDTO> goals = new ArrayList<>();
         for (LearningDay day : w.getLearningDays()) {
             LearningDayDTO learningDayDTO = new LearningDayDTO(day.getId(), day.getName(), day.getComment(), day.getDateTimeAt(), false);
             learningDayDTO.setTopic(topicMapper.toReturnDto(day.getTopic()));
             learningDayDTO.setAssignee(new LearningDayAssigneeDTO(day.getAssignee().getId()));
             days.add(learningDayDTO);
         }
-
-
         for (WorkerGoal goal : w.getGoals()) {
-            goals.add(workerGoalMapper.toDto(goal));
+            goals.add(topicMapper.toReturnDto(goal.getTopic()));
         }
         workerDTO.setLearningDays(days);
         workerDTO.setGoals(goals);
