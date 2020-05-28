@@ -48,7 +48,7 @@ public class WorkerMapper {
         return toDTOStripped(worker);
     }
 
-    public WorkerToGetDTO workerToGetDTO(Worker worker){
+    public WorkerToGetDTO workerToGetDTO(Worker worker) {
         return modelMapper.map(worker, WorkerToGetDTO.class);
     }
 

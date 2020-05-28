@@ -12,9 +12,11 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import history from '../../../history';
 
 import './WorkerProfileStyles.css';
-import { connect } from "react-redux";
-import { RootState } from "../../../redux";
-import { UserState } from "../../../redux/user/types";
+import { connect } from 'react-redux';
+import { RootState } from '../../../redux';
+import { UserState } from '../../../redux/user/types';
+import { UserGoalForm } from './form/user-goal-form';
+import { UserLimitsForm } from './form/user-limits-form';
 
 interface WorkerProfileViewProps extends RouteComponentProps {
     workerId?: string | undefined;
@@ -94,6 +96,7 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	const [loading, setLoading] = useState<boolean>(false);
 	const [worker, setWorker] = useState<WorkerResponseModel>();
 	const [isGoalModalVisible, setGoalModalVisible] = useState<boolean>(false);
+	const [isEditLimitsModalVisible, setEditLimitsModalVisible] = useState<boolean>(false);
 
 	//component did mount
 	useEffect(() => {
@@ -127,16 +130,22 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 			</Row>
 			{worker?.managerId ? renderManagedTeamTable() : null}
 			{renderAssignGoalsModal()}
+			{renderEditLimitsModal()}
 		</>
 		}
 	</Spin>;
+
+	function onAssignClick() {
+		setGoalModalVisible(true);
+	}
 
 	function renderAssignGoalsModal(): React.ReactNode {
 		return <Modal
 			visible={isGoalModalVisible}
 		  	footer={null}
+			onCancel={modalClose}
 		>
-			
+			<UserGoalForm onSubmit={onSubmitGoal} workerId={workerId}/>
 		</Modal>;
 	}
 
@@ -147,13 +156,14 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 					<Typography.Title level={4}>Assigned goals</Typography.Title>
 				</Col>
 				<Col>
-					<Button type="primary">
+					<Button type="primary" onClick={onAssignClick}>
 						Assign goals <PlusOutlined/>
 					</Button>
 				</Col>
 			</Row>
 			<Table
 				columns={goalsColumns}
+				dataSource={worker?.goals}
 			>
 			</Table>
 		</Card>;
@@ -186,7 +196,7 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 					<Typography.Title level={4}>Info</Typography.Title>
 				</Col>
 				<Col>
-					<Button type="primary">
+					<Button type="primary" onClick={handleEditClick}>
 						Edit limits <EditOutlined/>
 					</Button>
 				</Col>
@@ -247,6 +257,16 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 		</Card>;
 	}
 
+	function handleEditClick() {
+		setEditLimitsModalVisible(true);
+	}
+
+	function modalClose() {
+		setEditLimitsModalVisible(false);
+		setGoalModalVisible(false);
+	}
+
+
 	function renderLearnedTopicsTable(): React.ReactNode {
 		return <Card className={'table-card'}>
 			<Typography.Title level={4}>Learned topics</Typography.Title>
@@ -263,6 +283,32 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	function loadData(): Promise<WorkerResponseModel> {
 	    setLoading(true);
 	    return workerService.getWorker(workerId);
+	}
+
+	function renderEditLimitsModal(): React.ReactNode {
+		return <Modal footer={null} visible={isEditLimitsModalVisible} onCancel={modalClose}>
+			<UserLimitsForm workerId={workerId} 
+				limitsQuarterly={worker?.quarterLearningDayLimit ? worker?.quarterLearningDayLimit: 0}
+				limitsSequence={worker?.consecutiveLearningDayLimit ? worker?.consecutiveLearningDayLimit : 0 }
+				onSubmit={onSubmitGoal}/>
+		</Modal>;
+	}
+
+	function onSubmitGoal() {
+		loadData().then(worker => {
+			setWorker(worker);
+			setLoading(false);
+			setGoalModalVisible(false);
+			setEditLimitsModalVisible(false);
+			return worker;
+		})
+			.catch((e) => {
+				notificationService.notify({
+					description: e.response ? e.response.data.message : '',
+					notificationType: NotificationType.ERROR,
+					message: 'Could not find worker'
+				});
+			});
 	}
 };
 

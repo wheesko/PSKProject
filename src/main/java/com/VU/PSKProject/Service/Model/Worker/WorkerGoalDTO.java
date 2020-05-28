@@ -13,6 +13,7 @@ public class WorkerGoalDTO {
     public WorkerGoalDTO(){
 
     }
+
     public WorkerGoalDTO(Long id, Long worker, Long topic){
         this.id = id;
         this.worker = worker;

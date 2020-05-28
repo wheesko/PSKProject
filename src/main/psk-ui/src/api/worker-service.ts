@@ -4,6 +4,7 @@ import { AxiosResponse } from 'axios';
 import { RegisterWorkerRequest } from './model/register-worker-request';
 import { WorkerResponseModel } from './model/worker-response-model';
 import { WorkerGoalCreateRequest } from './model/worker-goal-create-request';
+import { UpdateLimitsRequest } from './model/update-limits-request';
 
 class WorkerService {
 	private readonly restService: RestService;
@@ -23,6 +24,11 @@ class WorkerService {
 
 	public assignGoal = (goal: WorkerGoalCreateRequest): Promise<void> => {
 		return this.restService.post<void>('/workerGoals/create', goal)
+			.then(response => response.data);
+	};
+
+	public updateLimits = (limitsRequest: UpdateLimitsRequest, id: number): Promise<void> => {
+		return this.restService.put<void>(`/workers/updateWorkerLimits/${id}`, limitsRequest)
 			.then(response => response.data);
 	};
 }

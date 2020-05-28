@@ -4,6 +4,7 @@ import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
+import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
@@ -43,6 +44,12 @@ public class WorkerController {
 
     @Autowired
     private LearningDayMapper learningDayMapper;
+
+    @Autowired
+    private WorkerGoalService workerGoalService;
+
+    @Autowired
+    private TopicMapper topicMapper;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkers() {
@@ -119,6 +126,9 @@ public class WorkerController {
                     .map(learningDayMapper::toDTO)
                     .collect(Collectors.toList())
             );
+            workerDTO.setGoals(worker.get().getGoals().stream()
+                    .map(goal -> topicMapper.toReturnDto(workerGoalService.getWorkerGoal(goal.getId()).get().getTopic()))
+                    .collect(Collectors.toList()));
 
             workerDTO.setManager(workerMapper.toGetDTOManagerDTO(worker.get().getWorkingTeam().getManager()));
             workerDTO.getManager().setEmail(worker.get().getWorkingTeam().getManager().getUser().getEmail());

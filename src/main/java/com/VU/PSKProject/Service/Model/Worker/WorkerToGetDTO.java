@@ -2,7 +2,8 @@ package com.VU.PSKProject.Service.Model.Worker;
 
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Service.Model.RoleDTO;
-import com.opencsv.bean.CsvIgnore;
+import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
+import com.VU.PSKProject.Service.Model.WorkerGoalDTOtoGet;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,5 +30,5 @@ public class WorkerToGetDTO {
     private WorkerToGetDTOManagerDTO manager;
 
     private List<LearningDayDTO> learningDays;
-    private List<WorkerGoalDTO> goals;
+    private List<TopicToReturnDTO> goals;
 }
