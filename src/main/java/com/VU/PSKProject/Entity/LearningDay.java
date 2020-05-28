@@ -49,4 +49,6 @@ public class LearningDay implements Comparable<LearningDay> {
         this.dateTimeAt = dateTimeAt;
         this.topic = topic;
     }
+    @Version
+    private int version;
 }

@@ -6,17 +6,16 @@ import com.VU.PSKProject.Service.Model.Team.*;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.UserService;
-import com.VU.PSKProject.Service.WorkerGoalService;
 import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,25 +36,26 @@ public class TeamController {
     private UserService userService;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<TeamToGetDTO>> getTeams(){
-        List<Team> teams = teamService.getAllTeams();
-        List<TeamToGetDTO> teamDTOS = new ArrayList<>();
-        for (Team t: teams) {
-            TeamToGetDTO teamDTO = teamMapper.toDto(t);
-            teamDTOS.add(teamDTO);
-        }
-        return ResponseEntity.ok(teamDTOS);
+    public ResponseEntity<List<TeamToGetDTO>> getTeams(Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok(teamService.getAllTeams());
     }
 
     @GetMapping("/getByTopic/{id}")
     public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopic(@PathVariable Long id, Principal principal){
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         List<TeamToGetDTO> teamDTOS = teamService.getTeamsByTopicId(id, user).stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
     @GetMapping("/getByTopicIds/{ids}")
     public ResponseEntity<List<TeamToGetDTO>> getTeamsByTopics(@PathVariable List<Long> ids, Principal principal){
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         List<TeamToGetDTO> teamDTOS = teamService.getTeamsByTopicIds(ids, user).stream().map(teamMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(teamDTOS);
     }
@@ -65,22 +65,25 @@ public class TeamController {
                                                                     @PathVariable List<Long> teamIds,
                                                                     Principal principal){
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(teamService.getTeamsCountDTOByTopics(topicIds,teamIds, user));
     }
 
-    @GetMapping("/exportTeamsCountByTopics/{teamIds}/{topicIds}/{managerId}")
+    @GetMapping("/exportTeamsCountByTopics/{teamIds}/{topicIds}")
     public void exportCSV(@PathVariable List<Long> topicIds,
                           @PathVariable List<Long> teamIds,
-                          @PathVariable Long managerId,
                           HttpServletResponse response, Principal principal)throws Exception{
         UserDTO user = userService.getUserByEmail(principal.getName());
         List<TeamCountDTO> teams = teamService.getTeamsCountDTOByTopics(topicIds, teamIds, user);
         teamService.exportToCSV(teams, response);
-
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<TeamToGetDTO> getTeam(@PathVariable Long id){
+    public ResponseEntity<TeamToGetDTO> getTeam(@PathVariable Long id, Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        if(!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         Optional<Team> team = teamService.getTeam(id);
         if(team.isPresent()){
             TeamToGetDTO teamDTO = teamMapper.toDto(team.get());
@@ -97,7 +100,7 @@ public class TeamController {
     public void createTeam(@RequestBody TeamToCreateDTO teamDto){
         Team team = teamMapper.fromDTO(teamDto);
 
-        workerService.getWorker(team.getManager().getId()).ifPresent(w -> {
+        workerService.getWorker(teamDto.getManagerId()).ifPresent(w -> {
             w.setManagedTeam(team);
             teamService.createTeam(team);
         });

@@ -11,6 +11,7 @@ import com.VU.PSKProject.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OptimisticLockException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -73,11 +74,29 @@ public class LearningDayService {
         learningDayRepository.save(learningDay);
     }
 
-    public void updateLearningDay(LearningDay learningDay, Long learningDayId, UserDTO user) {
+    public void updateLearningDay(
+            LearningDayToCreateDTO learningDayToUpdate,
+            Long learningDayId,
+            UserDTO user
+    ) {
         Worker worker = workerService.getWorkerByUserId(user.getId());
-        checkWorkerAvailability(worker, learningDay);
+        List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
+        if (learningDays.stream().noneMatch(l -> l.getId().equals(learningDayId))) {
+            throw new LearningDayException("Worker has no such learning day");
+        }
+
+        LearningDay learningDay = getLearningDayById(learningDayId);
+        learningDay.setTopic(topicService.getTopic(learningDayToUpdate.getTopic())
+                .orElseThrow(() -> new LearningDayException("Could not find topic")));
+        PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay);
         learningDay.setId(learningDayId);
-        learningDayRepository.save(learningDay);
+        try{
+            learningDayRepository.save(learningDay);
+        }
+        catch (OptimisticLockException e){
+            throw new LearningDayException("This was recently modified.");
+        }
+
     }
 
     public Optional<LearningDay> getLearningDayById(Long id)
