@@ -23,7 +23,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { Authority } from '../models/authority';
 import { RegisterPage } from '../pages/public/register';
-import {WorkingTeamView} from "../pages/private/working-team-view";
+import { WorkingTeamView } from '../pages/private/working-team-view';
 
 const Routes: React.FunctionComponent<{}> = () => {
 	const user = useSelector((state: RootState) => state.user);
@@ -45,7 +45,7 @@ const Routes: React.FunctionComponent<{}> = () => {
 				component={ProfileView}
 			/>
 			<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`} component={TeamCalendarView}/>
-			<Route exact path={`/register`} component={RegisterPage}/>
+			<Route exact path={'/register'} component={RegisterPage}/>
 			{/*ROUTES REQUIRE LEAD AUTHORITY*/}
 			{user.authority === Authority.LEAD ?
 				<Route exact path={`/${KEY_TEAMS}/${KEY_INFO}`} component={InfoView}/> : null}
