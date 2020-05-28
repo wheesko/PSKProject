@@ -17,4 +17,5 @@ public class LearningDayDTO {
     private Timestamp dateTimeAt;
     private LearningDayAssigneeDTO assignee;
     private TopicDTO topic;
+    private boolean learned;
 }

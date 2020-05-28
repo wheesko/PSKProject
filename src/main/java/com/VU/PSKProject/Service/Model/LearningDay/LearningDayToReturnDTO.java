@@ -18,4 +18,5 @@ public class LearningDayToReturnDTO {
     private Timestamp dateTimeAt;
     private WorkerDTO assignee;
     private TopicToReturnDTO topic;
+    private boolean learned;
 }

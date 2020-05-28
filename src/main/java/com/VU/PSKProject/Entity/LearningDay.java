@@ -22,6 +22,8 @@ public class LearningDay implements Comparable<LearningDay> {
 
     private String comment;
 
+    private boolean learned;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Timestamp dateTimeAt;
 

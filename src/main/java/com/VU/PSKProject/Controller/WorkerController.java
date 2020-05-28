@@ -106,7 +106,6 @@ public class WorkerController {
             WorkerToGetDTOStripped workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
 
-            //TODO: check if it's really our worker
             if(workerService.checkWorkerLeadRelationship(workerService.getWorkerByUserId(user.getId()), worker.get()))
                 return ResponseEntity.ok(workerDTO);
             else
