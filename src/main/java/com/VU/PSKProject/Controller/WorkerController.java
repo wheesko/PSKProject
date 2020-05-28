@@ -119,7 +119,6 @@ public class WorkerController {
             headers.add("Message", "Worker with id " + id + " could not be found");
             return ResponseEntity.notFound().headers(headers).build();
         }
-        return workerService.getWorkerById(id, user);
     }
 
     @PostMapping("/create")
