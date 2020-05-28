@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.OptimisticLockException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -71,7 +73,7 @@ public class LearningDayService {
         learningDay.setTopic(topic);
         learningDay.setLearned(false);
 
-        checkWorkerAvailability(worker, learningDay);
+        checkWorkerAvailability(worker, learningDay, false);
         learningDayRepository.save(learningDay);
     }
 
@@ -88,15 +90,23 @@ public class LearningDayService {
 
         Optional<LearningDay> learningDay = getLearningDayById(learningDayId);
         if(learningDay.isPresent()) {
+            SimpleDateFormat smf = new SimpleDateFormat("yyyyMMdd");
+
+            Timestamp oldDate = learningDay.get().getDateTimeAt();
+
             learningDay.get().setTopic(topicService.getTopic(learningDayToUpdate.getTopic())
                     .orElseThrow(() -> new LearningDayException("Could not find topic")));
-            PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay);
+            PropertyUtils.customCopyProperties(learningDayToUpdate, learningDay.get());
             learningDay.get().setId(learningDayId);
             try {
+                if(!smf.format(oldDate).equals(smf.format(learningDay.get().getDateTimeAt())))
+                    checkWorkerAvailability(worker, learningDay.get(), true);
                 learningDayRepository.save(learningDay.get());
             } catch (OptimisticLockException e) {
                 throw new LearningDayException("This was recently modified.");
             }
+        }else{
+            throw new LearningDayException("Could not find such learning day");
         }
 
     }
@@ -156,7 +166,7 @@ public class LearningDayService {
         }
     }
 
-    private void checkWorkerAvailability(Worker worker, LearningDay learningDay) {
+    private void checkWorkerAvailability(Worker worker, LearningDay learningDay, boolean sameDay) {
         List<LearningDay> learningDays = getAllLearningDaysByWorkerId(worker.getId());
         Collections.sort(learningDays);
         List<LocalDateTime> localDates = new ArrayList<>();
@@ -164,7 +174,7 @@ public class LearningDayService {
         {
             localDates.add(day.getDateTimeAt().toLocalDateTime());
         }
-        int cons = countConsecutiveDays(localDates, learningDay.getDateTimeAt().toLocalDateTime());
+        int cons = countConsecutiveDays(localDates, learningDay.getDateTimeAt().toLocalDateTime(), sameDay);
 
         if(cons == -1)
             throw new LearningDayException("This day is already taken");
@@ -178,9 +188,11 @@ public class LearningDayService {
              throw new LearningDayException("Too many learning days in a quarter!");
     }
 
-    private int countConsecutiveDays(List<LocalDateTime> dateList, LocalDateTime today)
+    private int countConsecutiveDays(List<LocalDateTime> dateList, LocalDateTime today, boolean sameDay)
     {
-        dateList.add(today);
+        if(!sameDay)
+            dateList.add(today);
+
         Collections.sort(dateList);
 
         int count = 0;
