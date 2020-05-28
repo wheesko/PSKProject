@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
+
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
@@ -30,8 +31,10 @@ public class WorkerController {
     @Autowired
     private UserService userService;
 
+
     @Autowired
     private WorkerMapper workerMapper;
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkers() {
@@ -94,28 +97,13 @@ public class WorkerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<WorkerToGetDTOStripped> getWorker(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
 
         if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        Optional<Worker> worker = workerService.getWorker(id);
-        if(worker.isPresent())
-        {
-            WorkerToGetDTOStripped workerDTO = workerMapper.toGetDTO(worker.get());
-            workerDTO.setEmail(worker.get().getUser().getEmail());
-
-            if(workerService.checkWorkerLeadRelationship(workerService.getWorkerByUserId(user.getId()), worker.get()))
-                return ResponseEntity.ok(workerDTO);
-            else
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        else {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Message", "Worker with id " + id + " could not be found");
-            return ResponseEntity.notFound().headers(headers).build();
-        }
+        return workerService.getWorkerById(id, user);
     }
 
     @PostMapping("/create")
