@@ -24,6 +24,13 @@ public class TimeLogger implements LearningTreeService {
 
     @Override
     public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId){
-        return delegate.getAllWorkerCoveredTopics(workerId);
+        long startTime = System.nanoTime();
+        List<CoveredTopicDTO> coveredTopicDTOS = delegate.getAllWorkerCoveredTopics(workerId);
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime) / 1000000;
+
+        System.out.println("Getting worker covered topics tree took " + duration + " ms");
+        return coveredTopicDTOS;
     }
 }
