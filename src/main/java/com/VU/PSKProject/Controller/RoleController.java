@@ -2,9 +2,11 @@ package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.Role;
 import com.VU.PSKProject.Service.Model.RoleDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTOStripped;
 import com.VU.PSKProject.Service.RoleService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +19,9 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping("/getAll")
-    public List<Role> getRoles() {
-        return roleService.getAllRoles();
+    public ResponseEntity<List<RoleDTO>> getRoles() {
+        List<RoleDTO> roleDTOS = roleService.getAllRoles();
+        return ResponseEntity.ok(roleDTOS);
     }
 
     @GetMapping("/get/{id}")
