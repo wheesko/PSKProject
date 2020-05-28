@@ -39,7 +39,7 @@ public class Team {
     @JsonIgnore
     private List<Worker> workers;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "team")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<TeamGoal> goals;
     @Version
