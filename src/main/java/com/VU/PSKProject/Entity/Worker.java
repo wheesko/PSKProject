@@ -58,11 +58,11 @@ public class Worker {
 
     private int consecutiveLearningDayLimit;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<LearningDay> learningDays = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "worker")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<WorkerGoal> goals = new ArrayList<>();
 

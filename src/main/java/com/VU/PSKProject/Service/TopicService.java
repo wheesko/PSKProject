@@ -4,7 +4,6 @@ import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TopicRepository;
-import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
@@ -81,7 +80,7 @@ public class TopicService {
         return topics;
     }
 
-    public List<Topic> getWorkerTopicsAndGoals(Long workerId, String time){
+    public List<Topic> getWorkerTopicsAndGoals(Long workerId, EventDate.eventDate time){
         List<Topic> topics = null;
         if(time.equals(EventDate.eventDate.PAST))
             topics = learningDayService.getTopicsByWorkerPast(workerId);
@@ -97,7 +96,7 @@ public class TopicService {
 
         List<Worker> workers = workerService.findByWorkingTeamId(manager.getManagedTeam().getId());
         for (Worker worker : workers) {
-            List<Topic> topics = getWorkerTopicsAndGoals(worker.getId(), "PAST");
+            List<Topic> topics = getWorkerTopicsAndGoals(worker.getId(), EventDate.eventDate.PAST);
 
             WorkerTopicsDTO workerTopicsDTO = new WorkerTopicsDTO
                     (worker.getId(), worker.getName(), worker.getSurname(), manager.getId());
@@ -105,7 +104,7 @@ public class TopicService {
                 if (!workerTopicsDTO.getTopicsPast().contains(topic.getName()))
                     workerTopicsDTO.setTopicPast(topic.getName());
             }
-            topics = getWorkerTopicsAndGoals(worker.getId(), "FUTURE");
+            topics = getWorkerTopicsAndGoals(worker.getId(), EventDate.eventDate.FUTURE);
             for (Topic topic : topics) {
                 if (!workerTopicsDTO.getTopicsFuture().contains(topic.getName()))
                     workerTopicsDTO.setTopicFuture(topic.getName());

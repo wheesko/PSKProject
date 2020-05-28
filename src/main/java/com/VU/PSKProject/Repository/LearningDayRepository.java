@@ -5,6 +5,7 @@ import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
-public interface LearningDayRepository extends JpaRepository<LearningDay, Long> {
+public interface LearningDayRepository extends JpaRepository<LearningDay, Long>, CrudRepository<LearningDay, Long> {
     List<LearningDay> findAllByAssigneeId(Long workerId);
 
     List<LearningDay> findAllByDateTimeAtBetweenAndAssigneeId(Timestamp dateFrom, Timestamp dateTo, Long workerId);

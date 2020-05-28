@@ -1,8 +1,6 @@
 package com.VU.PSKProject.Service;
 
-import com.VU.PSKProject.Entity.User;
-import com.VU.PSKProject.Entity.UserAuthority;
-import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Entity.*;
 import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.Exception.WorkerException;
@@ -10,10 +8,7 @@ import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
 import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
-import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Service.Model.Worker.*;
 import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -136,28 +131,22 @@ public class WorkerService {
         }
         return workers;
     }
-    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager){
-        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+    public List<WorkerToGetDTOStripped> extractByManager(List<Worker> workers, Worker manager) {
+        List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
 
-        for (Worker w: workers) {
-            if(w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())){
-                WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
-                workerDTO.setEmail(w.getUser().getEmail());
-                workerDTO.setManagerId(manager.getId());
-                workerDTOS.add(workerDTO);
+        for (Worker w : workers) {
+            if (w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())) {
+                workerDTOS.add(workerMapper.toDTOStripped(w));
             }
         }
         return workerDTOS;
     }
 
-    public List<WorkerToGetDTO> retrieveAllWorkers() {
+    public List<WorkerToGetDTOStripped> retrieveAllWorkers() {
         List<Worker> workers = getAllWorkers();
-        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
         for (Worker w: workers) {
-            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
-            workerDTO.setEmail(w.getUser().getEmail());
-            workerDTO.setManagerId(teamService.getTeam(workerDTO.getWorkingTeam().getId()).get().getManager().getId());
-            workerDTOS.add(workerDTO);
+            workerDTOS.add(workerMapper.toDTOStripped(w));
         }
         return workerDTOS;
     }

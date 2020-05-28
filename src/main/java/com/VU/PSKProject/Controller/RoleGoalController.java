@@ -77,12 +77,6 @@ public class RoleGoalController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public void updateRoleGoal(@RequestBody RoleGoalDTO roleGoalDto, @PathVariable Long id){
-        RoleGoal roleGoal = new RoleGoal();
-        PropertyUtils.customCopyProperties(roleGoalDto, roleGoal);
-        roleGoalService.updateRoleGoal(id, roleGoal);
-    }
     @DeleteMapping("/delete/{id}")
     public void deleteRoleGoal(@PathVariable Long id){
         roleGoalService.deleteRoleGoal(id);

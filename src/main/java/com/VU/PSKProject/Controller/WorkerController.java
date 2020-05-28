@@ -5,11 +5,7 @@ import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
-import com.VU.PSKProject.Service.Model.Worker.UserToRegisterDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToCreateDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.VU.PSKProject.Service.Model.Worker.*;
 import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +34,12 @@ public class WorkerController {
     private WorkerMapper workerMapper;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
-        List<WorkerToGetDTO> workerDTOS = workerService.retrieveAllWorkers();
+    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkers() {
+        List<WorkerToGetDTOStripped> workerDTOS = workerService.retrieveAllWorkers();
         return ResponseEntity.ok(workerDTOS);
     }
     @GetMapping("/getByTopic/{topicId}")
-    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
+    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         if(!userService.checkIfManager(user))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -51,7 +47,7 @@ public class WorkerController {
                 workerService.getWorkerByUserId(user.getId())));
     }
     @GetMapping("/getByTopicIds/{topicIds}/")
-    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
+    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         if(!userService.checkIfManager(user))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -98,7 +94,7 @@ public class WorkerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<WorkerToGetDTOStripped> getWorker(@PathVariable Long id, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
 
         if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
@@ -107,7 +103,7 @@ public class WorkerController {
         Optional<Worker> worker = workerService.getWorker(id);
         if(worker.isPresent())
         {
-            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
+            WorkerToGetDTOStripped workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
 
             //TODO: check if it's really our worker
@@ -160,15 +156,15 @@ public class WorkerController {
     }
 
     @GetMapping("managedTeams/{id}")
-    public ResponseEntity<WorkerToGetDTO> getWorkerByManagedTeam(@PathVariable Long id) {
+    public ResponseEntity<WorkerToGetDTOStripped> getWorkerByManagedTeam(@PathVariable Long id) {
         Optional<Worker> worker = workerService.findByManagedTeamId(id);
         return worker.map(value -> ResponseEntity.ok(workerMapper.toGetDTO(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("workingTeams/{id}")
-    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByWorkingTeam(@PathVariable Long id) {
+    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByWorkingTeam(@PathVariable Long id) {
         List<Worker> workers = workerService.findByWorkingTeamId(id);
-        List<WorkerToGetDTO> workersToGet = new ArrayList<>();
+        List<WorkerToGetDTOStripped> workersToGet = new ArrayList<>();
         for (Worker w : workers) {
             workersToGet.add(workerMapper.toGetDTO(w));
         }

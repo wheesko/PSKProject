@@ -77,12 +77,6 @@ public class TeamGoalController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public void updateTeamGoal(@RequestBody TeamGoalDTO teamGoalDto, @PathVariable Long id){
-        TeamGoal teamGoal = new TeamGoal();
-        PropertyUtils.customCopyProperties(teamGoalDto, teamGoal);
-        teamGoalService.updateTeamGoal(id, teamGoal);
-    }
     @DeleteMapping("/delete/{id}")
     public void deleteTeamGoal(@PathVariable Long id){
         teamGoalService.deleteTeamGoal(id);
