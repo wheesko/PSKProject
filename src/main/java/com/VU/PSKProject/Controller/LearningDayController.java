@@ -7,6 +7,7 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.UserService;
+import com.VU.PSKProject.Service.WorkerService;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,6 @@ public class LearningDayController {
 
     @Autowired
     private UserService userService;
-
 
     @GetMapping("/get/{workerId}")
     public List<LearningDayToReturnDTO> getAllLearningEventsByWorkerId(@PathVariable Long workerId) {
@@ -70,6 +70,16 @@ public class LearningDayController {
 
         learningDayService.createLearningDay(learningDayToCreate, user);
         return ResponseEntity.ok("Learning Day has been created successfully!");
+    }
+
+    @PutMapping("/setLearned/{id}")
+    public ResponseEntity<String> setLearningDayAsLearned(@PathVariable Long id, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        if(learningDayService.setLearningDayAsLearned(user, id)){
+            return ResponseEntity.ok("Learning day successfully marked as done!");
+        }
+        else
+            return ResponseEntity.badRequest().body("Could not mark learning day as done!");
     }
 
 

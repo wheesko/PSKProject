@@ -1,9 +1,6 @@
 package com.VU.PSKProject.Service;
 
-import com.VU.PSKProject.Entity.LearningDay;
-import com.VU.PSKProject.Entity.Team;
-import com.VU.PSKProject.Entity.Topic;
-import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Entity.*;
 import com.VU.PSKProject.Repository.LearningDayRepository;
 import com.VU.PSKProject.Service.Exception.LearningDayException;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
@@ -11,7 +8,6 @@ import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Utils.DateUtils;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +67,7 @@ public class LearningDayService {
 
         learningDay.setAssignee(worker);
         learningDay.setTopic(topic);
+        learningDay.setLearned(false);
 
         checkWorkerAvailability(worker, learningDay);
         learningDayRepository.save(learningDay);
@@ -83,9 +80,9 @@ public class LearningDayService {
         learningDayRepository.save(learningDay);
     }
 
-    public LearningDay getLearningDayById(Long id)
+    public Optional<LearningDay> getLearningDayById(Long id)
     {
-        return learningDayRepository.getOne(id);
+        return learningDayRepository.findById(id);
     }
 
     public void deleteLearningDay(Long id, UserDTO user) {
@@ -222,5 +219,18 @@ public class LearningDayService {
     }
     public List<Worker> getAssigneesByTopicIdsFuture(List<Long> topicIds){
         return learningDayRepository.findAssigneesByTopicIdsFuture(topicIds);
+    }
+
+    public boolean setLearningDayAsLearned(UserDTO user, Long id) {
+        Optional<LearningDay> learningDay = getLearningDayById(id);
+        if(!learningDay.isPresent())
+            return false;
+        if(!learningDay.get().getAssignee().equals(workerService.getWorkerByUserId(user.getId())))
+            return false;
+        else{
+            learningDay.get().setLearned(true);
+            learningDayRepository.save(learningDay.get());
+            return true;
+        }
     }
 }
