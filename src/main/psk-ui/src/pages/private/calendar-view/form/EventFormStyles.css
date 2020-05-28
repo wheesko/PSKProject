@@ -21,3 +21,21 @@
     text-align: right;
     margin-bottom: 5px;
 }
+
+.topic-description-text {
+    height: 32px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    width: 100%;
+    display: inline-block;
+}
+
+.topic-description-text-first {
+    text-align: right;
+    width: 100%;
+    display: block;
+    padding-right: 7px;
+    color: rgba(0, 0, 0, 0.85) !important;
+    min-height: 32px;
+    font-size: 14px !important;
+}

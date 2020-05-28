@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Card, DatePicker, Form, Input, Select, Spin } from 'antd';
+import { Button, Card, DatePicker, Form, Input, Select, Spin, Typography, Row, Col } from 'antd';
 import {
 	ADD_LEARNING_EVENT_COMMENT,
 	ADD_NEW_LEARNING_EVENT,
@@ -37,9 +37,12 @@ const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEven
 	const [form] = Form.useForm();
 	const [topics, setTopics] = useState<LearningTopic[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
-	
+	const [selectedTopic, setSelectedTopic] = useState<LearningTopic>();
+	const [height, setHeight] = useState<number>(32);
+
 	const onTopicChange = (value: number) => {
 		form.setFieldsValue({ topic: value });
+		setSelectedTopic(topics[topics.findIndex(topic => topic.id === value)]);
 	};
 	
 	const {
@@ -91,23 +94,47 @@ const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEven
 							name="learningEventTopic"
 							rules={[{ required: true, message: INPUT_EVENT_NAME }]}
 						>
-							<Select onChange={onTopicChange}>
+							<Select
+								onChange={onTopicChange}
+								showSearch
+								filterOption={(input, option) =>
+									option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+								}
+							>
 								{topics.map(topic => {
 									return <Select.Option key={topic.id} value={topic.id}>{topic.name}</Select.Option>;
 								})}
 							</Select>
 						</Form.Item>
+						<Typography.Paragraph>
+							{selectedTopic !== null && selectedTopic !== undefined && selectedTopic.description
+								? <Row>
+									<Col xs={24} sm={8}>
+										<Typography.Text className="topic-description-text-first">
+											Topic description:
+										</Typography.Text>
+									</Col>
+									<Col xs={24} sm={16}>
+										<Typography.Text className="topic-description-text">
+											{topics[topics.indexOf(selectedTopic)].description}
+										</Typography.Text>
+									</Col>
+								</Row>
+								: null
+							}
+						</Typography.Paragraph>
 						<Form.Item label={'Date of event'} name="learningEventDate">
 							<DatePicker
 								placeholder={'Select date'}
 								allowClear
 							/>
 						</Form.Item>
-						<Form.Item label={COMMENT} name="learningEventComment">
+						<Form.Item label={COMMENT} name="learningEventComment" style={{ height: height }}>
 							<Input.TextArea
 								placeholder={ADD_LEARNING_EVENT_COMMENT}
 								allowClear
-								autoSize={{ minRows: 2, maxRows: 2 }}
+								onResize={({ width, height }) => setHeight(height)}
+								autoSize={{ maxRows: 10 }}
 							/>
 						</Form.Item>
 						<Form.Item

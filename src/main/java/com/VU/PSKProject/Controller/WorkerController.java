@@ -48,14 +48,12 @@ public class WorkerController {
         List<WorkerToGetDTO> workerDTOS = workerService.retrieveAllWorkers();
         return ResponseEntity.ok(workerDTOS);
     }
-
     @GetMapping("/getByTopic/{topicId}")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         return ResponseEntity.ok(workerService.extractByManager(workerService.getWorkersByTopic(topicId),
                 workerService.getWorkerByUserId(user.getId())));
     }
-
     @GetMapping("/getByTopicIds/{topicIds}/")
     public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
@@ -64,10 +62,10 @@ public class WorkerController {
     }
 
     @GetMapping("/exportTopicAndManager/{topicId}/{managerId}")
-    public void exportCSV(@PathVariable Long topicId, @PathVariable Long managerId, HttpServletResponse response) throws Exception {
+    public void exportCSV(@PathVariable Long topicId, @PathVariable Long managerId, HttpServletResponse response) throws Exception{
         Optional<Worker> manager = workerService.getWorker(managerId);
         List<Worker> workers = workerService.getWorkersByTopic(topicId);
-        manager.ifPresent(m -> {
+        manager.ifPresent(m ->{
             List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
             try {
                 workerService.exportToCSV(workerToExportDTOS, response);
@@ -78,10 +76,10 @@ public class WorkerController {
     }
 
     @GetMapping("/exportTopicsAndManager/{topicIds}/{managerId}")
-    public void exportCSV(@PathVariable List<Long> topicIds, @PathVariable Long managerId, HttpServletResponse response) {
+    public void exportCSV(@PathVariable List<Long> topicIds, @PathVariable Long managerId, HttpServletResponse response){
         Optional<Worker> manager = workerService.getWorker(managerId);
         List<Worker> workers = workerService.getWorkersByIds(topicIds);
-        manager.ifPresent(m -> {
+        manager.ifPresent(m ->{
             List<WorkerToExportDTO> workerToExportDTOS = workerMapper.toExportList(workerService.extractByManager(workers, m));
             try {
                 workerService.exportToCSV(workerToExportDTOS, response);
@@ -102,13 +100,20 @@ public class WorkerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id) {
+    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id, Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+
+        if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
         Optional<Worker> worker = workerService.getWorker(id);
-        if (worker.isPresent()) {
+        if(worker.isPresent())
+        {
             WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
             return ResponseEntity.ok(workerDTO);
-        } else {
+        }
+        else {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Message", "Worker with id " + id + " could not be found");
             return ResponseEntity.notFound().headers(headers).build();
@@ -119,7 +124,7 @@ public class WorkerController {
     public ResponseEntity<String> createWorker(@RequestBody WorkerToCreateDTO workerDto, Principal principal) {
         ResponseEntity<String> response = workerService.validateWorkerData(workerDto);
 
-        if (response.getStatusCode().isError())
+        if(response.getStatusCode().isError())
             return response;
 
         return workerService.createFreshmanWorker(workerDto, principal);
@@ -128,15 +133,17 @@ public class WorkerController {
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateWorker(@RequestBody WorkerDTO workerDto, @PathVariable Long id) {
         Optional<Worker> worker = workerService.getWorker(id);
-        if (worker.isPresent()) {
+        if(worker.isPresent())
+        {
             PropertyUtils.customCopyProperties(workerDto, worker.get());
 
-            if (workerDto.getWorkingTeam().getId().equals(workerDto.getManagedTeam().getId()))
+            if(workerDto.getWorkingTeam().getId().equals(workerDto.getManagedTeam().getId()))
                 return ResponseEntity.badRequest().body("managed and working ids can't be same!");
 
             workerService.updateWorker(id, worker.get());
             return ResponseEntity.ok("Worker updated successfully");
-        } else {
+        }
+        else {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Message", "Worker with id " + id + " could not be found");
             return ResponseEntity.notFound().headers(headers).build();
