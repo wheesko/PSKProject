@@ -36,7 +36,7 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 		}).catch((error) => {
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
-				message: 'Failed to Employees',
+				message: error.response.data.message !== null ? error.response.data.message : 'Failed to load employees',
 				description: error.toString()
 			});
 			setLoading(false);

@@ -13,4 +13,8 @@ public class WorkerWorkingTeamDTO {
         this.id = id;
         this.name = name;
     }
+
+    public WorkerWorkingTeamDTO() {
+
+    }
 }

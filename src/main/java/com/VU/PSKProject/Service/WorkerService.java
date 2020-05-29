@@ -100,7 +100,7 @@ public class WorkerService {
 
     public ResponseEntity<WorkerToGetDTO> getWorkerById(Long id, UserDTO user) {
         Optional<Worker> worker = getWorker(id);
-        if(worker.isPresent()) {
+        if (worker.isPresent()) {
             WorkerToGetDTO workerDTO = workerMapper.workerToGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
             workerDTO.setLearningDays(learningDayService.getAllLearningDaysByWorkerId(worker.get().getId()).stream()
@@ -115,13 +115,11 @@ public class WorkerService {
             workerDTO.getManager().setEmail(worker.get().getWorkingTeam().getManager().getUser().getEmail());
 
 
-
-            if(checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
+            if (checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
                 return ResponseEntity.ok(workerDTO);
             else
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        else {
+        } else {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Message", "Worker with id " + id + " could not be found");
             return ResponseEntity.notFound().headers(headers).build();
@@ -160,6 +158,8 @@ public class WorkerService {
 
     public List<WorkerToGetDTO> findEmployees(UserDTO userDTO) {
         Worker worker = getWorkerByUserId(userDTO.getId());
+        if (worker.getManagedTeam() == null)
+            throw new WorkerException("You have no managed team!");
         List<Worker> employees = workerRepository.findByWorkingTeamId(worker.getManagedTeam().getId());
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
         for (Worker w : employees) {
