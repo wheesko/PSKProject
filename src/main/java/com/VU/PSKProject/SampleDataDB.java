@@ -129,7 +129,7 @@ public class SampleDataDB {
 		topics.add(new Topic("Java is bad for your vision", topics.get(1), "description", null));
 		topics.add(new Topic("Thinking sharp using Java", topics.get(3), "description", null));*/
 
-        /*ArrayList<Topic> cppChildren = new ArrayList<>();
+        ArrayList<Topic> cppChildren = new ArrayList<>();
         gd = new Topic("Game development", null, "Intro to game dev", null);
         ge = new Topic("Game Engines", null, "Intro to game engines", null);
         cppChildren.add(gd);
@@ -156,7 +156,7 @@ public class SampleDataDB {
         topics.add(cs);
         topics.add(oop);
         topics.add(ads);
-        topics.add(c);*/
+        topics.add(c);
         topicRepository.saveAll(topics);
     }
     public void saveTeams(){
