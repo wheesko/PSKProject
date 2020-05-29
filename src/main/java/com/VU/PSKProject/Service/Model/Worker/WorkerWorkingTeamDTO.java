@@ -8,4 +8,11 @@ import lombok.Setter;
 public class WorkerWorkingTeamDTO {
     private Long id;
     private String name;
+
+    public WorkerWorkingTeamDTO(){}
+
+    public WorkerWorkingTeamDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

@@ -1,19 +1,31 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.Team;
+import com.VU.PSKProject.Entity.TeamGoal;
+import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Service.Model.Team.TeamGoalDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToUpdateDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToGetDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamToCreateDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class TeamMapper {
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private WorkerMapper workerMapper;
+    @Autowired
+    private TeamGoalMapper teamGoalMapper;
 
 
     public Team fromDTO(TeamToUpdateDTO teamToUpdateDTO) {
@@ -28,6 +40,21 @@ public class TeamMapper {
     }
 
     public TeamToGetDTO toDto(Team team) {
-        return modelMapper.map(team, TeamToGetDTO.class);
+        TeamToGetDTO teamToGetDTO = new TeamToGetDTO();
+        teamToGetDTO.setId(team.getId());
+        teamToGetDTO.setName(team.getName());
+        teamToGetDTO.setManagerId(workerMapper.toDTO(team.getManager()));
+        List<WorkerToGetDTO> workers = new ArrayList<>();
+        for (Worker w: team.getWorkers()) {
+            workers.add(workerMapper.toDTO(w));
+        }
+        teamToGetDTO.setWorkers(workers);
+
+        List<TeamGoalDTO> teamGoals = new ArrayList<>();
+        for (TeamGoal g: team.getGoals()) {
+            teamGoals.add(teamGoalMapper.toDto(g));
+        }
+        teamToGetDTO.setGoals(teamGoals);
+        return teamToGetDTO;
     }
 }

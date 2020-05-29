@@ -1,9 +1,11 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.WorkerGoal;
+import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerGoalDTO;
+import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Service.WorkerGoalService;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Service.WorkerService;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +24,23 @@ import java.util.Optional;
 public class  WorkerGoalController {
     @Autowired
     private WorkerGoalService workerGoalService;
+
     @Autowired
     private WorkerService workerService;
+
     @Autowired
     private TopicService topicService;
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/getOwn")
+    public ResponseEntity<List<TopicToReturnDTO>> getOwnGoals(Principal principal){
+        UserDTO user = userService.getUserByEmail(principal.getName());
+
+        return ResponseEntity.ok(workerGoalService.getWorkerGoalsByWorker(user));
+    }
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerGoalDTO>> getWorkerGoals(){

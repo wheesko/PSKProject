@@ -3,6 +3,7 @@ package com.VU.PSKProject.Controller;
 import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
+
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,16 +30,18 @@ public class WorkerController {
     @Autowired
     private UserService userService;
 
+
     @Autowired
     private WorkerMapper workerMapper;
 
+
     @GetMapping("/getAll")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkers() {
-        List<WorkerToGetDTOStripped> workerDTOS = workerService.retrieveAllWorkers();
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkers() {
+        List<WorkerToGetDTO> workerDTOS = workerService.retrieveAllWorkers();
         return ResponseEntity.ok(workerDTOS);
     }
     @GetMapping("/getByTopic/{topicId}")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopic(@PathVariable Long topicId, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         if(!userService.checkIfManager(user))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -47,7 +49,7 @@ public class WorkerController {
                 workerService.getWorkerByUserId(user.getId())));
     }
     @GetMapping("/getByTopicIds/{topicIds}/")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
+    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByTopicIds(@PathVariable List<Long> topicIds, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
         if(!userService.checkIfManager(user))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -94,28 +96,10 @@ public class WorkerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<WorkerToGetDTOStripped> getWorker(@PathVariable Long id, Principal principal) {
-        UserDTO user = userService.getUserByEmail(principal.getName());
+    public ResponseEntity<WorkerToGetDTO> getWorker(@PathVariable Long id, Principal principal) {
+        UserDTO userDTO = userService.getUserByEmail(principal.getName());
 
-        if(!user.getUserRole().equals(UserAuthority.LEAD.toString()))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
-        Optional<Worker> worker = workerService.getWorker(id);
-        if(worker.isPresent())
-        {
-            WorkerToGetDTOStripped workerDTO = workerMapper.toGetDTO(worker.get());
-            workerDTO.setEmail(worker.get().getUser().getEmail());
-
-            if(workerService.checkWorkerLeadRelationship(workerService.getWorkerByUserId(user.getId()), worker.get()))
-                return ResponseEntity.ok(workerDTO);
-            else
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        else {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Message", "Worker with id " + id + " could not be found");
-            return ResponseEntity.notFound().headers(headers).build();
-        }
+        return workerService.getWorkerById(id, userDTO);
     }
 
     @PostMapping("/create")
@@ -171,26 +155,26 @@ public class WorkerController {
         workerService.deleteWorker(id);
     }
 
-    @GetMapping("managedTeams/{id}")
-    public ResponseEntity<WorkerToGetDTOStripped> getWorkerByManagedTeam(@PathVariable Long id) {
-        Optional<Worker> worker = workerService.findByManagedTeamId(id);
-        return worker.map(value -> ResponseEntity.ok(workerMapper.toGetDTO(value))).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("getEmployees")
+    public ResponseEntity<List<WorkerToGetDTO>> getEmployees(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        // findEmployees returns workers that is in requested workers managed team
+        List<WorkerToGetDTO> employees = workerService.findEmployees(user);
+        return ResponseEntity.ok(employees);
     }
 
-    @GetMapping("workingTeams/{id}")
-    public ResponseEntity<List<WorkerToGetDTOStripped>> getWorkersByWorkingTeam(@PathVariable Long id) {
-        List<Worker> workers = workerService.findByWorkingTeamId(id);
-        List<WorkerToGetDTOStripped> workersToGet = new ArrayList<>();
-        for (Worker w : workers) {
-            workersToGet.add(workerMapper.toGetDTO(w));
-        }
+    @GetMapping("getColleagues")
+    public ResponseEntity<List<WorkerToGetDTO>> getColleagues(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
 
-        return ResponseEntity.ok(workersToGet);
+        // findColleagues returns workingTeam workers and current worker
+        List<WorkerToGetDTO> colleagues = workerService.findColleagues(user);
+        return ResponseEntity.ok(colleagues);
     }
 
     @PutMapping("/registerWorker")
     public ResponseEntity<UserToRegisterDTO> registerWorker(@RequestBody WorkerRegisterDTO workerRegisterDTO, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        return ResponseEntity.ok(workerService.registerWorker(user,workerRegisterDTO));
+        return ResponseEntity.ok(workerService.registerWorker(user, workerRegisterDTO));
     }
 }

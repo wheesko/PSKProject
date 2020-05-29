@@ -3,6 +3,7 @@ import { Role } from '../models/role';
 import { LearningEvent } from '../models/learningEvent';
 import { Authority } from '../models/authority';
 import { Employee } from '../models/employee';
+import { getRoleColor } from './roleColorPicker';
 
 export const roles: Role[] = [
 	{ title: 'Java developer', color: 'blue' },
@@ -34,7 +35,7 @@ export const workerList: Worker[] = [
 		id: 2,
 		name: 'Lukas',
 		surname: 'Michnevic',
-		role: roles.find((role => role.title === "Back-end engineer")),
+		role: roles.find((role => role.title === 'Back-end engineer')),
 		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
@@ -49,7 +50,7 @@ export const workerList: Worker[] = [
 		id: 3,
 		name: 'Vytautas',
 		surname: 'Rudys',
-		role: roles.find((role => role.title === "Back-end engineer")),
+		role: roles.find((role => role.title === 'Back-end engineer')),
 		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
@@ -75,50 +76,76 @@ export const workerList: Worker[] = [
 		icon: null,
 		authority: Authority.UNASSIGNED
 	}];
+export const psk123Team = { id: 1, name: 'PSK_123' };
 export const myEmployees: Employee[] = [
 	{
+		consecutiveLearningDayLimit: 5,
+		email: 'email1@mail.com',
+		goals: [],
 		id: 1,
-		name: 'Povilas Tamosauskas',
-		email: 'pt@psk123.com',
-		role: roles.find((role => role.title === "Front-end engineer"))!.title,
-		quarterConstraint: defaultQuarterConstraint,
-		team: 'PSK_123',
-		goals: [],
+		managedTeam: { id: 0, name: '' },
+		workingTeam: psk123Team,
+		managerId: 3,
+		name: 'Povilas',
+		quarterLearningDayLimit: 3,
+		role: { title: 'Front-end Engineer', color: getRoleColor('Front-end Engineer') },
+		surname: 'Tamosauskas',
+		team: psk123Team.name,
 	}, {
+		consecutiveLearningDayLimit: 5,
+		email: 'email2@mail.com',
+		goals: [],
+		managedTeam: { id: 0, name: '' },
+		workingTeam: psk123Team,
+		managerId: 3,
+		name: 'Lukas',
+		quarterLearningDayLimit: 3,
+		role: { title: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
+		surname: 'Michnevic',
+		team: psk123Team.name,
 		id: 2,
-		name: 'Lukas Michnevic',
-		email: 'lm@psk123.com',
-		role: roles.find((role => role.title === "Back-end engineer"))!.title,
-		quarterConstraint: defaultQuarterConstraint,
-		team: 'PSK_123',
-		goals: [],
 	},
 	{
+		consecutiveLearningDayLimit: 5,
+		email: 'email3@mail.com',
+		goals: [],
+		managedTeam: psk123Team,
+		workingTeam: psk123Team,
+		managerId: -1,
+		quarterLearningDayLimit: 3,
+		role: { title: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
+		surname: 'Rudys',
+		team: psk123Team.name,
 		id: 3,
-		name: 'Vytautas Rudys',
-		email: 'vr@psk123.com',
-		role: roles.find((role => role.title === "Back-end engineer"))!.title,
-		quarterConstraint: defaultQuarterConstraint,
-		team: 'PSK_123',
-		goals: [],
+		name: 'Vytautas',
 	},
 	{
+		consecutiveLearningDayLimit: 5,
+		email: 'email4@mail.com',
+		goals: [],
+		managedTeam: { id: 0, name:'' },
+		workingTeam: psk123Team,
+		managerId: -1,
+		quarterLearningDayLimit: 3,
+		role: { title: 'Database engineer', color: getRoleColor('Database engineer') },
+		surname: 'Dijokas',
+		team: psk123Team.name,
 		id: 4,
-		name: 'Karolis Dijokas',
-		email: 'kd@psk123.com',
-		role: roles.find((role => role.title === "Database engineer"))!.title,
-		quarterConstraint: defaultQuarterConstraint,
-		team: 'PSK_123',
-		goals: [],
+		name: 'Karolis',
 	},
 	{
-		id: 5,
-		name: 'Aurimas Golotylecas',
-		email: 'ag@psk123.com',
-		role: roles.find((role => role.title === "Back-end engineer"))!.title,
-		quarterConstraint: defaultQuarterConstraint,
-		team: 'PSK_123',
+		consecutiveLearningDayLimit: 5,
+		email: 'email5@mail.com',
 		goals: [],
+		managedTeam: { id: 0, name:'' },
+		workingTeam: psk123Team,
+		managerId: -1,
+		quarterLearningDayLimit: 3,
+		role: { title: 'Backend engineer', color: getRoleColor('Backend engineer') },
+		surname: 'Golotylecas',
+		team: psk123Team.name,
+		id: 5,
+		name: 'Aurimas',
 	}];
 
 export const learningEvents: LearningEvent[] = [
@@ -127,6 +154,7 @@ export const learningEvents: LearningEvent[] = [
 		name: 'Building apps with Redux',
 		description: 'Some very very cool description',
 		dateTimeAt: '',
+		learned: false,
 		topic: {
 			id: 0,
 			name: 'Web topic',
@@ -143,6 +171,8 @@ export const learningEvents: LearningEvent[] = [
 		name: 'JPA basics',
 		description: 'Some very very cool description',
 		dateTimeAt: '',
+		learned: false,
+
 		topic: {
 			id: 1,
 			name: 'Java topic',
@@ -159,6 +189,8 @@ export const learningEvents: LearningEvent[] = [
 		name: 'Automated testing',
 		description: 'Learning automated testing with selenium and webdriver',
 		dateTimeAt: '',
+		learned: false,
+
 		topic: {
 			id: 2,
 			name: 'Testing',

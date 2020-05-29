@@ -1,0 +1,28 @@
+.ant-card-body {
+    padding: 0 !important;
+}
+
+.user-info-card {
+    font-size: 14px;
+    padding: 24px !important;
+    text-align: left;
+}
+
+.table-card {
+    padding: 24px !important;
+    margin-top: 12px !important;
+    text-align: left;
+}
+
+.bolded-text {
+    font-weight: 500;
+}
+
+.manager-link {
+    padding: 0 !important;
+    height: fit-content !important;
+}
+
+.title {
+    text-align: left;
+}

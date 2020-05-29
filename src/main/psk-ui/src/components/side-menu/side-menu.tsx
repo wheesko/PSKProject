@@ -5,9 +5,8 @@ import { Menu } from 'antd';
 import {
 	CALENDAR_MENU_ITEM_NAME,
 	CREATE_NEW_TOPIC_MENU_ITEM_NAME,
-	INFO_MENU_ITEM_NAME,
-	MY_TEAM_CALENDAR_MENU_ITEM_NAME,
-	TEAM_MEMBERS_MENU_ITEM_NAME,
+	INFO_MENU_ITEM_NAME, MY_MANAGED_TEAM,
+	MY_TEAM_CALENDAR_MENU_ITEM_NAME, MY_WORKING_TEAM,
 	TEAMS_MENU_ITEM_NAME,
 	TOPIC_TREE_MENU_ITEM_NAME,
 	TOPICS_MENU_ITEM_NAME,
@@ -23,7 +22,7 @@ import {
 	KEY_PROFILE,
 	KEY_TEAMS,
 	KEY_TOPIC_TREE,
-	KEY_TOPICS
+	KEY_TOPICS, KEY_WORKING_TEAM
 } from '../../constants/routeKeyConstants';
 import {
 	CalendarOutlined,
@@ -82,7 +81,13 @@ const SideMenu: React.FunctionComponent<{}> = () => {
 				<Menu.Item key={KEY_MEMBERS}>
 					<Link to={`/${KEY_TEAMS}/${KEY_MEMBERS}`}>
 						<SolutionOutlined/>
-						<span className="nav-text">{TEAM_MEMBERS_MENU_ITEM_NAME}</span>
+						<span className="nav-text">{MY_MANAGED_TEAM}</span>
+					</Link>
+				</Menu.Item>
+				<Menu.Item key={KEY_WORKING_TEAM}>
+					<Link to={`/${KEY_TEAMS}/${KEY_WORKING_TEAM}`}>
+						<SolutionOutlined/>
+						<span className="nav-text">{MY_WORKING_TEAM}</span>
 					</Link>
 				</Menu.Item>
 

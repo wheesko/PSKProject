@@ -5,6 +5,11 @@ import com.VU.PSKProject.Entity.WorkerGoal;
 import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Repository.WorkerGoalRepository;
 import com.VU.PSKProject.Repository.WorkerRepository;
+import com.VU.PSKProject.Service.Mapper.TopicMapper;
+import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
+import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Service.Model.Worker.WorkerGoalDTO;
+import com.VU.PSKProject.Service.Model.WorkerGoalDTOtoGet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkerGoalService {
@@ -21,11 +27,22 @@ public class WorkerGoalService {
     private TopicRepository topicRepository;
     @Autowired
     private WorkerRepository workerRepository;
+    @Autowired
+    private WorkerRepository workerService;
+    @Autowired
+    private TopicMapper topicMapper;
 
     public List<WorkerGoal> getAllWorkerGoals() { return workerGoalRepository.findAll();
     }
 
     public void createWorkerGoal(WorkerGoal workerGoal) { workerGoalRepository.save(workerGoal);
+    }
+
+    public List<TopicToReturnDTO> getWorkerGoalsByWorker(UserDTO user) {
+        Optional<Worker> worker = workerService.findByUserId(user.getId());
+        return worker.get().getGoals().stream()
+                .map(goal -> topicMapper.toReturnDto(getWorkerGoal(goal.getId()).get().getTopic()))
+                .collect(Collectors.toList());
     }
 
     public void updateWorkerGoal(Long id, WorkerGoal workerGoal) {
@@ -63,6 +80,7 @@ public class WorkerGoalService {
         }
         return workers;
     }
+
     public boolean checkIfWorkerAndTopicExist(long workerId, Long topicId){
         if(topicRepository.existsById(topicId) && workerRepository.existsById(workerId))
             return true;

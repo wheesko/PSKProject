@@ -13,6 +13,7 @@ import notificationService, { NotificationType } from '../../../service/notifica
 import { PlusOutlined } from '@ant-design/icons';
 import { NewEventForm } from './form/AddEventForm';
 import { EditEventForm } from './form/EditEventForm';
+import learningDayService from '../../../api/learning-day-service';
 
 const { Title } = Typography;
 
@@ -71,7 +72,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				<ul className="events">
 					{getListData(value).map(item => (
 						<li key={item.id}>
-							<Tag color={'red'}>{item.topic.name}</Tag>
+							<Tag color={item.learned ? 'green' : 'red'}>{item.topic.name}</Tag>
 						</li>
 					))}
 				</ul>
@@ -218,9 +219,14 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				? <Button onClick={closeEditForm} type="primary">
 					Cancel
 				</Button>
-		  		: <Button onClick={openEditForm} type="primary">
-					Edit event
-				</Button>;
+		  		:<div>
+					<Button onClick={openEditForm} type="primary">
+						Edit event
+					</Button>
+					<Button className="learned-button" onClick={setTopicLearned} type="primary">
+						Mark as learned
+					</Button>
+				</div>;
 	}
 
  	function renderAddEventButton(): React.ReactNode {
@@ -265,6 +271,25 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				<NewEventForm onCreateDay={onCreateDay}/>
 			</Modal>
 		);
+	}
+
+	function setTopicLearned() {
+		setLoading(true);
+		learningDayService.markAsLearned(modalListData[0].id).then(() => {
+			notificationService.notify({
+				notificationType: NotificationType.SUCCESS,
+				message: 'Marked as completed'
+			});
+			setLoading(false);
+			onUpdateDay();
+		}).catch((error) => {
+			notificationService.notify({
+				notificationType: NotificationType.ERROR,
+				message: 'Could not mark event as completed',
+				description: error.toString()
+			});
+			setLoading(false);
+		});
 	}
 };
 

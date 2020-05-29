@@ -5,6 +5,8 @@ import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.CSVExporter.CSVExporter;
 import com.VU.PSKProject.Service.Exception.WorkerException;
 import com.VU.PSKProject.Service.MailerService.EmailServiceImpl;
+import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
+import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
@@ -14,6 +16,8 @@ import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkerService {
@@ -67,6 +72,15 @@ public class WorkerService {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private LearningDayMapper learningDayMapper;
+
+    @Autowired
+    private WorkerGoalService workerGoalService;
+
+    @Autowired
+    private TopicMapper topicMapper;
+
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
     }
@@ -82,6 +96,36 @@ public class WorkerService {
         if (worker.getConsecutiveLearningDayLimit() == 0)
             worker.setConsecutiveLearningDayLimit(Integer.parseInt(Objects.requireNonNull(env.getProperty("worker.defaultConsecutiveLearningDayLimit"))));
         workerRepository.save(worker);
+    }
+
+    public ResponseEntity<WorkerToGetDTO> getWorkerById(Long id, UserDTO user) {
+        Optional<Worker> worker = getWorker(id);
+        if(worker.isPresent()) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
+            workerDTO.setEmail(worker.get().getUser().getEmail());
+            workerDTO.setLearningDays(learningDayService.getAllLearningDaysByWorkerId(worker.get().getId()).stream()
+                    .map(learningDayMapper::toDTO)
+                    .collect(Collectors.toList())
+            );
+            workerDTO.setGoals(worker.get().getGoals().stream()
+                    .map(goal -> topicMapper.toReturnDto(workerGoalService.getWorkerGoal(goal.getId()).get().getTopic()))
+                    .collect(Collectors.toList()));
+
+            workerDTO.setManager(workerMapper.toGetDTOManagerDTO(worker.get().getWorkingTeam().getManager()));
+            workerDTO.getManager().setEmail(worker.get().getWorkingTeam().getManager().getUser().getEmail());
+
+
+
+            if(checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
+                return ResponseEntity.ok(workerDTO);
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Message", "Worker with id " + id + " could not be found");
+            return ResponseEntity.notFound().headers(headers).build();
+        }
     }
 
     public void updateWorker(Long id, Worker worker) {
@@ -101,8 +145,32 @@ public class WorkerService {
             workerRepository.deleteById(id);
     }
 
-    public Optional<Worker> findByManagedTeamId(Long id) {
-        return workerRepository.findByManagedTeamId(id);
+    public List<WorkerToGetDTO> findColleagues(UserDTO userDTO) {
+        Worker worker = getWorkerByUserId(userDTO.getId());
+        List<Worker> colleagues = workerRepository.findAllByWorkingTeamId(worker.getWorkingTeam().getId());
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        for (Worker w : colleagues) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(worker.getWorkingTeam().getManager().getId());
+            workerDTOS.add(workerDTO);
+        }
+        return workerDTOS;
+    }
+
+    public List<WorkerToGetDTO> findEmployees(UserDTO userDTO) {
+        Worker worker = getWorkerByUserId(userDTO.getId());
+        if (worker.getManagedTeam() == null)
+            throw new WorkerException("You have no managed team!");
+        List<Worker> employees = workerRepository.findByWorkingTeamId(worker.getManagedTeam().getId());
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        for (Worker w : employees) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(worker.getWorkingTeam().getManager().getId());
+            workerDTOS.add(workerDTO);
+        }
+        return workerDTOS;
     }
 
     public List<Worker> findByWorkingTeamId(Long id) {
@@ -141,22 +209,22 @@ public class WorkerService {
         return workers;
     }
 
-    public List<WorkerToGetDTOStripped> extractByManager(List<Worker> workers, Worker manager) {
-        List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
+    public List<WorkerToGetDTO> extractByManager(List<Worker> workers, Worker manager) {
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
 
         for (Worker w : workers) {
             if (w.getWorkingTeam().getId().equals(manager.getManagedTeam().getId())) {
-                workerDTOS.add(workerMapper.toDTOStripped(w));
+                workerDTOS.add(workerMapper.toDTO(w));
             }
         }
         return workerDTOS;
     }
 
-    public List<WorkerToGetDTOStripped> retrieveAllWorkers() {
+    public List<WorkerToGetDTO> retrieveAllWorkers() {
         List<Worker> workers = getAllWorkers();
-        List<WorkerToGetDTOStripped> workerDTOS = new ArrayList<>();
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
         for (Worker w : workers) {
-            workerDTOS.add(workerMapper.toDTOStripped(w));
+            workerDTOS.add(workerMapper.toDTO(w));
         }
         return workerDTOS;
     }

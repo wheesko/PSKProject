@@ -1,6 +1,5 @@
 package com.VU.PSKProject.Service.Model.Team;
 
-import com.VU.PSKProject.Service.Model.Worker.WorkerDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToGetDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -13,8 +12,8 @@ public class TeamToGetDTO {
     private Long id;
     private String name;
     @JsonProperty("TeamLead")
-    private WorkerDTO managerId;
-    private List<WorkerDTO> workers;
+    private WorkerToGetDTO managerId;
+    private List<WorkerToGetDTO> workers;
     @JsonProperty("TeamGoals")
     private List<TeamGoalDTO> goals;
 }
