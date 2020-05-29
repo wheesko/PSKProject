@@ -31,13 +31,6 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 			},
 		},
 		{
-			title: 'Surname',
-			dataIndex: 'surname',
-			key: 'surname',
-			editable: false,
-			width: '8.5%',
-		},
-		{
 			title: 'Email',
 			dataIndex: 'email',
 			key: 'email',
