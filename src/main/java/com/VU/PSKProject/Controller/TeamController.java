@@ -1,13 +1,11 @@
 package com.VU.PSKProject.Controller;
 
-import com.VU.PSKProject.Entity.Team;
-import com.VU.PSKProject.Entity.User;
-import com.VU.PSKProject.Entity.UserAuthority;
-import com.VU.PSKProject.Entity.Worker;
+import com.VU.PSKProject.Entity.*;
 import com.VU.PSKProject.Service.Mapper.TeamMapper;
 import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Model.Team.*;
 import com.VU.PSKProject.Service.Model.UserDTO;
+import com.VU.PSKProject.Service.TeamGoalService;
 import com.VU.PSKProject.Service.TeamService;
 import com.VU.PSKProject.Service.UserService;
 import com.VU.PSKProject.Service.WorkerService;
@@ -38,6 +36,10 @@ public class TeamController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TeamGoalService teamGoalService;
+
     @Autowired
     private UserMapper userMapper;
 
@@ -110,13 +112,9 @@ public class TeamController {
         worker.setManagedTeam(team);
         User user = userMapper.fromDTO(userDTO);
         user.setUserAuthority(UserAuthority.LEAD);
+        teamService.createTeam(team);
         workerService.updateWorker(worker.getId(), worker);
         userService.updateUser(user);
-        teamService.createTeam(team);
-//        workerService.getWorker(teamDto.getManagerId()).ifPresent(w -> {
-//            w.setManagedTeam(team);
-//            teamService.createTeam(team);
-//        });
     }
 
     @PutMapping("/update/{id}")
