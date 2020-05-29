@@ -45,13 +45,17 @@ public class TeamMapper {
         teamToGetDTO.setName(team.getName());
         teamToGetDTO.setManagerId(workerMapper.toDTO(team.getManager()));
         List<WorkerToGetDTO> workers = new ArrayList<>();
-        for (Worker w: team.getWorkers()) {
-            workers.add(workerMapper.toDTO(w));
-        }
-        teamToGetDTO.setWorkers(workers);
-
+        // if there are workers in a team, map them
+        // else return a new empty worker array
+        System.out.println(team.getWorkers().size());
+        if (team.getWorkers().size() > 0) {
+            for (Worker w : team.getWorkers()) {
+                workers.add(workerMapper.toDTO(w));
+            }
+            teamToGetDTO.setWorkers(workers);
+        } else teamToGetDTO.setWorkers(new ArrayList<WorkerToGetDTO>());
         List<TeamGoalDTO> teamGoals = new ArrayList<>();
-        for (TeamGoal g: team.getGoals()) {
+        for (TeamGoal g : team.getGoals()) {
             teamGoals.add(teamGoalMapper.toDto(g));
         }
         teamToGetDTO.setGoals(teamGoals);

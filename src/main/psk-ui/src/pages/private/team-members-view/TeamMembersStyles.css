@@ -7,3 +7,8 @@
     color: #999;
     box-shadow: 0 0 0 1px #d9d9d9 inset;
 }
+.teamMembersCard {
+    font-size: 14px;
+    padding: 24px !important;
+    text-align: left;
+}
