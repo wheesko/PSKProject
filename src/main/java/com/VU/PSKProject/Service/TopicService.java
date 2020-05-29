@@ -120,10 +120,7 @@ public class TopicService{
             topics = learningDayService.getTopicsByTeamFuture(manager.getManagedTeam().getId());
         return topics;
     }
-
-    public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId){
-        return learningTreeService.getAllWorkerCoveredTopics(workerId);
-    }
+    
 
     public List<Topic> getWorkerTopicsAndGoals(Long workerId, EventDate.eventDate time){
         List<Topic> topics = null;
