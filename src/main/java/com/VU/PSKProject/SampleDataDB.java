@@ -50,7 +50,7 @@ public class SampleDataDB {
     }
     public void saveUsers(){
       users.add(new User(
-                "admin@psk.com",
+                "admin",
                 "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", //encoded "admin" string
                 UserAuthority.LEAD
         ));
