@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Popconfirm, Form, Tooltip, Button, Modal, Tag} from 'antd';
+import {Table, Popconfirm, Form, Tooltip, Button, Modal, Tag, Typography} from 'antd';
 import {ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import {Employee} from '../../../../models/employee';
 import {
@@ -81,7 +81,9 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			editable: false,
 			width: '17%',
 			render: (id: string, worker: Employee, index: number) => {
-				return <Link to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
+				return worker.name === null ? <Typography.Text disabled>Worker has not finished registration</Typography.Text> :
+				<Link
+					to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
 			},
 		},
 		{

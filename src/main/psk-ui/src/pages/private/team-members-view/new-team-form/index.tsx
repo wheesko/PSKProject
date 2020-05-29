@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
-import { Form, Input, Button, Alert, notification, Spin, Tooltip, Select, } from 'antd';
+import { Alert, Button, Form, Input, Select, Spin, Tooltip, } from 'antd';
 import {
-	CREATE_A_NEW_TEAM, CREATE_TEAM,
+	CREATE_A_NEW_TEAM,
+	CREATE_TEAM,
 	CREATE_TEAM_INFO,
-	EMPLOYEE_EMAIL_REQUIRED,
-	EMPLOYEE_ROLE,
-	INVITE_NEW_EMPLOYEE,
-	SEND_INVITE_LINK, TEAM_GOALS_EXPLAINER,
+	TEAM_GOALS_EXPLAINER,
 	TEAM_GOALS_LABEL,
 	TEAM_NAME_LABEL,
 	TEAM_NAME_REQUIRED,
 } from '../../../../constants/employeeConstants';
-import workerService from '../../../../api/worker-service';
 import notificationService, { NotificationType } from '../../../../service/notification-service';
-import { IS_THIS_A_SUBTOPIC, SUBTOPIC_EXPLAINER } from '../../../../constants/otherConstants';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { LearningTopic } from '../../../../models/learningTopic';
 import topicService from '../../../../api/topic-service';
 import teamService from '../../../../api/team-service';
-import { TopicCreateRequest } from '../../../../api/model/topic-create-request';
 import { CreateTeamRequest } from '../../../../api/model/create-team-request';
 
 const formItemLayout = {
@@ -81,6 +76,11 @@ const NewTeamForm: React.FunctionComponent<NewTeamFormProps> = (props: NewTeamFo
 			notificationService.notify({
 				notificationType: NotificationType.SUCCESS,
 				message: 'Team created successfully'
+			});
+			notificationService.notify({
+				notificationType: NotificationType.INFO,
+				message: 'Sign out to see changes.',
+				description: 'Sign out and sign in to see your newly created team.'
 			});
 		}).catch((e) => {
 			notificationService.notify({
