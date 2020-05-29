@@ -16,4 +16,7 @@ public class LearningDayToCreateDTO {
     private Timestamp dateTimeAt;
     private Long assignee;
     private Long topic;
+    public LearningDayToCreateDTO(){
+
+    }
 }

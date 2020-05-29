@@ -39,4 +39,7 @@ public class WorkerTopicsDTO {
     public void setTopicFuture(String topic){
         topicsFuture.add(topic);
     }
+
+    public WorkerTopicsDTO(){}
+
 }

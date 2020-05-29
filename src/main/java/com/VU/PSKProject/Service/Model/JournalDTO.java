@@ -23,4 +23,6 @@ public class JournalDTO {
         this.methodName = methodName;
         this.className = className;
     }
+    public JournalDTO(){}
+
 }
