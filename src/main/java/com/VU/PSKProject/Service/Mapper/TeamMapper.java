@@ -47,7 +47,6 @@ public class TeamMapper {
         List<WorkerToGetDTO> workers = new ArrayList<>();
         // if there are workers in a team, map them
         // else return a new empty worker array
-        System.out.println(team.getWorkers().size());
         if (team.getWorkers().size() > 0) {
             for (Worker w : team.getWorkers()) {
                 workers.add(workerMapper.toDTO(w));
