@@ -3,6 +3,7 @@ export const KEY_TEAMS = 'teams';
 export const KEY_CALENDAR = 'calendar';
 export const KEY_MY_CALENDAR = 'my-calendar';
 export const KEY_MEMBERS = 'members';
+export const KEY_WORKING_TEAM = 'working-team';
 export const KEY_MY_EMPLOYEES= 'my-employees';
 export const KEY_TEAM = 'team';
 export const KEY_PROFILE = 'profile';

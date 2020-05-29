@@ -2,14 +2,17 @@ import { UPDATE_SESSION, USER_LOGIN, USER_LOGOUT, USER_TOKEN_UPDATE, UserActionT
 import { Authority } from '../../models/authority';
 
 const initialState: UserState = {
+	name: '',
+	surname: '',
 	loggedIn: false,
 	email: '',
 	token: '',
 	role: { title: '', color: '' },
 	authority: Authority.UNASSIGNED,
 	refreshToken: '',
-	name: '',
-	surname: ''
+	managedTeamId: 0,
+	workingTeamId: 0,
+	workerId: 0
 };
 
 export function userReducer(

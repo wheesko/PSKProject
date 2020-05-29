@@ -12,7 +12,7 @@ class LearningDayService {
     }
 
     public createLearningDay = (learningEvent: LearningDayCreateRequest): Promise<void> => {
-    	return this.restService
+			return this.restService
     		.post<void>(
     			'/learningDays/create', learningEvent
     		)

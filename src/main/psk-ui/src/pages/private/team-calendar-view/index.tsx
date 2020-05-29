@@ -147,7 +147,7 @@ const TeamCalendarView: React.FunctionComponent<{}> = () => {
 						<Typography.Paragraph>
 							{`Assignee: ${item.assignee.name}
 							${item.assignee.surname},
-							${item.assignee.role.name}`}
+							${item.assignee.role.title}`}
 						</Typography.Paragraph>
 						<Typography.Paragraph>Topic name: {item.topic.name}</Typography.Paragraph>
 						<Typography.Paragraph>Description: {item.topic.description}</Typography.Paragraph>

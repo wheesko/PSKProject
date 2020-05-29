@@ -145,8 +145,32 @@ public class WorkerService {
             workerRepository.deleteById(id);
     }
 
-    public Optional<Worker> findByManagedTeamId(Long id) {
-        return workerRepository.findByManagedTeamId(id);
+    public List<WorkerToGetDTO> findColleagues(UserDTO userDTO) {
+        Worker worker = getWorkerByUserId(userDTO.getId());
+        List<Worker> colleagues = workerRepository.findAllByWorkingTeamId(worker.getWorkingTeam().getId());
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        for (Worker w : colleagues) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(worker.getWorkingTeam().getManager().getId());
+            workerDTOS.add(workerDTO);
+        }
+        return workerDTOS;
+    }
+
+    public List<WorkerToGetDTO> findEmployees(UserDTO userDTO) {
+        Worker worker = getWorkerByUserId(userDTO.getId());
+        if (worker.getManagedTeam() == null)
+            throw new WorkerException("You have no managed team!");
+        List<Worker> employees = workerRepository.findByWorkingTeamId(worker.getManagedTeam().getId());
+        List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
+        for (Worker w : employees) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
+            workerDTO.setEmail(w.getUser().getEmail());
+            workerDTO.setManagerId(worker.getWorkingTeam().getManager().getId());
+            workerDTOS.add(workerDTO);
+        }
+        return workerDTOS;
     }
 
     public List<Worker> findByWorkingTeamId(Long id) {

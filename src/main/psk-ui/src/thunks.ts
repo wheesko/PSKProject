@@ -8,6 +8,7 @@ import { userLogin, userLogout, userRegister } from './redux/user/actions';
 import notificationService, { NotificationType } from './service/notification-service';
 import { RegisterWorkerRequest } from './api/model/register-worker-request';
 import workerService from './api/worker-service';
+import { getRoleColor } from './tools/roleColorPicker';
 
 export const thunkLogin = (
 	loginRequest: LoginRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
@@ -17,14 +18,18 @@ export const thunkLogin = (
 			{ json: true });
 
 		dispatch(userLogin({
+			managedTeamId: response?.data?.managedTeamId,
+			name: response?.data?.name,
+			workerId: response?.data?.workerId,
+			workingTeamId: response?.data?.workingTeamId,
 			email: loginRequest.email,
 			loggedIn: true,
 			token: response?.headers.authorization.replace('Bearer ', ''),
 			refreshToken: response?.headers.refreshtoken.replace('Bearer ', ''),
 			authority: decodedResponse!.role[0].authority,
-			role: { title: '', color: '' },
-			name: response?.data.name,
+			role: { title: response?.data?.role, color: getRoleColor(response?.data?.role) },
 			surname: response?.data.surname
+
 		}));
 
 		notificationService.notify({
@@ -49,7 +54,7 @@ export const thunkLogout = (): ThunkAction<void, AppState, null, Action<string>>
 };
 
 export const thunkRegister = (registerRequest: RegisterWorkerRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
-	workerService.registerWorker(registerRequest).then(response  => {
+	workerService.registerWorker(registerRequest).then(response => {
 		notificationService.notify({
 			notificationType: NotificationType.SUCCESS,
 			message: 'Registration successful'

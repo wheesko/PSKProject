@@ -17,7 +17,7 @@ export interface Assignee {
     email: string;
     role: {
         id: number;
-        name: string;
+        title: string;
     };
     managedTeam: Team;
     workingTeam: Team;

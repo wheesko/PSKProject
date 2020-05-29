@@ -9,6 +9,9 @@ export interface UserState {
 	role: Role;
 	authority: Authority;
 	refreshToken: string;
+	managedTeamId: number;
+	workingTeamId: number;
+	workerId: number;
 	name: string;
 	surname: string;
 }

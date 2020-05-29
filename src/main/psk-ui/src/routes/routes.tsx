@@ -10,7 +10,7 @@ import {
 	KEY_PROFILE,
 	KEY_TEAMS,
 	KEY_TOPIC_TREE,
-	KEY_TOPICS
+	KEY_TOPICS, KEY_WORKING_TEAM
 } from '../constants/routeKeyConstants';
 import { CalendarView } from '../pages/private/calendar-view';
 import { ProfileView } from '../pages/private/my-profile-view';
@@ -24,6 +24,7 @@ import { RootState } from '../redux';
 import { Authority } from '../models/authority';
 import { RegisterPage } from '../pages/public/register';
 import { WorkerProfileView } from '../pages/private/worker-profile-view/worker-profile-view';
+import { WorkingTeamView } from '../pages/private/working-team-view';
 
 const Routes: React.FunctionComponent<{}> = () => {
 	const user = useSelector((state: RootState) => state.user);
@@ -50,6 +51,7 @@ const Routes: React.FunctionComponent<{}> = () => {
 			{user.authority === Authority.LEAD ?
 				<Route exact path={`/${KEY_TEAMS}/${KEY_INFO}`} component={InfoView}/> : null}
 			<Route exact path={`/${KEY_TEAMS}/${KEY_MEMBERS}`} component={TeamMembersView}/>
+			<Route exact path={`/${KEY_TEAMS}/${KEY_WORKING_TEAM}`} component={WorkingTeamView}/>
 			<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`}/>
 			<Route exact path={`/${KEY_TOPICS}/${KEY_TOPIC_TREE}`} component={TopicTreeView}/>
 			<Route exact path={`/${KEY_TOPICS}/${KEY_NEW_TOPIC}`} component={NewTopicView}/>

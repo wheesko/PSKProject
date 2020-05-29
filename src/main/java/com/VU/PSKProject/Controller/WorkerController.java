@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -156,26 +155,26 @@ public class WorkerController {
         workerService.deleteWorker(id);
     }
 
-    @GetMapping("managedTeams/{id}")
-    public ResponseEntity<WorkerToGetDTO> getWorkerByManagedTeam(@PathVariable Long id) {
-        Optional<Worker> worker = workerService.findByManagedTeamId(id);
-        return worker.map(value -> ResponseEntity.ok(workerMapper.toGetDTO(value))).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("getEmployees")
+    public ResponseEntity<List<WorkerToGetDTO>> getEmployees(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        // findEmployees returns workers that is in requested workers managed team
+        List<WorkerToGetDTO> employees = workerService.findEmployees(user);
+        return ResponseEntity.ok(employees);
     }
 
-    @GetMapping("workingTeams/{id}")
-    public ResponseEntity<List<WorkerToGetDTO>> getWorkersByWorkingTeam(@PathVariable Long id) {
-        List<Worker> workers = workerService.findByWorkingTeamId(id);
-        List<WorkerToGetDTO> workersToGet = new ArrayList<>();
-        for (Worker w : workers) {
-            workersToGet.add(workerMapper.toGetDTO(w));
-        }
+    @GetMapping("getColleagues")
+    public ResponseEntity<List<WorkerToGetDTO>> getColleagues(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
 
-        return ResponseEntity.ok(workersToGet);
+        // findColleagues returns workingTeam workers and current worker
+        List<WorkerToGetDTO> colleagues = workerService.findColleagues(user);
+        return ResponseEntity.ok(colleagues);
     }
 
     @PutMapping("/registerWorker")
     public ResponseEntity<UserToRegisterDTO> registerWorker(@RequestBody WorkerRegisterDTO workerRegisterDTO, Principal principal) {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        return ResponseEntity.ok(workerService.registerWorker(user,workerRegisterDTO));
+        return ResponseEntity.ok(workerService.registerWorker(user, workerRegisterDTO));
     }
 }
