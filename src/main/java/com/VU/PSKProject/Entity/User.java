@@ -24,7 +24,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserAuthority userAuthority;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.ALL})
     @JsonIgnore
     private Worker workerInstance;
 

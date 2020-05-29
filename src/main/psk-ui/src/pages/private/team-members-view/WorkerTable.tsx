@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Popconfirm, Form, Tooltip, Button, Modal, Tag } from 'antd';
-import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Employee } from '../../../models/employee';
-import { LearningEvent } from '../../../models/learningEvent';
-import { Role } from '../../../models/role';
+import React, {useEffect, useState} from 'react';
+import {Table, Popconfirm, Form, Tooltip, Button, Modal, Tag} from 'antd';
+import {ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {Employee} from '../../../models/employee';
+import {LearningEvent} from '../../../models/learningEvent';
+import {Role} from '../../../models/role';
 import {Link} from "react-router-dom";
 
-const { confirm } = Modal;
+const {confirm} = Modal;
 
 interface TableProps {
 	employeeList: Employee[];
@@ -27,7 +27,8 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 			editable: false,
 			width: '17%',
 			render: (id: string, worker: Employee, index: number) => {
-				return <Link to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
+				return <Link
+					to={`/profile/${worker.id}`}>{worker.name === null ? 'Worker has not finished registration' : `${worker.name} ${worker.surname}`}</Link>;
 			},
 		},
 		{
@@ -98,4 +99,4 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 	);
 };
 
-export { WorkerTable };
+export {WorkerTable};

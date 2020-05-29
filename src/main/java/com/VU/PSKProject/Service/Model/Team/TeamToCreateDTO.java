@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TeamToCreateDTO {
-    private Long id;
     private String name;
-    private Long managerId;
+    private String goal;
 }

@@ -1,29 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import './TeamMembersStyles.css';
-import { Button, Col, Modal, Row, Spin, Typography } from 'antd';
+import {Button, Col, Modal, Row, Spin, Typography, Card} from 'antd';
 
-import { DONE } from '../../../constants/otherConstants';
-import {
-	PlusOutlined,
-} from '@ant-design/icons';
-import { NewTeamMemberForm } from './NewTeamMemberForm';
+import {DONE} from '../../../constants/otherConstants';
+import {PlusOutlined,} from '@ant-design/icons';
+import {NewTeamMemberForm} from './NewTeamMemberForm';
 import {
 	ADD_NEW_EMPLOYEE,
 	ADD_NEW_EMPLOYEES,
-	YOUR_EMPLOYEES
+	CREATE_A_NEW_TEAM, CREATE_TEAM_INFO,
+	YOUR_EMPLOYEES,
+	YOUR_EMPLOYEES_WORKER,
+    YOU_HAVE_NO_MANAGED_TEAM
 } from '../../../constants/employeeConstants';
-import { EditableTable } from './editable-table/EditableTable';
-import { RootState } from '../../../redux';
-import { useSelector } from 'react-redux';
-import { Employee } from '../../../models/employee';
+import {EditableTable} from './editable-table/EditableTable';
+import {RootState} from '../../../redux';
+import {useSelector} from 'react-redux';
+import {Employee} from '../../../models/employee';
 import workerService from '../../../api/worker-service';
-import notificationService, { NotificationType } from '../../../service/notification-service';
+import notificationService, {NotificationType} from '../../../service/notification-service';
+import {Authority} from '../../../models/authority';
+import {NewTeamForm} from './new-team-form';
 
-const { Title } = Typography;
+const {Title} = Typography;
 
 const TeamMembersView: React.FunctionComponent<{}> = () => {
 	const [newTeamMemberModalVisibility, setNewTeamMemberModalVisibility] = useState<boolean>(false);
+	const [newTeamModalVisibility, setNewTeamModalVisibility] = useState<boolean>(false);
 	const currentWorker = useSelector((state: RootState) => state.user);
 	const [isLoading, setLoading] = useState<boolean>(false);
 	const [myEmployees, setMyEmployees] = useState<Employee[]>([]);
@@ -37,7 +41,7 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
 				message: error.response.data.message !== null ? error.response.data.message : 'Failed to load employees',
-				description: error.toString()
+				description: error.response.data.message === YOU_HAVE_NO_MANAGED_TEAM ? null : error.toString()
 			});
 			setLoading(false);
 		});
@@ -49,42 +53,86 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 
 	function handleOnOk(): void {
 		setNewTeamMemberModalVisibility(false);
+		setNewTeamModalVisibility(false);
 	}
 
 	function handleOnCancel(): void {
 		setNewTeamMemberModalVisibility(false);
+		setNewTeamModalVisibility(false);
 	}
 
 	function handleAdd(): void {
 		setNewTeamMemberModalVisibility(true);
 	}
 
+	function handleCreateTeam(): void {
+		setNewTeamModalVisibility(true);
+	}
+
+	function renderWorkerAuthority(): React.ReactNode {
+		return <Card className={'teamMembersCard'}>
+			<Title level={4} className={'teamMembersTitle'}>{YOUR_EMPLOYEES_WORKER}</Title>
+			<Row gutter={[0, 12]}>
+				<Col xs={24} sm={16}>
+					<Typography.Text>
+						{CREATE_TEAM_INFO}
+					</Typography.Text>
+				</Col>
+			</Row>
+			<Row gutter={[0, 12]}>
+				<Col xs={24} sm={16}>
+					<Button onClick={handleCreateTeam} type="primary" shape="round" icon={<PlusOutlined/>}>
+						{CREATE_A_NEW_TEAM}
+					</Button>
+				</Col>
+			</Row>
+		</Card>;
+	}
+
+	function renderLeadAuthority(): React.ReactNode {
+		return <>
+			<Title level={2} className={'teamMembersTitle'}>
+				{YOUR_EMPLOYEES}
+			</Title>
+			<Spin spinning={isLoading} size="large">
+				<EditableTable employeeList={myEmployees}/>
+			</Spin>
+			<Row gutter={[0, 48]} justify="start">
+				<Col xs={12} style={{ display: 'flex', justifyContent: 'start' }}>
+					<Button onClick={handleAdd} type="primary" shape="round" icon={<PlusOutlined/>}>
+						{ADD_NEW_EMPLOYEE}
+					</Button>
+				</Col>
+			</Row>
+		</>;
+	}
 
 	return <>
-		<Title level={2} className={'teamMembersTitle'}>{YOUR_EMPLOYEES}</Title>
-		<Spin spinning={isLoading} size="large">
-			<EditableTable employeeList={myEmployees}/>
-		</Spin>
-		<Row gutter={[0, 48]} justify="start">
-			<Col xs={12} style={{ display: 'flex', justifyContent: 'start' }}>
-				<Button onClick={handleAdd} type="primary" shape="round" icon={<PlusOutlined/>}>
-					{ADD_NEW_EMPLOYEE}
-				</Button>
-			</Col>
-		</Row>
+		{currentWorker.authority === Authority.LEAD ? renderLeadAuthority() : null}
+		{currentWorker.authority === Authority.WORKER ? renderWorkerAuthority() : null}
 		<Modal
 			title={ADD_NEW_EMPLOYEES}
 			visible={newTeamMemberModalVisibility}
 			onOk={handleOnOk}
 			onCancel={handleOnCancel}
 			destroyOnClose
-			cancelButtonProps={{ style: { display: 'none' } }}
+			cancelButtonProps={{style: {display: 'none'}}}
 			okText={DONE}
 			afterClose={getManagedTeam}
 		>
 			<NewTeamMemberForm managerId={currentWorker.workerId}/>
 		</Modal>
+		<Modal
+			visible={newTeamModalVisibility}
+			onOk={handleOnOk}
+			onCancel={handleOnCancel}
+			destroyOnClose
+			cancelButtonProps={{style: {display: 'none'}}}
+			okText={DONE}
+		>
+			<NewTeamForm id={currentWorker.workerId}/>
+		</Modal>
 	</>;
 };
 
-export { TeamMembersView };
+export {TeamMembersView};

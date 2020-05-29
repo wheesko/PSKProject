@@ -107,28 +107,6 @@ public class SampleDataDB {
     public void saveTopics(){
         ArrayList<Topic> topics = new ArrayList<Topic>();
 
-		/*topics.add(new Topic("Why C# is better than Java", null, "change my mind", null));
-		topics.add(new Topic("You should stop using Java", topics.get(0), "change my mind", null));
-		topics.add(new Topic("Having no var is terrible", topics.get(0), "change my mind", null));
-		topics.add(new Topic("Java users can't C#", topics.get(0), "change my mind", null));
-
-		topics.add(new Topic("Software design", null, "description", null));
-		topics.add(new Topic("Decorator", topics.get(4), "description", null));
-		topics.add(new Topic("Strategy", topics.get(4), "description", null));
-		topics.add(new Topic("Presenter", topics.get(4), "description", null));
-
-		topics.add(new Topic("Strategy vs Template", topics.get(6), "description", null));
-		topics.add(new Topic("Dependency Injection", topics.get(6), "description", null));
-
-		topics.add(new Topic("Presenter presents", topics.get(7), "description", null));
-		topics.add(new Topic("Presenter presents even more", topics.get(7), "description", null));
-
-		topics.add(new Topic("Decorator decorates", topics.get(5), "description", null));
-		topics.add(new Topic("Decorator decorates even more", topics.get(5), "description", null));
-
-		topics.add(new Topic("Java is bad for your vision", topics.get(1), "description", null));
-		topics.add(new Topic("Thinking sharp using Java", topics.get(3), "description", null));*/
-
         ArrayList<Topic> cppChildren = new ArrayList<>();
         gd = new Topic("Game development", null, "Intro to game dev", null);
         ge = new Topic("Game Engines", null, "Intro to game engines", null);

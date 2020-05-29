@@ -129,6 +129,7 @@ public class WorkerService {
     }
 
     public void updateWorker(Long id, Worker worker) {
+        System.out.println("Worker id: "+ worker.getId());
         try {
             if (workerRepository.findById(id).isPresent()) {
                 worker.setId(id);
