@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {Table, Popconfirm, Form, Tooltip, Button, Modal, Tag} from 'antd';
-import {ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
-import {Employee} from '../../../models/employee';
-import {LearningEvent} from '../../../models/learningEvent';
-import {Role} from '../../../models/role';
-import {Link} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Table, Popconfirm, Form, Tooltip, Button, Modal, Tag } from 'antd';
+import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Employee } from '../../../models/employee';
+import { LearningEvent } from '../../../models/learningEvent';
+import { Role } from '../../../models/role';
+import { Link } from 'react-router-dom';
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 interface TableProps {
 	employeeList: Employee[];
+	columns?: any;
 }
 
 const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => {
@@ -19,7 +20,7 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 		setData(props.employeeList);
 	}, [props.employeeList.length]);
 
-	const columns = [
+	const columns = props.columns ? props.columns : [
 		{
 			title: 'Full name',
 			dataIndex: 'id',
@@ -99,4 +100,4 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 	);
 };
 
-export {WorkerTable};
+export { WorkerTable };

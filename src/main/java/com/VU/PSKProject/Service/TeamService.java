@@ -61,6 +61,18 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
+    public Optional<Team> getTeam(Long id, UserDTO userDTO){
+        Worker lead = workerService.getWorkerByUserId(userDTO.getId());
+        Optional<Team> team = teamRepository.findById(id);
+        if (team.isPresent()) {
+            Worker worker = team.get().getWorkers().get(0);
+            if(workerService.checkWorkerLeadRelationship(lead, worker)) {
+                return team;
+            }
+        }
+        return Optional.empty();
+    }
+
     public Optional<Team> getTeam(Long id){
         return teamRepository.findById(id);
     }
