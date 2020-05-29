@@ -4,6 +4,8 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { WorkerResponseModel } from '../../../api/model/worker-response-model';
 import workerService from '../../../api/worker-service';
+import learningDayService from '../../../api/learning-day-service';
+
 import notificationService, { NotificationType } from '../../../service/notification-service';
 import moment from 'moment';
 import { LearningTopic } from '../../../models/learningTopic';
@@ -17,6 +19,7 @@ import { RootState } from '../../../redux';
 import { UserState } from '../../../redux/user/types';
 import { UserGoalForm } from './form/user-goal-form';
 import { UserLimitsForm } from './form/user-limits-form';
+import { LearningEvent } from '../../../models/learningEvent';
 
 interface WorkerProfileViewProps extends RouteComponentProps {
     workerId?: string | undefined;
@@ -97,14 +100,20 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	const [worker, setWorker] = useState<WorkerResponseModel>();
 	const [isGoalModalVisible, setGoalModalVisible] = useState<boolean>(false);
 	const [isEditLimitsModalVisible, setEditLimitsModalVisible] = useState<boolean>(false);
+	const [teamLearningEvents, setTeamLearningEvents] = useState<LearningEvent[]>([]);
 
 	//component did mount
 	useEffect(() => {
 		loadData().then(worker => {
 			setWorker(worker);
-			setLoading(false);
 			return worker;
 		})
+			.then((worker) => {
+				return worker.managedTeam ? learningDayService.getAllLearningDaysOfWorkersTeam(worker.id): [];
+			}).then(team => {
+				setTeamLearningEvents(team);
+				setLoading(false);
+			}) 
 			.catch((e) => {
 		    notificationService.notify({
 					description: e.response ? e.response.data.message : '',
@@ -117,7 +126,7 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	return <Spin spinning={loading}>
 		{!loading &&
 		<>
-			<Typography.Title level={2}>Profile of {worker?.name} {worker?.surname}</Typography.Title>
+			<Typography.Title className="title" level={2}>Profile of {worker?.name} {worker?.surname}</Typography.Title>
 			{renderInfoCard()}
 			<Row gutter={12}>
 				<Col xs={24} sm={24} md={16}>
@@ -128,7 +137,21 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 					{renderAssignedGoalsCard()}
 				</Col>
 			</Row>
-			{worker?.managerId ? renderManagedTeamTable() : null}
+			{worker?.managedTeam &&
+				<>
+					<Typography.Title className="title"  level={2}>
+						Team info of {worker?.name} {worker?.surname}
+					</Typography.Title>
+					<Row gutter={12}>
+						<Col xs={24} sm={24} md={16}>
+							{renderTeamLearningDays()}
+						</Col>
+						<Col xs={24} sm={24} md={8}>
+							{renderTeamLearnedTopicsTable()}
+						</Col>
+					</Row>
+				</>
+			}
 			{renderAssignGoalsModal()}
 			{renderEditLimitsModal()}
 		</>
@@ -175,6 +198,29 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 			<Table
 				dataSource={worker?.learningDays.filter(learningEvent => !learningEvent.learned)}
 				columns={workerLearningDayColumns}
+			/>
+		</Card>;
+	}
+
+
+	function renderTeamLearningDays(): React.ReactNode {
+		return <Card className={'table-card'}>
+			<Typography.Title level={4}>Team scheduled learning days</Typography.Title>
+			<Table
+				dataSource={teamLearningEvents.filter(learningEvent => !learningEvent.learned)}
+				columns={workerLearningDayColumns}
+			/>
+		</Card>;
+	}
+
+	function renderTeamLearnedTopicsTable(): React.ReactNode {
+		return <Card className={'table-card'}>
+			<Typography.Title level={4}>Team learned topics</Typography.Title>
+			<Table
+				dataSource={teamLearningEvents.filter(learningEvent => learningEvent.learned)
+					.map(learningEvent => learningEvent.topic)
+				}
+				columns={learnedTopicsColumns}
 			/>
 		</Card>;
 	}
