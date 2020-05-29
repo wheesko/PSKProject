@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +35,15 @@ public class LearningDayMapper {
     }
 
     public List<LearningDayToReturnDTO> mapLearningDayListToReturnDTO(List<LearningDay> learningDays) {
-        return learningDays.stream()
+       List<LearningDayToReturnDTO> learningDayToReturnDTOS = new ArrayList<>();
+       for(LearningDay day : learningDays){
+           LearningDayToReturnDTO dayDTO = new LearningDayToReturnDTO();
+           dayDTO = modelMapper.map(day, LearningDayToReturnDTO.class);
+           learningDayToReturnDTOS.add(dayDTO);
+       }
+        /*return learningDays.stream()
                 .map(day -> modelMapper.map(day, LearningDayToReturnDTO.class))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        return learningDayToReturnDTOS;
     }
 }
