@@ -53,10 +53,6 @@ public class WorkerMapper {
         return toDTO(worker);
     }
 
-    public WorkerToGetDTO workerToGetDTO(Worker worker) {
-        return modelMapper.map(worker, WorkerToGetDTO.class);
-    }
-
     public WorkerToGetDTOManagerDTO toGetDTOManagerDTO (Worker worker) {
         return modelMapper.map(worker, WorkerToGetDTOManagerDTO.class);
     }
@@ -90,6 +86,7 @@ public class WorkerMapper {
             return worker;
         }).collect(Collectors.toList());
     }
+
     public WorkerToGetDTO toDTO(Worker w){
         WorkerToGetDTO workerDTO = new WorkerToGetDTO(w.getId(),
                 w.getName(), w.getSurname(), w.getUser().getEmail(),

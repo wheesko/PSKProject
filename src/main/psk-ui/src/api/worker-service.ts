@@ -5,6 +5,7 @@ import { RegisterWorkerRequest } from './model/register-worker-request';
 import { WorkerResponseModel } from './model/worker-response-model';
 import { WorkerGoalCreateRequest } from './model/worker-goal-create-request';
 import { UpdateLimitsRequest } from './model/update-limits-request';
+import { LearningTopic } from "../models/learningTopic";
 import { Employee } from '../models/employee';
 import { getRoleColor } from '../tools/roleColorPicker';
 import { EmployeeResponse } from './model/employee-response';
@@ -35,6 +36,11 @@ class WorkerService {
 		return this.restService.put<void>(`/workers/updateWorkerLimits/${id}`, limitsRequest)
 			.then(response => response.data);
 	};
+
+	public getOwnGoals = (): Promise<LearningTopic[]> => {
+		return this.restService.get<LearningTopic[]>(`/workerGoals/getOwn`)
+			.then(response => response.data);
+	}
 	public getEmployees = (): Promise<Employee[]> => {
 		return this.restService.get<EmployeeResponse>('/workers/getEmployees',).then((response: AxiosResponse) => {
 			return response.data.map((record: EmployeeResponse) => {

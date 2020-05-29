@@ -109,29 +109,18 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			title: 'Role',
 			dataIndex: 'role',
 			key: 'role',
-			editable: true,
+			editable: false,
 			width: '15%',
 			render: (role: Role) => {
 				return <Tag color={role.color}>{role.title}</Tag>
 
 			}
-			// TODO: fix displaying role (need to create usable state interfaces)
-			// render: (role: Role): React.ReactNode => {
-			// 	return (
-			// 		role === undefined ? null :
-			// 			<Tag
-			// 				color={role.color}
-			// 				 key={role.title}>
-			// 				{role.title.toUpperCase()}
-			// 			</Tag>
-			// 	);
-			// }
 		},
 		{
 			title: 'Goals',
 			key: 'goals',
 			dataIndex: 'goals',
-			editable: true,
+			editable: false,
 			width: '20%',
 			// TODO: fix displaying goals (need to create usable state interfaces)
 			// render: (goals: Goal[]): React.ReactNode => (

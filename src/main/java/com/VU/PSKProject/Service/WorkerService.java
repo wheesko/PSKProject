@@ -100,8 +100,8 @@ public class WorkerService {
 
     public ResponseEntity<WorkerToGetDTO> getWorkerById(Long id, UserDTO user) {
         Optional<Worker> worker = getWorker(id);
-        if (worker.isPresent()) {
-            WorkerToGetDTO workerDTO = workerMapper.workerToGetDTO(worker.get());
+        if(worker.isPresent()) {
+            WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
             workerDTO.setLearningDays(learningDayService.getAllLearningDaysByWorkerId(worker.get().getId()).stream()
                     .map(learningDayMapper::toDTO)
@@ -115,11 +115,13 @@ public class WorkerService {
             workerDTO.getManager().setEmail(worker.get().getWorkingTeam().getManager().getUser().getEmail());
 
 
-            if (checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
+
+            if(checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
                 return ResponseEntity.ok(workerDTO);
             else
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } else {
+        }
+        else {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Message", "Worker with id " + id + " could not be found");
             return ResponseEntity.notFound().headers(headers).build();
