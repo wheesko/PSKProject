@@ -16,6 +16,7 @@ public class Role {
     @GeneratedValue
     private long id;
     private String name;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "role")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<RoleGoal> roleGoals;

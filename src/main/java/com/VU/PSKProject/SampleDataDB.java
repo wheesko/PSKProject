@@ -3,7 +3,6 @@ package com.VU.PSKProject;
 import com.VU.PSKProject.Entity.*;
 import com.VU.PSKProject.Repository.*;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +47,7 @@ public class SampleDataDB {
         userRepository.deleteAll();
         teamRepository.deleteAll();
     }
+
     public void saveUsers(){
       users.add(new User(
                 "admin",
