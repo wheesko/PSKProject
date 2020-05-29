@@ -14,6 +14,7 @@ import {THIS_ACTION_CANNOT_BE_UNDONE} from '../../../../constants/otherConstants
 import {EditableCell} from './EditableCell';
 import {LearningEvent} from '../../../../models/learningEvent';
 import {Role} from "../../../../models/role";
+import {Link} from "react-router-dom";
 
 const {confirm} = Modal;
 
@@ -74,18 +75,14 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 
 	const columns = [
 		{
-			title: 'Name',
-			dataIndex: 'name',
-			key: 'name',
+			title: 'Full name',
+			dataIndex: 'id',
+			key: 'id',
 			editable: false,
-			width: '8.5%',
-		},
-		{
-			title: 'Surname',
-			dataIndex: 'surname',
-			key: 'surname',
-			editable: false,
-			width: '8.5%',
+			width: '17%',
+			render: (id: string, worker: Employee, index: number) => {
+				return <Link to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
+			},
 		},
 		{
 			title: 'Email',

@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { Employee } from '../../../models/employee';
 import workerService from '../../../api/worker-service';
 import notificationService, { NotificationType } from '../../../service/notification-service';
-import { EmployeeTable } from '../team-members-view/EmployeeTable';
+import { WorkerTable } from '../team-members-view/WorkerTable';
 
 const { Title } = Typography;
 
@@ -43,7 +43,7 @@ const WorkingTeamView: React.FunctionComponent<{}> = () => {
 	return <>
 		<Title level={2} className={'teamMembersTitle'}>{YOUR_COLLEAGUES}</Title>
 		<Spin spinning={isLoading} size="large">
-			<EmployeeTable employeeList={myColleagues}/>
+			<WorkerTable employeeList={myColleagues}/>
 		</Spin>
 	</>;
 };

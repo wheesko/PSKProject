@@ -4,6 +4,7 @@ import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-de
 import { Employee } from '../../../models/employee';
 import { LearningEvent } from '../../../models/learningEvent';
 import { Role } from '../../../models/role';
+import {Link} from "react-router-dom";
 
 const { confirm } = Modal;
 
@@ -11,7 +12,7 @@ interface TableProps {
 	employeeList: Employee[];
 }
 
-const EmployeeTable: React.FunctionComponent<TableProps> = (props: TableProps) => {
+const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => {
 	const [data, setData] = useState<Employee[]>([]);
 
 	useEffect(() => {
@@ -20,11 +21,14 @@ const EmployeeTable: React.FunctionComponent<TableProps> = (props: TableProps) =
 
 	const columns = [
 		{
-			title: 'Name',
-			dataIndex: 'name',
-			key: 'name',
+			title: 'Full name',
+			dataIndex: 'id',
+			key: 'id',
 			editable: false,
-			width: '8.5%',
+			width: '17%',
+			render: (id: string, worker: Employee, index: number) => {
+				return <Link to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
+			},
 		},
 		{
 			title: 'Surname',
@@ -112,4 +116,4 @@ const EmployeeTable: React.FunctionComponent<TableProps> = (props: TableProps) =
 	);
 };
 
-export { EmployeeTable };
+export { WorkerTable };
