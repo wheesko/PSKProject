@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Row, Spin, Typography, Table, Button, Modal } from 'antd';
+import { Card, Col, Row, Spin, Typography, Table, Button, Modal, Tag } from 'antd';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { WorkerResponseModel } from '../../../api/model/worker-response-model';
@@ -20,6 +20,9 @@ import { UserState } from '../../../redux/user/types';
 import { UserGoalForm } from './form/user-goal-form';
 import { UserLimitsForm } from './form/user-limits-form';
 import { LearningEvent } from '../../../models/learningEvent';
+import { Employee } from "../../../models/employee";
+import { Role } from "../../../models/role";
+import { getRoleColor } from "../../../tools/roleColorPicker";
 
 interface WorkerProfileViewProps extends RouteComponentProps {
     workerId?: string | undefined;
@@ -57,7 +60,50 @@ const workerLearningDayColumns = [
 	}
 ];
 
-const teamColumns = [];
+const teamMemberColumns = [
+	{
+		title: 'Full name',
+		dataIndex: 'id',
+		key: 'id',
+		editable: false,
+		width: '17%',
+		render: (id: string, worker: Employee, index: number) => {
+			return worker.name === null
+				? <Typography.Text disabled>Worker has not finished registration</Typography.Text>
+				: <Link to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
+		},
+	},
+	{
+		title: 'Email',
+		dataIndex: 'email',
+		key: 'email',
+		editable: false,
+		width: '15%',
+	},
+	{
+		title: 'Quarter constraint',
+		dataIndex: 'quarterLearningDayLimit',
+		key: 'quarterLearningDayLimit',
+		width: '5%',
+	},
+	{
+		title: 'Consecutive constraint',
+		dataIndex: 'consecutiveLearningDayLimit',
+		key: 'consecutiveLearningDayLimit',
+		width: '5%',
+	},
+	{
+		title: 'Role',
+		dataIndex: 'role',
+		key: 'role',
+		editable: false,
+		width: '15%',
+		render: (role: any) => {
+			return <Tag color={getRoleColor(role.name)}>{role.name}</Tag>;
+
+		}
+	}
+];
 
 const learnedTopicsColumns = [
 	{
@@ -101,6 +147,7 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	const [isGoalModalVisible, setGoalModalVisible] = useState<boolean>(false);
 	const [isEditLimitsModalVisible, setEditLimitsModalVisible] = useState<boolean>(false);
 	const [teamLearningEvents, setTeamLearningEvents] = useState<LearningEvent[]>([]);
+	const [teamMembers, setTeamMembers] = useState<any>(undefined);
 
 	//component did mount
 	useEffect(() => {
@@ -108,12 +155,20 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 			setWorker(worker);
 			return worker;
 		})
+			// @ts-ignore
 			.then((worker) => {
-				return worker.managedTeam ? learningDayService.getAllLearningDaysOfWorkersTeam(worker.id): [];
-			}).then(team => {
+				return worker.managedTeam ? Promise.all([
+					learningDayService.getAllLearningDaysOfWorkersTeam(worker.id),
+					workerService.getMembersOfTeam(worker.managedTeam.id)
+				]) : [];
+			})
+			// @ts-ignore
+			.then(([team, teamMembers]) => {
+				setTeamMembers(teamMembers);
 				setTeamLearningEvents(team);
 				setLoading(false);
-			}) 
+			})
+			// @ts-ignore
 			.catch((e) => {
 		    notificationService.notify({
 					description: e.response ? e.response.data.message : '',
@@ -148,6 +203,11 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 						</Col>
 						<Col xs={24} sm={24} md={8}>
 							{renderTeamLearnedTopicsTable()}
+						</Col>
+					</Row>
+					<Row gutter={12}>
+						<Col xs={24} sm={24}>
+							{renderTeamMembersTable()}
 						</Col>
 					</Row>
 				</>
@@ -198,6 +258,16 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 			<Table
 				dataSource={worker?.learningDays.filter(learningEvent => !learningEvent.learned)}
 				columns={workerLearningDayColumns}
+			/>
+		</Card>;
+	}
+
+	function renderTeamMembersTable(): React.ReactNode {
+		return <Card className={'table-card'}>
+			<Typography.Title level={4}>Team members</Typography.Title>
+			<Table
+				dataSource={teamMembers.workers}
+				columns={teamMemberColumns}
 			/>
 		</Card>;
 	}

@@ -93,8 +93,8 @@ public class TeamController {
         UserDTO user = userService.getUserByEmail(principal.getName());
         if (!userService.checkIfManager(user))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        Optional<Team> team = teamService.getTeam(id);
-        if (team.isPresent()) {
+        Optional<Team> team = teamService.getTeam(id, user);
+        if(team.isPresent()){
             TeamToGetDTO teamDTO = teamMapper.toDto(team.get());
             return ResponseEntity.ok(teamDTO);
         } else {

@@ -40,7 +40,8 @@ class WorkerService {
 	public getOwnGoals = (): Promise<LearningTopic[]> => {
 		return this.restService.get<LearningTopic[]>(`/workerGoals/getOwn`)
 			.then(response => response.data);
-	}
+	};
+
 	public getEmployees = (): Promise<Employee[]> => {
 		return this.restService.get<EmployeeResponse>('/workers/getEmployees',).then((response: AxiosResponse) => {
 			return response.data.map((record: EmployeeResponse) => {
@@ -91,6 +92,12 @@ class WorkerService {
 	public addEmployee = (addEmployeeRequest: AddEmployeeRequest): Promise<AxiosResponse | null> => {
 		return this.restService.post<void>('/workers/create', addEmployeeRequest);
 	};
+
+	public getMembersOfTeam = (id: number): Promise<any> => {
+		console.log('here');
+		return this.restService.get<any>(`/teams/get/${id}`)
+			.then(response => response.data);
+	}
 
 }
 
