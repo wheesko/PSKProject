@@ -17,6 +17,10 @@ public class TeamGoalMapper {
     }
 
     public TeamGoalDTO toDto(TeamGoal teamGoal){
-        return modelMapper.map(teamGoal, TeamGoalDTO.class);
+        TeamGoalDTO tg = new TeamGoalDTO();
+        tg.setId(teamGoal.getId());
+        tg.setTeam(teamGoal.getTeam().getId());
+        tg.setTopic(teamGoal.getTopic().getId());
+        return tg;
     }
 }
