@@ -144,6 +144,29 @@ public class LearningDayService {
         }
     }
 
+    public List<LearningDayToReturnDTO> getAllLearningDaysByManagerId(Long id, UserDTO user) {
+        Worker lead = workerService.getWorkerByUserId(user.getId());
+        Worker worker = workerService.getWorker(id).get();
+
+        if (!workerService.checkWorkerLeadRelationship(lead, worker)) {
+            throw new LearningDayException("Unauthorized");
+        }
+
+        Optional<Team> team = teamService.getTeamByManager(worker.getId());
+
+        if (team.isPresent()){
+            List<Long> workerIds = workerService.findByWorkingTeamId(team.get().getId()).stream()
+                    .map(Worker::getId)
+                    .collect(Collectors.toList());
+
+            return learningDayMapper.mapLearningDayListToReturnDTO(
+                    learningDayRepository.findAllByAssigneeIdIn(workerIds)
+            );
+        } else {
+            throw new LearningDayException("Team not found");
+        }
+    }
+
     public List<LearningDayToReturnDTO> getAllMonthLearningDaysByManagerId(UserDTO user, String year, String month) {
         Worker manager = workerService.getWorkerByUserId(user.getId());
 
