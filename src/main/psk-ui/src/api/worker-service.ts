@@ -5,6 +5,7 @@ import { RegisterWorkerRequest } from './model/register-worker-request';
 import { WorkerResponseModel } from './model/worker-response-model';
 import { WorkerGoalCreateRequest } from './model/worker-goal-create-request';
 import { UpdateLimitsRequest } from './model/update-limits-request';
+import { LearningTopic } from "../models/learningTopic";
 
 class WorkerService {
 	private readonly restService: RestService;
@@ -31,6 +32,11 @@ class WorkerService {
 		return this.restService.put<void>(`/workers/updateWorkerLimits/${id}`, limitsRequest)
 			.then(response => response.data);
 	};
+
+	public getOwnGoals = (): Promise<LearningTopic[]> => {
+		return this.restService.get<LearningTopic[]>(`/workerGoals/getOwn`)
+			.then(response => response.data);
+	}
 }
 
 const workerService = new WorkerService();

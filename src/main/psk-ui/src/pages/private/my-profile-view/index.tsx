@@ -1,15 +1,31 @@
-import React from 'react';
-import { Card, Col, Row, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Col, Row, Spin, Table, Typography } from 'antd';
 
 import { connect } from 'react-redux';
 import { UserState } from '../../../redux/user/types';
 import { RootState } from '../../../redux';
 
+import { LearningTopic } from '../../../models/learningTopic';
+import notificationService, { NotificationType } from '../../../service/notification-service';
+import workerService from '../../../api/worker-service';
 import './ProfileStyles.css';
 
 interface StateProps {
 	user: UserState;
 }
+
+const goalsColumns = [
+	{
+		title: 'Topic name',
+		dataIndex: 'name',
+		key: 'name',
+	},
+	{
+		title: 'Description',
+		dataIndex: 'description',
+		key: 'description',
+	}
+];
 
 const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateProps) => {
 	const {
@@ -22,12 +38,28 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 			}
 		}
 	} = props;
+	
+	const [topics, setTopics] = useState<LearningTopic[]>([]);
+	const [loading, setLoading] = useState<boolean>(false);
+	
+	useEffect(() => {
+		setLoading(true);
+		loadTopics().then(topics => {
+			setTopics(topics);
+			setLoading(false);
+		}).catch(e => {
+			notificationService.notify({
+				notificationType: NotificationType.ERROR,
+				message: 'Could not get learned topics'
+			});
+		});
+	}, []);
 
-	return <>
+	return <Spin spinning={loading}>
 		<Typography.Title level={2}>Hello, {name} {surname}</Typography.Title>
 		{renderMyInfoCard()}
 		{renderLearnedTopicsTable()}
-	</>;
+	</Spin>;
 
 	function renderMyInfoCard(): React.ReactNode {
 		return <Card size="small" className="user-info-card">
@@ -46,8 +78,17 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 	}
 
 	function renderLearnedTopicsTable(): React.ReactNode {
-		return <>
-		</>;
+		return <Card className={'table-card'}>
+			<Typography.Title level={4}>Topics suggested for you</Typography.Title>
+			<Table
+				dataSource={topics}
+				columns={goalsColumns}
+			/>
+		</Card>;
+	}
+
+	function loadTopics(): Promise<LearningTopic[]> {
+		return workerService.getOwnGoals();
 	}
 };
 
