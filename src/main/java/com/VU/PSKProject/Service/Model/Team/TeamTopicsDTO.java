@@ -28,4 +28,8 @@ public class TeamTopicsDTO {
     public void setTopicFuture(String topic){
         topicsFuture.add(topic);
     }
+
+    public TeamTopicsDTO(){
+
+    }
 }

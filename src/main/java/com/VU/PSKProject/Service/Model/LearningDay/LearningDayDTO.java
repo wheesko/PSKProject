@@ -27,4 +27,7 @@ public class LearningDayDTO {
         this.dateTimeAt = dateTimeAt;
         this.learned = learned;
     }
+    public LearningDayDTO(){
+
+    }
 }

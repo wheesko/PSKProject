@@ -11,5 +11,8 @@ public class LearningDayAssigneeDTO {
     public LearningDayAssigneeDTO(Long id) {
         this.id = id;
     }
+    public LearningDayAssigneeDTO(){
+
+    }
 }
 
