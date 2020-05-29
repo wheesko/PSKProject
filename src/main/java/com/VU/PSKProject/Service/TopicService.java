@@ -6,6 +6,7 @@ import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Service.Exception.TopicServiceException;
+import com.VU.PSKProject.Service.LearningTree.LearningTreeService;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
@@ -15,16 +16,19 @@ import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TopicService {
+public class TopicService{
     @Autowired
     private TopicRepository topicRepository;
 
@@ -36,6 +40,10 @@ public class TopicService {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    @Qualifier("TimedLearningTree")
+    private LearningTreeService learningTreeService;
 
     @Autowired
     private TopicMapper topicMapper;
@@ -104,7 +112,6 @@ public class TopicService {
         return getAll().stream().filter(topic -> topic.getName().equals("Devbridge development"))
                 .map(topic -> topicMapper.toTreeNodeDTO(topic)).collect(Collectors.toList());
     }
-
     public List<Topic> getTeamTopicsAndGoals(Worker manager, EventDate.eventDate time){
         List<Topic> topics = null;
         if(time.equals(EventDate.eventDate.PAST))
@@ -112,6 +119,10 @@ public class TopicService {
         if(time.equals(EventDate.eventDate.FUTURE))
             topics = learningDayService.getTopicsByTeamFuture(manager.getManagedTeam().getId());
         return topics;
+    }
+
+    public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId){
+        return learningTreeService.getAllWorkerCoveredTopics(workerId);
     }
 
     public List<Topic> getWorkerTopicsAndGoals(Long workerId, EventDate.eventDate time){
