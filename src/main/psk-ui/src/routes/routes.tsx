@@ -56,6 +56,7 @@ const Routes: React.FunctionComponent<{}> = () => {
 			<Route exact path={`/${KEY_TOPICS}/${KEY_TOPIC_TREE}`} component={TopicTreeView}/>
 			<Route exact path={`/${KEY_TOPICS}/${KEY_NEW_TOPIC}`} component={NewTopicView}/>
 			<Route path={`/${KEY_PROFILE}/:workerId`} component={WorkerProfileView}/>
+			<Route path={`/${KEY_PROFILE}`} component={WorkerProfileView}/>
 		</Switch>
 	);
 };

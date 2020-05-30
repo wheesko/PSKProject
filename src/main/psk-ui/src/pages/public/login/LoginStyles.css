@@ -1,0 +1,19 @@
+.login-left-background {
+    text-align: center;
+    height: 100%;
+    background-color: #528BC3 !important;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+}
+#login-title-row {
+    margin-top: 24px !important;
+}
+
+#login-form-card {
+    padding: 24px !important;
+}
+#login-button {
+    width: 100%;
+}

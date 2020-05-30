@@ -9,10 +9,12 @@ import notificationService, { NotificationType } from './service/notification-se
 import { RegisterWorkerRequest } from './api/model/register-worker-request';
 import workerService from './api/worker-service';
 import { getRoleColor } from './tools/roleColorPicker';
+import history from './history'
 
 export const thunkLogin = (
 	loginRequest: LoginRequest): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
 	authenticationService.login(loginRequest).then(response => {
+		history.push('/profile');
 		console.log(response);
 		const decodedResponse = jwt.decode(response?.headers.authorization.replace('Bearer ', ''),
 			{ json: true });
@@ -29,9 +31,7 @@ export const thunkLogin = (
 			authority: decodedResponse!.role[0].authority,
 			role: { title: response?.data?.role, color: getRoleColor(response?.data?.role) },
 			surname: response?.data.surname
-
 		}));
-
 		notificationService.notify({
 			notificationType: NotificationType.SUCCESS,
 			message: 'Logged in successfully'

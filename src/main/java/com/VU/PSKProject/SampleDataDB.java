@@ -164,6 +164,7 @@ public class SampleDataDB {
         learningDayList.add(new LearningDay("Study CPP", "CPP Study", new Timestamp(time.getTime() + (1000*3600*50)), workers.get(0),cpp));
         learningDayList.add(new LearningDay("Study Gamedev", "Gamedev Study", new Timestamp(time.getTime() + (1000*3600*75)), workers.get(0), gd));
         learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() + (1000*3600*100)) , workers.get(0),ads));
+        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() - (1000*3600*100)) , workers.get(0),ads));
         learningDayRepository.saveAll(learningDayList);
     }
 

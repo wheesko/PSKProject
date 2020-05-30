@@ -1,19 +1,22 @@
 import React from 'react';
-import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
-import { TEAM_NAME } from '../../../constants/otherConstants';
-import { useDispatch } from 'react-redux';
-import { thunkLogin } from '../../../thunks';
+import {Button, Card, Col, Form, Input, Layout, Row, Typography} from 'antd';
+import {TEAM_NAME} from '../../../constants/otherConstants';
+import {useDispatch} from 'react-redux';
+import {thunkLogin} from '../../../thunks';
 import '../../../App.css';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCalendarAlt} from "@fortawesome/free-regular-svg-icons";
+import './LoginStyles.css';
 
 const layout = {
-	labelCol: { span: 24 },
-	wrapperCol: { span: 24 },
+	labelCol: {span: 24},
+	wrapperCol: {span: 24},
 };
 const tailLayout = {
-	wrapperCol: { offset: 0, span: 16 },
+	wrapperCol: { span: 24},
 };
-const { Content, Footer } = Layout;
-const { Title } = Typography;
+const {Content, Footer} = Layout;
+const {Title} = Typography;
 
 const LoginPage: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
@@ -43,20 +46,20 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 					<Form.Item
 						label="Email"
 						name="email"
-						rules={[{ required: true, message: 'Please input your email!' }]}
+						rules={[{required: true, message: 'Please input your email!'}]}
 					>
 						<Input/>
 					</Form.Item>
 					<Form.Item
 						label="Password"
 						name="password"
-						rules={[{ required: true, message: 'Please input your password!' }]}
+						rules={[{required: true, message: 'Please input your password!'}]}
 					>
 						<Input.Password/>
 					</Form.Item>
 					<Form.Item {...tailLayout}>
-						<Button type="primary" htmlType="submit">
-									Submit
+						<Button type="primary" htmlType="submit" id={'login-button'}>
+							Submit
 						</Button>
 					</Form.Item>
 				</Form>
@@ -66,27 +69,38 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 
 	//TODO: layout is a little bid too wide and to high
 	return <>
-		<Layout id="root-layout">
-			<Content id="login-wrapper">
-				<Row gutter={[0, 48]} justify="center">
-					<Col xs={12}>
-						<Title>Welcome to PSK_123 Calendar app!</Title>
-					</Col>
-				</Row>
-				<Row gutter={[0, 48]} justify="center">
-					<Col xs={12}>
-						<Title level={2}>Please log in to continue</Title>
-					</Col>
-				</Row>
-				<Row justify="center">
-					<Col xs={12}>
-						{renderLoginForm()}
-					</Col>
-				</Row>
-			</Content>
-			<Footer>Powered By: {TEAM_NAME}</Footer>
-		</Layout>
+		<Row>
+			<Col span={10}>
+				<Card bordered={false} className='login-left-background'>
+					<FontAwesomeIcon icon={faCalendarAlt} size='10x' color={'white'}/>
+				</Card>
+			</Col>
+			<Col span={14}>
+				<Layout id="root-layout" >
+					<Content id="login-wrapper">
+						<Row gutter={[0, 48]} justify="center" align="middle" id="login-title-row">
+							<Col xs={12}>
+								<Title>Welcome to PSK_123 Calendar app!</Title>
+							</Col>
+						</Row>
+						<Row gutter={[0, 48]} justify="center">
+							<Col xs={12}>
+								<Title level={2}>Please log in to continue</Title>
+							</Col>
+						</Row>
+						<Row justify="center">
+							<Col xs={12}>
+								<Card id="login-form-card">
+								{renderLoginForm()}
+								</Card>
+							</Col>
+						</Row>
+					</Content>
+					<Footer>Powered By: {TEAM_NAME}</Footer>
+				</Layout>
+			</Col>
+		</Row>
 	</>;
 };
 
-export { LoginPage };
+export {LoginPage};

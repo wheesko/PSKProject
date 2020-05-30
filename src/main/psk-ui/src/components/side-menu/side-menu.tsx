@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import history from '../../history';
 import { Menu } from 'antd';
 
@@ -44,7 +44,7 @@ import { Authority } from '../../models/authority';
 
 const SideMenu: React.FunctionComponent<{}> = () => {
 	const user = useSelector((state: RootState) => state.user);
-
+	console.log(history.location.pathname)
 	return (
 		<Menu theme="dark" mode="inline"
 			  defaultSelectedKeys={history.location.pathname.split('/')}

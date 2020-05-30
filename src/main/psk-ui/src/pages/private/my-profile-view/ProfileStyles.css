@@ -8,3 +8,18 @@
 .table-card {
     margin-top: 12px;
 }
+
+.profile-title-row {
+    justify-content: center;
+    align-content: center;
+}
+
+.profile-title-row * {
+    justify-content: center !important;
+    align-content: center !important;
+}
+
+.profile-role-tag {
+    font-size: 20px !important;
+    padding: 7px 7px 7px 7px !important;
+}

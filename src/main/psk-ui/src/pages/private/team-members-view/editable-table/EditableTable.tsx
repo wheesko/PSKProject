@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {Table, Popconfirm, Form, Tooltip, Button, Modal, Tag, Typography} from 'antd';
-import {ExclamationCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
-import {Employee} from '../../../../models/employee';
+import React, { useEffect, useState } from 'react';
+import { Table, Popconfirm, Form, Tooltip, Button, Modal, Tag, Typography } from 'antd';
+import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Employee } from '../../../../models/employee';
 import {
 	DELETE_WARNING,
 	DELETE_WARNING_INFO,
@@ -10,13 +10,13 @@ import {
 } from '../../../../constants/employeeConstants';
 import './EditableTableStyles.css';
 // import {myEmployees} from '../../../../tools/mockData';
-import {THIS_ACTION_CANNOT_BE_UNDONE} from '../../../../constants/otherConstants';
-import {EditableCell} from './EditableCell';
-import {LearningEvent} from '../../../../models/learningEvent';
-import {Role} from "../../../../models/role";
-import {Link} from "react-router-dom";
+import { THIS_ACTION_CANNOT_BE_UNDONE } from '../../../../constants/otherConstants';
+import { EditableCell } from './EditableCell';
+import { LearningEvent } from '../../../../models/learningEvent';
+import { Role } from "../../../../models/role";
+import { Link } from "react-router-dom";
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 interface EditableTableProps {
 	employeeList: Employee[];
@@ -27,13 +27,14 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 	const [data, setData] = useState<Employee[]>([]);
 	useEffect(() => {
 		setData(props.employeeList);
-	}, [props.employeeList.length])
+	}, [props.employeeList.length]);
+	console.log(props.employeeList);
 	const [editingKey, setEditingKey] = useState(-1);
 
 	const isEditing = (record: Employee) => record.id === editingKey;
 
 	const edit = (record: Employee) => {
-		form.setFieldsValue({quarterConstraint: 0, goals: [], ...record});
+		form.setFieldsValue({ quarterConstraint: 0, goals: [], ...record });
 		setEditingKey(record.id);
 	};
 
@@ -79,11 +80,11 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			dataIndex: 'id',
 			key: 'id',
 			editable: false,
-			width: '17%',
 			render: (id: string, worker: Employee, index: number) => {
-				return worker.name === null ? <Typography.Text disabled>Worker has not finished registration</Typography.Text> :
-				<Link
-					to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
+				return worker.name === null ?
+					<Typography.Text disabled>Worker has not finished registration</Typography.Text> :
+					<Link
+						to={ `/profile/${ worker.id }` }>{ `${ worker.name } ${ worker.surname }` }</Link>;
 			},
 		},
 		{
@@ -91,30 +92,35 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			dataIndex: 'email',
 			key: 'email',
 			editable: false,
-			width: '15%',
 		},
 		{
 			title: 'Team',
 			dataIndex: 'team',
 			key: 'team',
 			editable: false,
-			width: '15%',
 		},
 		{
 			title: 'Quarter constraint',
 			dataIndex: 'quarterLearningDayLimit',
 			key: 'quarterLearningDayLimit',
+			width: '8%',
 			editable: true,
-			width: '5%',
+		},
+		{
+			title: 'Consecutive day constraint',
+			dataIndex: 'consecutiveLearningDayLimit',
+			key: 'consecutiveLearningDayLimit',
+			width: '8%',
+			editable: true
 		},
 		{
 			title: 'Role',
 			dataIndex: 'role',
 			key: 'role',
+			width: '12%',
 			editable: false,
-			width: '15%',
 			render: (role: Role) => {
-				return <Tag color={role.color}>{role.title}</Tag>
+				return <Tag color={ role.color }>{ role.title }</Tag>
 
 			}
 		},
@@ -123,7 +129,6 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			key: 'goals',
 			dataIndex: 'goals',
 			editable: false,
-			width: '20%',
 			// TODO: fix displaying goals (need to create usable state interfaces)
 			// render: (goals: Goal[]): React.ReactNode => (
 			// 	<span>
@@ -146,48 +151,48 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 		{
 			title: 'Action',
 			key: 'action',
-			width: '13%',
+			width: '12%',
 			render: (record: Employee): React.ReactNode => {
 				const editable = isEditing(record);
 
 				return editable ? (
 					<span>
-						<Button type="link" onClick={() => save(record.id)} style={{marginRight: 8}}>
+						<Button type="link" onClick={ () => save(record.id) } style={ { marginRight: 8 } }>
               Save
 
 						</Button>
-						<Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+						<Popconfirm title="Sure to cancel?" onConfirm={ cancel }>
 							<Button type="link">Cancel</Button>
 						</Popconfirm>
 					</span>
 				) : (
 					<>
-						<Tooltip title={EDIT_EMPLOYEE_DETAILS}>
+						<Tooltip title={ EDIT_EMPLOYEE_DETAILS }>
 							<Button
 								shape="round"
 								size="small"
-								icon={<EditOutlined/>}
-								disabled={editingKey !== -1}
-								onClick={() => edit(record)}
+								icon={ <EditOutlined/> }
+								disabled={ editingKey !== -1 }
+								onClick={ () => edit(record) }
 								className="editButton"/>
 						</Tooltip>
-						<Tooltip title={REMOVE_EMPLOYEE}>
+						<Tooltip title={ REMOVE_EMPLOYEE }>
 							<Button
 								shape="round"
 								size="small"
 								type="dashed"
 								danger
-								icon={<DeleteOutlined/>}
-								onClick={() => confirm({
+								icon={ <DeleteOutlined/> }
+								onClick={ () => confirm({
 									width: 500,
 									title: DELETE_WARNING + record.name + ' ?',
 									icon: <ExclamationCircleOutlined/>,
 									content: <>
 										<span>
-											{DELETE_WARNING_INFO}
+											{ DELETE_WARNING_INFO }
 										</span>
 										<p>
-											<b>{THIS_ACTION_CANNOT_BE_UNDONE}</b>
+											<b>{ THIS_ACTION_CANNOT_BE_UNDONE }</b>
 										</p>
 									</>,
 									okText: 'Yes',
@@ -200,7 +205,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 									onCancel() {
 										console.log('Cancel');
 									},
-								})}
+								}) }
 							/>
 						</Tooltip>
 					</>
@@ -226,23 +231,23 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 	});
 
 	return (
-		<Form form={form} component={false}>
+		<Form form={ form } component={ false }>
 			<Table
-				components={{
+				components={ {
 					body: {
 						cell: EditableCell,
 					},
-				}}
+				} }
 				bordered
-				dataSource={data}
-				columns={mergedColumns}
+				dataSource={ data }
+				columns={ mergedColumns }
 				rowClassName="editable-row"
-				pagination={{
+				pagination={ {
 					onChange: cancel,
-				}}
+				} }
 			/>
 		</Form>
 	);
 };
 
-export {EditableTable};
+export { EditableTable };
