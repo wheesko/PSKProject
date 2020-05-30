@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Popconfirm, Form, Tooltip, Button, Modal, Tag } from 'antd';
+import { Table, Popconfirm, Form, Tooltip, Button, Modal, Tag, Typography } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Employee } from '../../../models/employee';
 import { LearningEvent } from '../../../models/learningEvent';
@@ -18,7 +18,6 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 
 	useEffect(() => {
 		setData(props.employeeList);
-		console.log(props.employeeList)
 	}, [props.employeeList.length]);
 
 	const columns = props.columns ? props.columns : [
@@ -27,8 +26,10 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 			dataIndex: 'id',
 			key: 'id',
 			render: (id: string, worker: Employee, index: number) => {
-				return <Link
-					to={`/profile/${worker.id}`}>{worker.name === null ? 'Worker has not finished registration' : `${worker.name} ${worker.surname}`}</Link>;
+				return worker.name === null ?
+					<Typography.Text disabled>Worker has not finished registration</Typography.Text> :
+					<Link
+						to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
 			},
 		},
 		{
@@ -58,7 +59,7 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 			dataIndex: 'role',
 			key: 'role',
 			render: (role: Role) => {
-				return <Tag color={role.color}>{role.title}</Tag>;
+				return <Tag color={role.color}>{role.name}</Tag>;
 
 			}
 		},

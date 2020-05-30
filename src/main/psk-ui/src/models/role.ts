@@ -1,4 +1,6 @@
 export interface Role {
-	title: string;
+	name: string;
 	color: string;
+	roleGoals: string[];
+	id: number;
 }

@@ -5,7 +5,7 @@ export function getRoleColor(roleTitle: string | undefined): string {
 		return '';
 	const roleKeyWords = roleTitle.split(' ');
 	const role = roleToColorDictionary.find(role => {
-		return roleKeyWords.some(roleKeyWord => roleKeyWord.toLowerCase() === role.title);
+		return roleKeyWords.some(roleKeyWord => roleKeyWord.toLowerCase() === role.name);
 	});
 
 	return role !== undefined ? role.color : '';

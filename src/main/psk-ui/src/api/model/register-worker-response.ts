@@ -1,5 +1,4 @@
 export interface RegisterWorkerResponse {
-
 	name: string;
 	comment: string;
 	dateTimeAt: string;

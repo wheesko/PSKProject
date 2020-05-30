@@ -7,7 +7,7 @@ const initialState: UserState = {
 	loggedIn: false,
 	email: '',
 	token: '',
-	role: { title: '', color: '' },
+	role: { name: '', color: '', roleGoals: [], id: 0 },
 	authority: Authority.UNASSIGNED,
 	refreshToken: '',
 	managedTeamId: 0,
