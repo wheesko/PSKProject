@@ -123,6 +123,7 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			<NewTeamMemberForm managerId={currentWorker.workerId}/>
 		</Modal>
 		<Modal
+			title={"Creating a team"}
 			visible={newTeamModalVisibility}
 			onOk={handleOnOk}
 			onCancel={handleOnCancel}

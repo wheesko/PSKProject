@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {Form, Input, Button, Alert, notification, Spin,} from 'antd';
 import {
 	EMPLOYEE_EMAIL,
-	EMPLOYEE_EMAIL_REQUIRED, EMPLOYEE_ROLE, INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
+	EMPLOYEE_EMAIL_REQUIRED, EMPLOYEE_ROLE, EMPLOYEE_ROLE_REQUIRED, INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
 } from '../../../constants/employeeConstants';
 import './editable-table/EditableTableStyles.css';
 import workerService from '../../../api/worker-service';
@@ -92,7 +92,7 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 						<Form.Item
 							label={EMPLOYEE_ROLE}
 							name="role"
-							rules={[{required: true, message: EMPLOYEE_EMAIL_REQUIRED}]}
+							rules={[{required: true, message: EMPLOYEE_ROLE_REQUIRED}]}
 						>
 							<Input allowClear placeholder={'e.g. Backend Engineer'}/>
 						</Form.Item>

@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
-import { Button, Col, Form, Input, Layout, Row, Typography, Tooltip } from 'antd';
-import { TEAM_NAME } from '../../../constants/otherConstants';
-import { useDispatch } from 'react-redux';
-import { thunkLogout, thunkRegister } from '../../../thunks';
+import React, {useState} from 'react';
+import {Button, Col, Form, Input, Layout, Row, Typography, Tooltip, Card} from 'antd';
+import {TEAM_NAME} from '../../../constants/otherConstants';
+import {useDispatch} from 'react-redux';
+import {thunkLogout, thunkRegister} from '../../../thunks';
 import '../../../App.css';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import history from '../../../history';
-import notificationService, { NotificationType } from '../../../service/notification-service';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import notificationService, {NotificationType} from '../../../service/notification-service';
+import {QuestionCircleOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 import {
 	confirmPasswordMissing,
 	nameMissing, passwordMissing,
 	passwordRegexErrorDescription,
 	passwordRegexErrorMessage, passwordsNotMatchingMessage, surnameMissing
 } from '../../../constants/registerConstants';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit} from "@fortawesome/free-regular-svg-icons";
+import {faUndo} from "@fortawesome/free-solid-svg-icons";
+import './RegisterStyles.css'
 
 const layout = {
-	labelCol: { span: 24 },
-	wrapperCol: { span: 24 },
+	labelCol: {span: 24},
+	wrapperCol: {span: 24},
 };
-const tailLayout = {
-	wrapperCol: { offset: 0, span: 16 },
-};
-const { Content, Footer } = Layout;
-const { Title } = Typography;
+const {Content, Footer} = Layout;
+const {Title} = Typography;
 
 const RegisterPage: React.FunctionComponent<{}> = () => {
 
@@ -72,14 +73,14 @@ const RegisterPage: React.FunctionComponent<{}> = () => {
 					<Form.Item
 						label="Name"
 						name="name"
-						rules={[{ required: true, message: nameMissing }]}
+						rules={[{required: true, message: nameMissing}]}
 					>
 						<Input/>
 					</Form.Item>
 					<Form.Item
 						label="Surname"
 						name="surname"
-						rules={[{ required: true, message: surnameMissing }]}
+						rules={[{required: true, message: surnameMissing}]}
 					>
 						<Input/>
 					</Form.Item>
@@ -91,7 +92,7 @@ const RegisterPage: React.FunctionComponent<{}> = () => {
 							</Tooltip>
 						</span>}
 						name="password"
-						rules={[{ required: true, message: passwordMissing }]}
+						rules={[{required: true, message: passwordMissing}]}
 					>
 						<Input.Password/>
 					</Form.Item>
@@ -104,7 +105,7 @@ const RegisterPage: React.FunctionComponent<{}> = () => {
 								required: true,
 								message: confirmPasswordMissing,
 							},
-							({ getFieldValue }) => ({
+							({getFieldValue}) => ({
 								validator(rule, value) {
 									if (!value || getFieldValue('password') === value) {
 										if (!passwordRegExp.test(value)) {
@@ -121,17 +122,19 @@ const RegisterPage: React.FunctionComponent<{}> = () => {
 					>
 						<Input.Password/>
 					</Form.Item>
-					<Form.Item {...tailLayout}>
-
-						<Button type="primary" htmlType="submit">
+					<Form.Item {...layout}>
+						<Button type="primary" htmlType="submit" id='register-button'>
 							Submit
 						</Button>
 					</Form.Item>
-					<Form.Item {...tailLayout}>
+					<Form.Item {...layout}>
 						<Link to={'/'}>
-							<Button type="primary" onClick={logout}>
-								Back to login
-							</Button>
+							<Tooltip title={'Back to login'}>
+								<Button onClick={logout} shape="round" size='large'>
+									<ArrowLeftOutlined />
+									{/*<FontAwesomeIcon icon={faUndo}/>*/}
+								</Button>
+							</Tooltip>
 						</Link>
 					</Form.Item>
 				</Form>
@@ -140,22 +143,33 @@ const RegisterPage: React.FunctionComponent<{}> = () => {
 	}
 
 	return <>
-		<Layout id="root-layout">
-			<Content id="login-wrapper">
-				<Row gutter={[0, 48]} justify="center">
-					<Col xs={12}>
-						<Title level={2}>Finish your registration to start using the application</Title>
-					</Col>
-				</Row>
-				<Row justify="center">
-					<Col xs={12}>
-						{renderRegisterForm()}
-					</Col>
-				</Row>
-			</Content>
-			<Footer>Powered By: {TEAM_NAME}</Footer>
-		</Layout>
+		<Row>
+			<Col span={10}>
+				<Card bordered={false} className='register-left-background'>
+					<FontAwesomeIcon icon={faEdit} size='10x' color={'white'}/>
+				</Card>
+			</Col>
+			<Col span={14}>
+				<Layout id="root-layout">
+					<Content id="login-wrapper">
+						<Row gutter={[0, 48]} justify="center" id='register-title-row'>
+							<Col xs={12}>
+								<Title level={2}>Finish your registration to start using the application</Title>
+							</Col>
+						</Row>
+						<Row justify="center">
+							<Col xs={12}>
+								<Card id="register-form-card">
+									{renderRegisterForm()}
+								</Card>
+							</Col>
+						</Row>
+					</Content>
+					<Footer>Powered By: {TEAM_NAME}</Footer>
+				</Layout>
+			</Col>
+		</Row>
 	</>;
 };
 
-export { RegisterPage };
+export {RegisterPage};

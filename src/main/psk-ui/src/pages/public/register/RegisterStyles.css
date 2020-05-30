@@ -1,0 +1,19 @@
+.register-left-background {
+    text-align: center;
+    height: 100%;
+    background-color: #E38D49 !important;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+}
+#register-title-row {
+    margin-top: 24px !important;
+}
+
+#register-form-card {
+    padding: 24px !important;
+}
+#register-button {
+    width: 100%;
+}

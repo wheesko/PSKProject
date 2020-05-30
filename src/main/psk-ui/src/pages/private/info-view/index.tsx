@@ -80,7 +80,9 @@ const InfoView: React.FunctionComponent<{}> = () => {
 	return <Spin spinning={loading}>
 		{!loading &&
 		<>
-			<Typography.Title level={2}>Your team info</Typography.Title>
+			<Row justify={"start"}>
+			<Typography.Title level={2}>Your managed team info</Typography.Title>
+            </Row>
 			<Row gutter={12}>
 				<Col xs={24} sm={24} md={16}>
 					{renderLearningDays()}
