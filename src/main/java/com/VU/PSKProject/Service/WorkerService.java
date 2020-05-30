@@ -97,7 +97,7 @@ public class WorkerService {
 
     public ResponseEntity<WorkerToGetDTO> getWorkerById(Long id, UserDTO user) {
         Optional<Worker> worker = getWorker(id);
-        if(worker.isPresent()) {
+        if (worker.isPresent()) {
             WorkerToGetDTO workerDTO = workerMapper.toGetDTO(worker.get());
             workerDTO.setEmail(worker.get().getUser().getEmail());
             workerDTO.setLearningDays(learningDayService.getAllLearningDaysByWorkerId(worker.get().getId()).stream()
@@ -112,13 +112,11 @@ public class WorkerService {
             workerDTO.getManager().setEmail(worker.get().getWorkingTeam().getManager().getUser().getEmail());
 
 
-
-            if(checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
+            if (checkWorkerLeadRelationship(getWorkerByUserId(user.getId()), worker.get()))
                 return ResponseEntity.ok(workerDTO);
             else
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        else {
+        } else {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Message", "Worker with id " + id + " could not be found");
             return ResponseEntity.notFound().headers(headers).build();
@@ -126,7 +124,7 @@ public class WorkerService {
     }
 
     public void updateWorker(Long id, Worker worker) {
-        System.out.println("Worker id: "+ worker.getId());
+        System.out.println("Worker id: " + worker.getId());
         try {
             if (workerRepository.findById(id).isPresent()) {
                 worker.setId(id);
@@ -146,6 +144,10 @@ public class WorkerService {
     public List<WorkerToGetDTO> findColleagues(UserDTO userDTO) {
         Worker worker = getWorkerByUserId(userDTO.getId());
         List<Worker> colleagues = workerRepository.findAllByWorkingTeamId(worker.getWorkingTeam().getId());
+        // do not return the worker that requested his colleagues
+        colleagues = colleagues.stream()
+                .filter(c -> !Objects.equals(c.getId(), worker.getId()))
+                .collect(Collectors.toList());
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
         for (Worker w : colleagues) {
             WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);
@@ -161,6 +163,10 @@ public class WorkerService {
         if (worker.getManagedTeam() == null)
             throw new WorkerException("You have no managed team!");
         List<Worker> employees = workerRepository.findByWorkingTeamId(worker.getManagedTeam().getId());
+        // do not return the worker that requested his employees
+        employees = employees.stream()
+                .filter(emp -> !Objects.equals(emp.getId(), worker.getId()))
+                .collect(Collectors.toList());
         List<WorkerToGetDTO> workerDTOS = new ArrayList<>();
         for (Worker w : employees) {
             WorkerToGetDTO workerDTO = workerMapper.toGetDTO(w);

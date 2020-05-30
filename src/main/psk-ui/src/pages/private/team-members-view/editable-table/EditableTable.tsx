@@ -15,6 +15,10 @@ import { EditableCell } from './EditableCell';
 import { LearningEvent } from '../../../../models/learningEvent';
 import { Role } from "../../../../models/role";
 import { Link } from "react-router-dom";
+import { UpdateLimitsRequest } from "../../../../api/model/update-limits-request";
+import workerService from "../../../../api/worker-service";
+import notificationService, { NotificationType } from "../../../../service/notification-service";
+import history from '../../../../history';
 
 const { confirm } = Modal;
 
@@ -27,10 +31,26 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 	const [data, setData] = useState<Employee[]>([]);
 	useEffect(() => {
 		setData(props.employeeList);
-	}, [props.employeeList.length]);
+	}, [props.employeeList.length,history.location.pathname]);
 	const [editingKey, setEditingKey] = useState(-1);
 
 	const isEditing = (record: Employee) => record.id === editingKey;
+
+	function updateLimits(limits: UpdateLimitsRequest, id: number): Promise<void> {
+		return workerService.updateLimits(limits, id).then(() => {
+			console.log("id: ", id);
+			notificationService.notify({
+				notificationType: NotificationType.SUCCESS,
+				message: 'Limits update'
+			});
+		})
+			.catch(() => {
+				notificationService.notify({
+					notificationType: NotificationType.ERROR,
+					message: 'Could not update limits'
+				});
+			});
+	}
 
 	const edit = (record: Employee) => {
 		form.setFieldsValue({ quarterConstraint: 0, goals: [], ...record });
@@ -57,6 +77,10 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 				});
 				// SEND UPDATE EMPLOYEE REQUEST HERE
 				// dispatch(updateEmployee(item));
+				updateLimits({
+					consecutiveLearningDayLimit: newData[index].consecutiveLearningDayLimit,
+					quarterLearningDayLimit: newData[index].quarterLearningDayLimit
+				}, item.id)
 				console.log("Set data to: ", newData)
 				setData(newData);
 				setEditingKey(-1);
@@ -66,6 +90,10 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 				setData(newData);
 				// SEND UPDATE EMPLOYEE REQUEST HERE
 				// dispatch(updateEmployee(row));
+				updateLimits({
+					consecutiveLearningDayLimit: newData[index].consecutiveLearningDayLimit,
+					quarterLearningDayLimit: newData[index].quarterLearningDayLimit
+				}, row.id)
 				setEditingKey(-1);
 			}
 		} catch (errInfo) {
@@ -83,7 +111,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 				return worker.name === null ?
 					<Typography.Text disabled>Worker has not finished registration</Typography.Text> :
 					<Link
-						to={ `/profile/${ worker.id }` }>{ `${ worker.name } ${ worker.surname }` }</Link>;
+						to={`/profile/${worker.id}`}>{`${worker.name} ${worker.surname}`}</Link>;
 			},
 		},
 		{
@@ -119,7 +147,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			width: '12%',
 			editable: false,
 			render: (role: Role) => {
-				return <Tag color={ role.color }>{ role.name }</Tag>
+				return <Tag color={role.color}>{role.name}</Tag>
 
 			}
 		},
@@ -156,42 +184,42 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 
 				return editable ? (
 					<span>
-						<Button type="link" onClick={ () => save(record.id) } style={ { marginRight: 8 } }>
+						<Button type="link" onClick={() => save(record.id)} style={{ marginRight: 8 }}>
               Save
 
 						</Button>
-						<Popconfirm title="Sure to cancel?" onConfirm={ cancel }>
+						<Popconfirm title="Sure to cancel?" onConfirm={cancel}>
 							<Button type="link">Cancel</Button>
 						</Popconfirm>
 					</span>
 				) : (
 					<>
-						<Tooltip title={ EDIT_EMPLOYEE_DETAILS }>
+						<Tooltip title={EDIT_EMPLOYEE_DETAILS}>
 							<Button
 								shape="round"
 								size="small"
-								icon={ <EditOutlined/> }
-								disabled={ editingKey !== -1 }
-								onClick={ () => edit(record) }
+								icon={<EditOutlined/>}
+								disabled={editingKey !== -1}
+								onClick={() => edit(record)}
 								className="editButton"/>
 						</Tooltip>
-						<Tooltip title={ REMOVE_EMPLOYEE }>
+						<Tooltip title={REMOVE_EMPLOYEE}>
 							<Button
 								shape="round"
 								size="small"
 								type="dashed"
 								danger
-								icon={ <DeleteOutlined/> }
-								onClick={ () => confirm({
+								icon={<DeleteOutlined/>}
+								onClick={() => confirm({
 									width: 500,
 									title: DELETE_WARNING + record.name + ' ?',
 									icon: <ExclamationCircleOutlined/>,
 									content: <>
 										<span>
-											{ DELETE_WARNING_INFO }
+											{DELETE_WARNING_INFO}
 										</span>
 										<p>
-											<b>{ THIS_ACTION_CANNOT_BE_UNDONE }</b>
+											<b>{THIS_ACTION_CANNOT_BE_UNDONE}</b>
 										</p>
 									</>,
 									okText: 'Yes',
@@ -204,7 +232,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 									onCancel() {
 										console.log('Cancel');
 									},
-								}) }
+								})}
 							/>
 						</Tooltip>
 					</>
@@ -230,20 +258,20 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 	});
 
 	return (
-		<Form form={ form } component={ false }>
+		<Form form={form} component={false}>
 			<Table
-				components={ {
+				components={{
 					body: {
 						cell: EditableCell,
 					},
-				} }
+				}}
 				bordered
-				dataSource={ data }
-				columns={ mergedColumns }
+				dataSource={data}
+				columns={mergedColumns}
 				rowClassName="editable-row"
-				pagination={ {
+				pagination={{
 					onChange: cancel,
-				} }
+				}}
 			/>
 		</Form>
 	);
