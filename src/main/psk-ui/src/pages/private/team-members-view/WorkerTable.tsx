@@ -18,7 +18,6 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 
 	useEffect(() => {
 		setData(props.employeeList);
-		console.log(props.employeeList)
 	}, [props.employeeList.length]);
 
 	const columns = props.columns ? props.columns : [
@@ -58,7 +57,7 @@ const WorkerTable: React.FunctionComponent<TableProps> = (props: TableProps) => 
 			dataIndex: 'role',
 			key: 'role',
 			render: (role: Role) => {
-				return <Tag color={role.color}>{role.title}</Tag>;
+				return <Tag color={role.color}>{role.name}</Tag>;
 
 			}
 		},

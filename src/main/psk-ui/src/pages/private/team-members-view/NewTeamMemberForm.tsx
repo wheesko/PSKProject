@@ -1,22 +1,26 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {Form, Input, Button, Alert, notification, Spin,} from 'antd';
+import { Form, Input, Button, Alert, notification, Spin, Select, Tag, AutoComplete, } from 'antd';
 import {
 	EMPLOYEE_EMAIL,
 	EMPLOYEE_EMAIL_REQUIRED, EMPLOYEE_ROLE, EMPLOYEE_ROLE_REQUIRED, INVITE_NEW_EMPLOYEE, SEND_INVITE_LINK,
 } from '../../../constants/employeeConstants';
 import './editable-table/EditableTableStyles.css';
 import workerService from '../../../api/worker-service';
-import notificationService, {NotificationType} from '../../../service/notification-service';
+import notificationService, { NotificationType } from '../../../service/notification-service';
+import { LearningTopic } from "../../../models/learningTopic";
+import { Role } from "../../../models/role";
+import roleService from '../../../api/role-service';
+import { getRoleColor } from "../../../tools/roleColorPicker";
 
 const formItemLayout = {
 	labelCol: {
-		xs: {span: 24},
-		sm: {span: 8}
+		xs: { span: 24 },
+		sm: { span: 8 }
 	},
 	wrapperCol: {
-		xs: {span: 24},
-		sm: {span: 16}
+		xs: { span: 24 },
+		sm: { span: 16 }
 	}
 };
 
@@ -28,6 +32,23 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 	const [isSending, setIsSending] = useState<boolean>(false);
 
 	const [form] = Form.useForm();
+	const [selectedRole, setSelectedRole] = useState<Role>();
+	const [roles, setRoles] = useState<Role[]>([]);
+	const [autoCompleteResult, setAutoCompleteResult] = useState<Role[]>([]);
+
+	useEffect(() => {
+		// sort role by role names in ascending order
+		roleService.getAllRoles().then(roles => {
+				setRoles(roles.sort((a, b) => a.name > b.name ? 1 : -1));
+			}
+		).catch(e => {
+			notificationService.notify({
+				notificationType: NotificationType.ERROR,
+				message: 'Could not get Roles'
+			});
+		});
+	}, []);
+
 	const openSuccessNotificationWithIcon = () => {
 		notification['success']({
 			message: 'Email invite sent!',
@@ -38,7 +59,7 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 		setIsSending(true);
 		workerService.addEmployee({
 			email: form.getFieldsValue()['email'],
-			role: {roleName: form.getFieldsValue()['role']}
+			role: { roleName: form.getFieldsValue()['role'].toLowerCase() }
 		}).then(() => {
 			setIsSending(false);
 			openSuccessNotificationWithIcon();
@@ -79,27 +100,36 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 					<Form
 						form={form}
 						{...formItemLayout}
-						initialValues={{remember: true}}
+						initialValues={{ remember: true }}
 						name="newTeamMemberForm"
 					>
 						<Form.Item
 							label={EMPLOYEE_EMAIL}
 							name="email"
-							rules={[{required: true, message: EMPLOYEE_EMAIL_REQUIRED, type: 'email'}]}
+							rules={[{ required: true, message: EMPLOYEE_EMAIL_REQUIRED, type: 'email' }]}
 						>
 							<Input allowClear/>
 						</Form.Item>
 						<Form.Item
 							label={EMPLOYEE_ROLE}
 							name="role"
-							rules={[{required: true, message: EMPLOYEE_ROLE_REQUIRED}]}
+							rules={[{ required: true, message: EMPLOYEE_ROLE_REQUIRED }]}
 						>
-							<Input allowClear placeholder={'e.g. Backend Engineer'}/>
+							<AutoComplete
+								options={roles.map(role => {
+									return { value: role.name }
+								})}
+								placeholder="eg. Business Analyst"
+								filterOption={(inputValue, option) =>
+									option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+								}
+							/>
+
 						</Form.Item>
 						<Form.Item
 							wrapperCol={{
-								xs: {span: 24, offset: 0},
-								sm: {span: 16, offset: 8}
+								xs: { span: 24, offset: 0 },
+								sm: { span: 16, offset: 8 }
 							}}
 						>
 							<Button
@@ -117,4 +147,4 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 	);
 };
 
-export {NewTeamMemberForm};
+export { NewTeamMemberForm };

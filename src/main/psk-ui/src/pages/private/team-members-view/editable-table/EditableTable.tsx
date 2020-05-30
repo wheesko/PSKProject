@@ -28,7 +28,6 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 	useEffect(() => {
 		setData(props.employeeList);
 	}, [props.employeeList.length]);
-	console.log(props.employeeList);
 	const [editingKey, setEditingKey] = useState(-1);
 
 	const isEditing = (record: Employee) => record.id === editingKey;
@@ -120,7 +119,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 			width: '12%',
 			editable: false,
 			render: (role: Role) => {
-				return <Tag color={ role.color }>{ role.title }</Tag>
+				return <Tag color={ role.color }>{ role.name }</Tag>
 
 			}
 		},

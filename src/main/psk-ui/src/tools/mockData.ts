@@ -6,13 +6,13 @@ import { Employee } from '../models/employee';
 import { getRoleColor } from './roleColorPicker';
 
 export const roles: Role[] = [
-	{ title: 'Java developer', color: 'blue' },
-	{ title: 'Business analyst', color: 'gold' },
-	{ title: 'Test engineer', color: 'green', },
-	{ title: 'Software process manager', color: 'purple', },
-	{ title: 'Front-end engineer', color: 'volcano' },
-	{ title: 'Back-end engineer', color: 'lime' },
-	{ title: 'Database engineer', color: 'geekblue' }];
+	{ name: 'Java developer', color: 'blue', roleGoals: [], id: 5},
+	{ name: 'Business analyst', color: 'gold', roleGoals: [], id: 6 },
+	{ name: 'Test engineer', color: 'green', roleGoals: [] , id: 7},
+	{ name: 'Software process manager', color: 'purple', roleGoals: [], id: 8 },
+	{ name: 'Front-end engineer', color: 'volcano', roleGoals: [] , id: 9},
+	{ name: 'Back-end engineer', color: 'lime', roleGoals: [] , id: 10},
+	{ name: 'Database engineer', color: 'geekblue', roleGoals: [], id: 11 }];
 
 export const defaultQuarterConstraint = 3;
 
@@ -35,7 +35,7 @@ export const workerList: Worker[] = [
 		id: 2,
 		name: 'Lukas',
 		surname: 'Michnevic',
-		role: roles.find((role => role.title === 'Back-end engineer')),
+		role: roles.find((role => role.name === 'Back-end engineer')),
 		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
@@ -50,7 +50,7 @@ export const workerList: Worker[] = [
 		id: 3,
 		name: 'Vytautas',
 		surname: 'Rudys',
-		role: roles.find((role => role.title === 'Back-end engineer')),
+		role: roles.find((role => role.name === 'Back-end engineer')),
 		quarterConstraint: defaultQuarterConstraint,
 		team: 'PSK_123',
 		// learnedTopics:
@@ -88,7 +88,7 @@ export const myEmployees: Employee[] = [
 		managerId: 3,
 		name: 'Povilas',
 		quarterLearningDayLimit: 3,
-		role: { title: 'Front-end Engineer', color: getRoleColor('Front-end Engineer') },
+		role: { name: 'Front-end Engineer', color: getRoleColor('Front-end Engineer') , roleGoals: [],  id: 1 },
 		surname: 'Tamosauskas',
 		team: psk123Team.name,
 	}, {
@@ -100,7 +100,7 @@ export const myEmployees: Employee[] = [
 		managerId: 3,
 		name: 'Lukas',
 		quarterLearningDayLimit: 3,
-		role: { title: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
+		role: { name: 'Back-end engineer', color: getRoleColor('Back-end engineer') , roleGoals: [], id: 2},
 		surname: 'Michnevic',
 		team: psk123Team.name,
 		id: 2,
@@ -113,7 +113,7 @@ export const myEmployees: Employee[] = [
 		workingTeam: psk123Team,
 		managerId: -1,
 		quarterLearningDayLimit: 3,
-		role: { title: 'Back-end engineer', color: getRoleColor('Back-end engineer') },
+		role: { name: 'Back-end engineer', color: getRoleColor('Back-end engineer'), roleGoals: [], id: 3  },
 		surname: 'Rudys',
 		team: psk123Team.name,
 		id: 3,
@@ -123,11 +123,11 @@ export const myEmployees: Employee[] = [
 		consecutiveLearningDayLimit: 5,
 		email: 'email4@mail.com',
 		goals: [],
-		managedTeam: { id: 0, name:'' },
+		managedTeam: { id: 0, name: '' },
 		workingTeam: psk123Team,
 		managerId: -1,
 		quarterLearningDayLimit: 3,
-		role: { title: 'Database engineer', color: getRoleColor('Database engineer') },
+		role: { name: 'Database engineer', color: getRoleColor('Database engineer'), roleGoals: [], id: 0},
 		surname: 'Dijokas',
 		team: psk123Team.name,
 		id: 4,
@@ -137,11 +137,11 @@ export const myEmployees: Employee[] = [
 		consecutiveLearningDayLimit: 5,
 		email: 'email5@mail.com',
 		goals: [],
-		managedTeam: { id: 0, name:'' },
+		managedTeam: { id: 0, name: '' },
 		workingTeam: psk123Team,
 		managerId: -1,
 		quarterLearningDayLimit: 3,
-		role: { title: 'Backend engineer', color: getRoleColor('Backend engineer') },
+		role: { name: 'Backend engineer', color: getRoleColor('Backend engineer'), roleGoals: [], id: 1 },
 		surname: 'Golotylecas',
 		team: psk123Team.name,
 		id: 5,
@@ -210,9 +210,9 @@ export const teams = [{
 	employeeAmount: 3,
 	planningAmount: 4,
 },
-{
-	teamName: 'Beta',
-	manager: 'Fictional Manager1',
-	employeeAmount: 5,
-	planningAmount: 7,
-}];
+	{
+		teamName: 'Beta',
+		manager: 'Fictional Manager1',
+		employeeAmount: 5,
+		planningAmount: 7,
+	}];

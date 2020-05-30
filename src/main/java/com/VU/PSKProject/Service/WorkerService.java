@@ -27,10 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -281,7 +278,12 @@ public class WorkerService {
         teamService.getTeamByManager(managerWorker.getId()).ifPresent(worker::setWorkingTeam);
         if (workerDTO.getRole() == null || workerDTO.getRole().getRoleName().length() == 0)
             throw new WorkerException("Role not provided");
-        Role workerRole = roleService.findOrCreateRole(workerDTO.getRole().getRoleName());
+        String requestRoleName = workerDTO.getRole().getRoleName();
+        // only save roles in first char of word is uppercase format
+        String transformedRoleName = Arrays.stream(requestRoleName.split(" "))
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
+        Role workerRole = roleService.findOrCreateRole(transformedRoleName);
         worker.setRole(workerRole);
         createWorker(worker);
         return sendEmailToNewWorker(u, worker, temporaryPassword);

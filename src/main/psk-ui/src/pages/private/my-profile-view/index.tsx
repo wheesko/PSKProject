@@ -34,9 +34,7 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 			email,
 			name,
 			surname,
-			role: {
-				title
-			}
+			role
 		}
 	} = props;
 	const [topics, setTopics] = useState<LearningTopic[]>([]);
@@ -61,7 +59,7 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 				<Typography.Title level={ 2 }>Hello, { name } { surname }</Typography.Title>
 			</Col>
 			<Col span={ 12 } style={{textAlign: 'right'}}>
-				<Tag color={ getRoleColor(title) } className={ "profile-role-tag " }>{ title }</Tag>
+				<Tag color={ getRoleColor(role.name) } className={ "profile-role-tag " }>{ role.name }</Tag>
 			</Col>
 		</Row>
 		{ renderMyInfoCard() }

@@ -54,8 +54,8 @@ class WorkerService {
 					managerId: record?.managerId,
 					name: record?.name,
 					quarterLearningDayLimit: record?.quarterLearningDayLimit,
-					role: record.role === null ? { title: '', color: '' } : {
-						title: record?.role.name,
+					role: record.role === null ? { name: '', color: '' } : {
+						name: record?.role.name,
 						color: getRoleColor(record?.role.name)
 					},
 					surname: record?.surname,
@@ -77,8 +77,8 @@ class WorkerService {
 					managerId: record?.managerId,
 					name: record?.name,
 					quarterLearningDayLimit: record?.quarterLearningDayLimit,
-					role: record.role === null ? { title: '', color: '' } : {
-						title: record?.role.name,
+					role: record.role === null ? { name: '', color: '' } : {
+						name: record?.role.name,
 						color: getRoleColor(record?.role.name)
 					},
 					surname: record?.surname,
@@ -94,7 +94,6 @@ class WorkerService {
 	};
 
 	public getMembersOfTeam = (id: number): Promise<any> => {
-		console.log('here');
 		return this.restService.get<any>(`/teams/get/${id}`)
 			.then(response => response.data);
 	}
