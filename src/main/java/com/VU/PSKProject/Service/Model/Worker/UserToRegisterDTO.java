@@ -23,5 +23,5 @@ public class UserToRegisterDTO {
     private Integer consecutiveLearningDayLimit;
 
     //private List<LearningDayDTO> learningDays;
-    private List<WorkerGoalDTO> goals;
+    //private List<WorkerWithoutGoalsDTO> goals;
 }
