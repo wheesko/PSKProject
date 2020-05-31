@@ -22,4 +22,11 @@ public class TeamGoal {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Topic topic;
 
+    public TeamGoal(){
+
+    }
+    public TeamGoal(Team team, Topic topic){
+        this.team = team;
+        this.topic = topic;
+    }
 }

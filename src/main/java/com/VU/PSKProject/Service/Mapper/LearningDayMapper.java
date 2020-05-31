@@ -4,14 +4,12 @@ import com.VU.PSKProject.Entity.LearningDay;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -19,12 +17,26 @@ public class LearningDayMapper {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private WorkerMapper workerMapper;
+    @Autowired
+    private TopicMapper topicMapper;
 
     public LearningDayDTO toDTO(LearningDay learningDay) {
         return modelMapper.map(learningDay, LearningDayDTO.class);
     }
 
-    public LearningDayToReturnDTO toReturnDTO(LearningDay learningDay){return modelMapper.map(learningDay, LearningDayToReturnDTO.class);}
+    public LearningDayToReturnDTO toReturnDTO(LearningDay day){
+        LearningDayToReturnDTO dayDto = new LearningDayToReturnDTO();
+        dayDto.setId(day.getId());
+        dayDto.setComment(day.getComment());
+        dayDto.setName(day.getName());
+        dayDto.setDateTimeAt(day.getDateTimeAt());
+        dayDto.setLearned(day.isLearned());
+        dayDto.setTopic(topicMapper.toReturnDto(day.getTopic()));
+        dayDto.setAssignee(workerMapper.toDTO(day.getAssignee()));
+        return dayDto;
+    }
 
     public LearningDay fromDTO(LearningDayDTO learningDayDTO){
         return modelMapper.map(learningDayDTO, LearningDay.class);
@@ -35,15 +47,10 @@ public class LearningDayMapper {
     }
 
     public List<LearningDayToReturnDTO> mapLearningDayListToReturnDTO(List<LearningDay> learningDays) {
-       List<LearningDayToReturnDTO> learningDayToReturnDTOS = new ArrayList<>();
-       for(LearningDay day : learningDays){
-           LearningDayToReturnDTO dayDTO = new LearningDayToReturnDTO();
-           dayDTO = modelMapper.map(day, LearningDayToReturnDTO.class);
-           learningDayToReturnDTOS.add(dayDTO);
-       }
-        /*return learningDays.stream()
-                .map(day -> modelMapper.map(day, LearningDayToReturnDTO.class))
-                .collect(Collectors.toList());*/
+        List<LearningDayToReturnDTO> learningDayToReturnDTOS = new ArrayList<>();
+        for(LearningDay day : learningDays){
+            learningDayToReturnDTOS.add(toReturnDTO(day));
+        }
         return learningDayToReturnDTOS;
     }
 }

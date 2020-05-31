@@ -21,4 +21,10 @@ public class RoleGoal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Topic topic;
+    public RoleGoal(){
+    }
+    public RoleGoal(Role role, Topic topic){
+        this.role = role;
+        this.topic = topic;
+    }
 }

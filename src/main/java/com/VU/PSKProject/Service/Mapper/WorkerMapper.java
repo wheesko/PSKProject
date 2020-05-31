@@ -38,6 +38,8 @@ public class WorkerMapper {
     private RoleMapper roleMapper;
     @Autowired
     private TopicMapper topicMapper;
+    @Autowired
+    private TeamMapper teamMapper;
 
 
     public Worker fromDTO(WorkerDTO workerDTO)
@@ -58,7 +60,25 @@ public class WorkerMapper {
     }
 
     public UserToRegisterDTO toRegisterDTO(Worker worker){
-        return modelMapper.map(worker, UserToRegisterDTO.class);
+        UserToRegisterDTO user = new UserToRegisterDTO();
+        user.setConsecutiveLearningDayLimit(worker.getConsecutiveLearningDayLimit());
+        user.setQuarterLearningDayLimit(worker.getQuarterLearningDayLimit());
+
+       /* WorkerManagedTeamDTO workerManagedTeamDTO = new WorkerManagedTeamDTO();
+        workerManagedTeamDTO.setName(worker.getManagedTeam().getName());
+        workerManagedTeamDTO.setId(worker.getManagedTeam().getId());
+        user.setManagedTeam(workerManagedTeamDTO);*/
+
+        WorkerWorkingTeamDTO workerWorkingTeamDTO = new WorkerWorkingTeamDTO();
+        workerWorkingTeamDTO.setId(worker.getWorkingTeam().getId());
+        workerWorkingTeamDTO.setName(worker.getWorkingTeam().getName());
+        user.setWorkingTeam(workerWorkingTeamDTO);
+
+        user.setName(worker.getName());
+        user.setSurname(worker.getSurname());
+        user.setRole(roleMapper.toDto(worker.getRole()));
+
+        return user;
     }
 
     public List<WorkerToExportDTO> toExportDTOList(List<Worker> workerList){
