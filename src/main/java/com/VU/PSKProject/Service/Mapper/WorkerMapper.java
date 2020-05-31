@@ -122,7 +122,7 @@ public class WorkerMapper {
         List<LearningDayDTO> days = new ArrayList<>();
         List<TopicToReturnDTO> goals = new ArrayList<>();
         for (LearningDay day : w.getLearningDays()) {
-            LearningDayDTO learningDayDTO = new LearningDayDTO(day.getId(), day.getName(), day.getComment(), day.getDateTimeAt(), false);
+            LearningDayDTO learningDayDTO = new LearningDayDTO(day.getId(), day.getName(), day.getComment(), day.getDateTimeAt(), day.isLearned());
             learningDayDTO.setTopic(topicMapper.toReturnDto(day.getTopic()));
             learningDayDTO.setAssignee(new LearningDayAssigneeDTO(day.getAssignee().getId()));
             days.add(learningDayDTO);

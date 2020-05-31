@@ -1,6 +1,7 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.LearningDay;
+import com.VU.PSKProject.Service.Model.LearnedTopicDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
@@ -52,5 +53,13 @@ public class LearningDayMapper {
             learningDayToReturnDTOS.add(toReturnDTO(day));
         }
         return learningDayToReturnDTOS;
+    }
+    public LearnedTopicDTO mapToLearnedTopicDTO(LearningDay day){
+        LearnedTopicDTO topicDTO = new LearnedTopicDTO();
+        topicDTO.setId(day.getTopic().getId());
+        topicDTO.setTopic(day.getTopic().getName());
+        topicDTO.setDescription(day.getTopic().getDescription());
+        topicDTO.setLearned(day.isLearned());
+        return topicDTO;
     }
 }
