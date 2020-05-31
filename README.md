@@ -61,3 +61,6 @@ You should now be able to call them, provided your JWT was correct and not expir
 # Working with database
 
 Database tables are auto-generated using hibernate.ddl-auto. On the initial project launch, make sure it is set to *create* in *application.properties*. On further launches, change this setting to *update*
+
+# Using the application
+Application starts with sample data, you can use login "admin" with password "admin" to start using the application.

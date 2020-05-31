@@ -1,0 +1,8 @@
+.topic-row * {
+    display: flex;
+}
+
+.topic-row > div > div {
+    width: 100%;
+    justify-content: start;
+}

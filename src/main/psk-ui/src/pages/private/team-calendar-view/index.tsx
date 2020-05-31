@@ -73,7 +73,7 @@ const TeamCalendarView: React.FunctionComponent<{}> = () => {
 
 	function loadData(value: moment.Moment): Promise<TeamLearningDaysResponse[]> {
 		// fetch by year, month, day (or any arguments based on backend requirements)
-		// console.log(value.year(), value.month(), value.date())
+		// screeconsole.log(value.year(), value.month(), value.date())
 
 		// example data:
 		setLoading(true);

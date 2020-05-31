@@ -159,12 +159,13 @@ public class SampleDataDB {
         ArrayList<LearningDay> learningDayList = new ArrayList<>();
         Timestamp time = new Timestamp(new Date().getTime());
 
-        learningDayList.add(new LearningDay("Study C", "C Study", time, workers.get(0),c));
-        learningDayList.add(new LearningDay("Study OOP", "OOP Study", new Timestamp(time.getTime() + (1000*3600*25)), workers.get(0),oop));
-        learningDayList.add(new LearningDay("Study CPP", "CPP Study", new Timestamp(time.getTime() + (1000*3600*50)), workers.get(0),cpp));
-        learningDayList.add(new LearningDay("Study Gamedev", "Gamedev Study", new Timestamp(time.getTime() + (1000*3600*75)), workers.get(0), gd));
-        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() + (1000*3600*100)) , workers.get(0),ads));
-        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() - (1000*3600*100)) , workers.get(0),ads));
+        learningDayList.add(new LearningDay("Study C", "C Study", time, workers.get(0),c,false));
+        learningDayList.add(new LearningDay("Study OOP", "OOP Study", new Timestamp(time.getTime() + (1000*3600*25)), workers.get(0),oop,false));
+        learningDayList.add(new LearningDay("Study CPP", "CPP Study", new Timestamp(time.getTime() + (1000*3600*50)), workers.get(0),cpp,false));
+        learningDayList.add(new LearningDay("Study Gamedev", "Gamedev Study", new Timestamp(time.getTime() + (1000*3600*75)), workers.get(0), gd,false));
+        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() - (1000*3600*100)) , workers.get(0),ads,true));
+        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() - (1000*3600*100)) , workers.get(1),ads,true));
+        learningDayList.add(new LearningDay("Study C#", "Studying C#",new Timestamp(time.getTime() - (1000*3600*75)) , workers.get(1),cs,true));
         learningDayRepository.saveAll(learningDayList);
     }
 
