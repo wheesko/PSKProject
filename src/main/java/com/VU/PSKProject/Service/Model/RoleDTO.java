@@ -10,5 +10,5 @@ import java.util.List;
 public class RoleDTO {
     private Long id;
     private String name;
-    private List<Long> roleGoals;
+    private List<RoleGoalDTO> roleGoals;
 }

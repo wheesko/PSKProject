@@ -19,8 +19,13 @@ public class SampleDataDB {
     WorkerGoalRepository workerGoalRepository;
     LearningDayRepository learningDayRepository;
     ArrayList<User> users = new ArrayList<User>();
+    ArrayList<Topic> topics = new ArrayList<Topic>();
     ArrayList<Worker> workers = new ArrayList<>();
     ArrayList<Team> teams = new ArrayList<>();
+    ArrayList<WorkerGoal> workerGoals = new ArrayList<>();
+    ArrayList<RoleGoal> roleGoals = new ArrayList<>();
+    ArrayList<TeamGoal> teamGoals = new ArrayList<>();
+    ArrayList<TeamGoal> doneLearningDays = new ArrayList<>();
     ArrayList<Role> roles = new ArrayList<>();
     Topic gd, ge, cpp, cs, oop, ads, c;
 
@@ -105,8 +110,6 @@ public class SampleDataDB {
         roleRepository.saveAll(roles);
     }
     public void saveTopics(){
-        ArrayList<Topic> topics = new ArrayList<Topic>();
-
         ArrayList<Topic> cppChildren = new ArrayList<>();
         gd = new Topic("Game development", null, "Intro to game dev", null);
         ge = new Topic("Game Engines", null, "Intro to game engines", null);
@@ -143,6 +146,43 @@ public class SampleDataDB {
         teams.add(new Team("HRs", null, null, null));
         teamRepository.saveAll(teams);
     }
+
+    public void saveWorkerGoals(){
+        workerGoals.add(new WorkerGoal(workers.get(1), topics.get(1)));
+        workerGoals.add(new WorkerGoal(workers.get(1), topics.get(2)));
+        workerGoals.add(new WorkerGoal(workers.get(2), topics.get(1)));
+        workerGoals.add(new WorkerGoal(workers.get(3), topics.get(1)));
+        workerGoals.add(new WorkerGoal(workers.get(3), topics.get(3)));
+        workerGoalRepository.saveAll(workerGoals);
+    }
+
+    public void saveRoleGoals(){
+        roleGoals.add(new RoleGoal(roles.get(0), topics.get(0)));
+        roleGoals.add(new RoleGoal(roles.get(0), topics.get(1)));
+        roleGoals.add(new RoleGoal(roles.get(1), topics.get(3)));
+        roleGoalRepository.saveAll(roleGoals);
+    }
+
+    public void saveTeamGoals(){
+        teamGoals.add(new TeamGoal(teams.get(0), topics.get(2)));
+        teamGoals.add(new TeamGoal(teams.get(0), topics.get(3)));
+        teamGoals.add(new TeamGoal(teams.get(1), topics.get(4)));
+        teamGoalRepository.saveAll(teamGoals);
+    }
+
+    public void saveDoneLearningDays() {
+        Timestamp time = new Timestamp(new Date().getTime());
+        LearningDay day1 = new LearningDay("Study CPP", "CPP Study", new Timestamp(time.getTime() - (1000*3600*50)), workers.get(0),cpp);
+        LearningDay day2 =new LearningDay("Study Gamedev", "Gamedev Study", new Timestamp(time.getTime() - (1000*3600*75)), workers.get(0), gd);
+        LearningDay day3 =new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() - (1000*3600*100)) , workers.get(0),ads);
+        day1.setLearned(true);
+        day2.setLearned(true);
+        day3.setLearned(true);
+        learningDayRepository.save(day1);
+        learningDayRepository.save(day2);
+        learningDayRepository.save(day3);
+    }
+
     public void saveWorkers(){
         workers.add(new Worker("John", "Wick", users.get(0), teams.get(0), teams.get(0), roles.get(0),
                 5, 5,
@@ -153,6 +193,24 @@ public class SampleDataDB {
         workers.add(new Worker("Tony", "Montana", users.get(7), teams.get(2), teams.get(2), roles.get(0),
                 5, 5,
                 null, null));
+
+        workers.addAll(Arrays.asList(
+                new Worker("Alice", "A.", users.get(2), null, teams.get(1),  roles.get(1),
+                        5, 5,
+                        null, null),
+                new Worker("Bob", "B.", users.get(3), null, teams.get(1),  roles.get(1),
+                        5, 5,
+                        null, null),
+                new Worker("Jack", "D.", users.get(4), null, teams.get(1), roles.get(0),
+                        5, 5,
+                        null, null),
+                new Worker("Jack", "Murphy", users.get(5), null, teams.get(2), roles.get(0),
+                        5, 5,
+                        null, null),
+                new Worker("John", "Connor", users.get(6), null, teams.get(2), roles.get(0),
+                        5, 5,
+                        null, null)
+        ));
         workerRepository.saveAll(workers);
     }
     public void saveLearningDays(){
@@ -161,10 +219,14 @@ public class SampleDataDB {
 
         learningDayList.add(new LearningDay("Study C", "C Study", time, workers.get(0),c));
         learningDayList.add(new LearningDay("Study OOP", "OOP Study", new Timestamp(time.getTime() + (1000*3600*25)), workers.get(0),oop));
-        learningDayList.add(new LearningDay("Study CPP", "CPP Study", new Timestamp(time.getTime() + (1000*3600*50)), workers.get(0),cpp));
-        learningDayList.add(new LearningDay("Study Gamedev", "Gamedev Study", new Timestamp(time.getTime() + (1000*3600*75)), workers.get(0), gd));
-        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() + (1000*3600*100)) , workers.get(0),ads));
         learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() - (1000*3600*100)) , workers.get(0),ads));
+
+        learningDayList.add(new LearningDay("Study OOP", "OOP Study", new Timestamp(time.getTime() + (1000*3600*50)), workers.get(1),oop));
+        learningDayList.add(new LearningDay("Study C#", "C# Study", new Timestamp(time.getTime() + (1000*3600*75)), workers.get(1), cs));
+        learningDayList.add(new LearningDay("Study CPP", "CPP Study",new Timestamp(time.getTime() + (1000*3600*100)) , workers.get(3),cpp));
+        learningDayList.add(new LearningDay("Study C", "C Study",new Timestamp(time.getTime() + (1000*3600*100)) , workers.get(4),c));
+        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() + (1000*3600*100)) , workers.get(2),ads));
+        learningDayList.add(new LearningDay("Study ADS", "ADS Study",new Timestamp(time.getTime() - (1000*3600*100)) , workers.get(3),ads));
         learningDayRepository.saveAll(learningDayList);
     }
 
@@ -208,25 +270,5 @@ public class SampleDataDB {
         allTopics.add(rootTopic);
 
         topicRepository.saveAll(allTopics);
-    }
-
-    public void saveWorkersLast(){
-        workerRepository.saveAll(Arrays.asList(
-                new Worker("Alice", "A.", users.get(2), null, teams.get(1),  roles.get(1),
-                        5, 5,
-                        null, null),
-                new Worker("Bob", "B.", users.get(3), null, teams.get(1),  roles.get(1),
-                        5, 5,
-                        null, null),
-                new Worker("Jack", "D.", users.get(4), null, teams.get(1), roles.get(0),
-                        5, 5,
-                        null, null),
-                new Worker("Jack", "Murphy", users.get(5), null, teams.get(2), roles.get(0),
-                        5, 5,
-                        null, null),
-                new Worker("John", "Connor", users.get(6), null, teams.get(2), roles.get(0),
-                        5, 5,
-                        null, null)
-        ));
     }
 }

@@ -1,6 +1,8 @@
 package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Entity.RoleGoal;
+import com.VU.PSKProject.Service.Mapper.RoleMapper;
+import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.RoleGoalDTO;
 import com.VU.PSKProject.Service.RoleGoalService;
 import com.VU.PSKProject.Utils.PropertyUtils;
@@ -25,13 +27,19 @@ public class RoleGoalController {
     @Autowired
     private TopicService topicService;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
+    @Autowired
+    private TopicMapper topicMapper;
+
     @GetMapping("/getAll")
     public ResponseEntity<List<RoleGoalDTO>> getRoleGoals(){
 
         List<RoleGoal> roleGoals = roleGoalService.getAllRoleGoals();
         List<RoleGoalDTO> roleGoalDTOS = new ArrayList<>();
         for (RoleGoal roleGoal : roleGoals) {
-            RoleGoalDTO roleGoalDTO = new RoleGoalDTO(roleGoal.getId(), roleGoal.getRole().getId(), roleGoal.getTopic().getId());
+            RoleGoalDTO roleGoalDTO = new RoleGoalDTO(roleGoal.getId(), roleMapper.toDto(roleGoal.getRole()), topicMapper.toDto(roleGoal.getTopic()));
             roleGoalDTOS.add(roleGoalDTO);
         }
         return ResponseEntity.ok(roleGoalDTOS);
@@ -41,7 +49,7 @@ public class RoleGoalController {
     public ResponseEntity<RoleGoalDTO> getRoleGoal(@PathVariable Long id){
         Optional<RoleGoal> roleGoal =roleGoalService.getRoleGoal(id);
         if(roleGoal.isPresent()){
-            RoleGoalDTO roleGoalDTO = new RoleGoalDTO(roleGoal.get().getId(), roleGoal.get().getRole().getId(), roleGoal.get().getTopic().getId());
+            RoleGoalDTO roleGoalDTO = new RoleGoalDTO(roleGoal.get().getId(), roleMapper.toDto(roleGoal.get().getRole()), topicMapper.toDto(roleGoal.get().getTopic()));
             return ResponseEntity.ok(roleGoalDTO);
         }
         else {
@@ -55,18 +63,18 @@ public class RoleGoalController {
     public ResponseEntity<String> createRoleGoal(@RequestBody RoleGoalDTO roleGoalDto){
         RoleGoal roleGoal = new RoleGoal();
         PropertyUtils.customCopyProperties(roleGoalDto, roleGoal);
-        roleService.getRole(roleGoalDto.getRole()).ifPresent(roleGoal::setRole);
-        topicService.getTopic(roleGoalDto.getTopic()).ifPresent(roleGoal::setTopic);
+        roleService.getRole(roleGoalDto.getRole().getId()).ifPresent(roleGoal::setRole);
+        topicService.getTopic(roleGoalDto.getTopic().getId()).ifPresent(roleGoal::setTopic);
 
         List<RoleGoal> roleGoals = roleGoalService.getAllRoleGoals();
         for (RoleGoal roleg: roleGoals) {
-            if (roleGoalDto.getTopic().equals(roleg.getTopic().getId()) && roleg.getRole().getId() == roleGoalDto.getRole()){
+            if (roleGoalDto.getTopic().equals(roleg.getTopic().getId()) && roleg.getRole().getId() == roleGoalDto.getRole().getId()){
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Message", "identical goal already exists");
                 return ResponseEntity.badRequest().headers(headers).build();
             }
         }
-        if (roleGoalService.checkIfRoleAndTopicExist(roleGoalDto.getRole(), roleGoalDto.getTopic())) {
+        if (roleGoalService.checkIfRoleAndTopicExist(roleGoalDto.getRole().getId(), roleGoalDto.getTopic().getId())) {
             roleGoalService.createRoleGoal(roleGoal);
             return ResponseEntity.ok("ok created");
         }

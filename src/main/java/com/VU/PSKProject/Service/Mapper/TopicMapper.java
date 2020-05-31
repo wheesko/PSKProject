@@ -2,6 +2,7 @@ package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.Topic;
 import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
+import com.VU.PSKProject.Service.Model.TopicDTO;
 import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,9 @@ public class TopicMapper {
 
     public CoveredTopicDTO toTreeNodeDTO(Topic topic){
         return modelMapper.map(topic, CoveredTopicDTO.class);
+    }
+
+    public TopicDTO toDto(Topic topic){
+        return modelMapper.map(topic, TopicDTO.class);
     }
 }

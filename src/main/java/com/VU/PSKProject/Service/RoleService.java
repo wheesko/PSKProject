@@ -3,7 +3,10 @@ package com.VU.PSKProject.Service;
 import com.VU.PSKProject.Entity.Role;
 import com.VU.PSKProject.Entity.RoleGoal;
 import com.VU.PSKProject.Repository.RoleRepository;
+import com.VU.PSKProject.Service.Mapper.RoleGoalMapper;
+import com.VU.PSKProject.Service.Mapper.RoleMapper;
 import com.VU.PSKProject.Service.Model.RoleDTO;
+import com.VU.PSKProject.Service.Model.RoleGoalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,9 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private RoleGoalMapper roleGoalMapper;
+
     public List<RoleDTO> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
         List<RoleDTO> roleDTOS = new ArrayList<>();
@@ -23,9 +29,10 @@ public class RoleService {
             RoleDTO roleDTO = new RoleDTO();
             roleDTO.setId(r.getId());
             roleDTO.setName(r.getName());
-            List<Long> roleGoals = new ArrayList<>();
+            List<RoleGoalDTO> roleGoals = new ArrayList<>();
             for (RoleGoal g : r.getRoleGoals()) {
-                roleGoals.add(g.getId());
+                RoleGoalDTO roleGoalDTO = new RoleGoalDTO();
+                roleGoalDTO = roleGoalMapper.toDto(g);
             }
             roleDTO.setRoleGoals(roleGoals);
             roleDTOS.add(roleDTO);

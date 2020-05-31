@@ -14,7 +14,7 @@ public class WorkerWithoutGoalsDTO {
     private String surname;
     private String email;
 
-    private RoleDTO role;
+    private RoleWithoutGoalDTO role;
     private WorkerManagedTeamDTO managedTeam;
     private WorkerWorkingTeamDTO workingTeam;
 
