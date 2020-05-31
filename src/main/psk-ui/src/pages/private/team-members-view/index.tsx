@@ -12,7 +12,7 @@ import {
 	CREATE_A_NEW_TEAM, CREATE_TEAM_INFO,
 	YOUR_EMPLOYEES,
 	YOUR_EMPLOYEES_WORKER,
-    YOU_HAVE_NO_MANAGED_TEAM
+	YOU_HAVE_NO_MANAGED_TEAM, FILTER_TEAM_MEMBERS_BY_TOPIC
 } from '../../../constants/employeeConstants';
 import {EditableTable} from './editable-table/EditableTable';
 import {RootState} from '../../../redux';
@@ -22,6 +22,7 @@ import workerService from '../../../api/worker-service';
 import notificationService, {NotificationType} from '../../../service/notification-service';
 import {Authority} from '../../../models/authority';
 import {NewTeamForm} from './new-team-form';
+import { WorkerTopicTable } from "./worker-topic-table";
 
 const {Title} = Typography;
 
@@ -104,6 +105,8 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 					</Button>
 				</Col>
 			</Row>
+			<Title level={2} className={'teamMembersTitle'}>{FILTER_TEAM_MEMBERS_BY_TOPIC}</Title>
+			<WorkerTopicTable/>
 		</>;
 	}
 
@@ -133,6 +136,7 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 		>
 			<NewTeamForm id={currentWorker.workerId}/>
 		</Modal>
+
 	</>;
 };
 

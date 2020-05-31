@@ -41,13 +41,14 @@ public class LearningDay implements Comparable<LearningDay> {
 
     public LearningDay(){}
 
-    public LearningDay(String name, String comment, Timestamp dateTimeAt, Worker assignee, Topic topic)
+    public LearningDay(String name, String comment, Timestamp dateTimeAt, Worker assignee, Topic topic, boolean learned)
     {
         this.name = name;
         this.comment = comment;
         this.assignee = assignee;
         this.dateTimeAt = dateTimeAt;
         this.topic = topic;
+        this.learned = learned;
     }
     @Version
     private int version;
