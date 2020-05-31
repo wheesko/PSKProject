@@ -2,11 +2,8 @@ package com.VU.PSKProject.Controller;
 
 import com.VU.PSKProject.Controller.Model.TopicCreateRequest;
 import com.VU.PSKProject.Entity.Topic;
-import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
+import com.VU.PSKProject.Service.Model.*;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
-import com.VU.PSKProject.Service.Model.TopicDTO;
-import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
-import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Service.TopicService;
 import com.VU.PSKProject.Service.UserService;
@@ -41,7 +38,7 @@ public class TopicController {
     }
 
     @GetMapping("/getCovered/{workerId}")
-    public List<CoveredTopicDTO> getTopicsCoveredByWorker(@PathVariable Long workerId) {
+    public List<LearnedTopicDTO> getTopicsCoveredByWorker(@PathVariable Long workerId) {
         return topicService.getAllWorkerCoveredTopics(workerId);
     }
 

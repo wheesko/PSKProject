@@ -61,6 +61,12 @@ public class LearningDayService {
     public List<LearningDay> getAllLearningDaysByWorkerId(List<Long> workerId) {
         return learningDayRepository.findAllByAssigneeIdIn(workerId);
     }
+    public List<LearningDay> getAllLearningDaysByWorkerIdPast(Long workerId){
+        return learningDayRepository.findByWorkerPast(workerId);
+    }
+    public List<LearningDay> getAllLearningDaysByWorkerIdFuture(Long workerId){
+        return learningDayRepository.findByWorkerFuture(workerId);
+    }
 
     public void createLearningDay(LearningDayToCreateDTO learningDayRequest, UserDTO user) {
         Worker worker = workerService.getWorkerByUserId(user.getId());

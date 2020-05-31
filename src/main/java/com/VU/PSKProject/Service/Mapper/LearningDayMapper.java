@@ -1,17 +1,16 @@
 package com.VU.PSKProject.Service.Mapper;
 
 import com.VU.PSKProject.Entity.LearningDay;
+import com.VU.PSKProject.Service.Model.LearnedTopicDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToCreateDTO;
 import com.VU.PSKProject.Service.Model.LearningDay.LearningDayToReturnDTO;
-import com.VU.PSKProject.Utils.PropertyUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -45,5 +44,14 @@ public class LearningDayMapper {
                 .map(day -> modelMapper.map(day, LearningDayToReturnDTO.class))
                 .collect(Collectors.toList());*/
         return learningDayToReturnDTOS;
+    }
+
+    public LearnedTopicDTO mapToLearnedTopicDTO(LearningDay day){
+        LearnedTopicDTO topicDTO = new LearnedTopicDTO();
+        topicDTO.setId(day.getTopic().getId());
+        topicDTO.setTopic(day.getTopic().getName());
+        topicDTO.setDescription(day.getTopic().getDescription());
+        topicDTO.setLearned(day.isLearned());
+        return topicDTO;
     }
 }

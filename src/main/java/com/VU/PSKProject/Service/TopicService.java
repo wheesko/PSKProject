@@ -7,8 +7,10 @@ import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Repository.TopicRepository;
 import com.VU.PSKProject.Service.Exception.TopicServiceException;
 import com.VU.PSKProject.Service.LearningTree.LearningTreeService;
+import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
+import com.VU.PSKProject.Service.Model.LearnedTopicDTO;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
 import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
@@ -20,8 +22,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +47,8 @@ public class TopicService{
 
     @Autowired
     private TopicMapper topicMapper;
+    @Autowired
+    private LearningDayMapper learningDayMapper;
 
     public List<TopicToReturnDTO> getAllTopics() {
         return topicRepository.findAll().stream()
@@ -103,9 +105,17 @@ public class TopicService{
         return topicRepository.findById(id);
     }
 
-    public List<CoveredTopicDTO> getAllWorkerCoveredTopics(Long workerId) {
+    public List<LearnedTopicDTO> getAllWorkerCoveredTopics(Long workerId) {
         List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerId(workerId);
-        return learningDays.stream().map(l -> topicMapper.toTreeNodeDTO(l.getTopic())).collect(Collectors.toList());
+        List<LearnedTopicDTO> learnedTopicDTOS = new ArrayList<>();
+        List<String> tempTopics = new ArrayList<>();
+        for (LearningDay day: learningDays) {
+            if(!tempTopics.contains(day.getTopic().getName())){
+                tempTopics.add(day.getTopic().getName());
+                learnedTopicDTOS.add(learningDayMapper.mapToLearnedTopicDTO(day));
+            }
+        }
+        return learnedTopicDTOS;
     }
 
     public List<CoveredTopicDTO> getFullTree() {
@@ -138,22 +148,39 @@ public class TopicService{
 
         List<Worker> workers = workerService.findByWorkingTeamId(manager.getManagedTeam().getId());
         for (Worker worker : workers) {
-            List<Topic> topics = getWorkerTopicsAndGoals(worker.getId(), EventDate.eventDate.PAST);
+            List<LearningDay> learningDays = learningDayService.getAllLearningDaysByWorkerIdPast(worker.getId());
 
             WorkerTopicsDTO workerTopicsDTO = new WorkerTopicsDTO
                     (worker.getId(), worker.getName(), worker.getSurname(), manager.getId());
-            for (Topic topic : topics) {
-                if (!workerTopicsDTO.getTopicsPast().contains(topic.getName()))
-                    workerTopicsDTO.setTopicPast(topic.getName());
+
+            List<LearnedTopicDTO> learnedTopicDTOS = new ArrayList<>();
+            List<String> tempTopics = new ArrayList<>();
+            for (LearningDay day: learningDays) {
+                if(!tempTopics.contains(day.getTopic().getName())){
+                    tempTopics.add(day.getTopic().getName());
+                    try{
+                        learnedTopicDTOS.add(learningDayMapper.mapToLearnedTopicDTO(day));
+                    }
+                    catch(Exception e){}
+                }
             }
-            topics = getWorkerTopicsAndGoals(worker.getId(), EventDate.eventDate.FUTURE);
-            for (Topic topic : topics) {
-                if (!workerTopicsDTO.getTopicsFuture().contains(topic.getName()))
-                    workerTopicsDTO.setTopicFuture(topic.getName());
+            workerTopicsDTO.setTopicsPast(learnedTopicDTOS);
+
+            learnedTopicDTOS = new ArrayList<>();
+            tempTopics = new ArrayList<>();
+            learningDays = learningDayService.getAllLearningDaysByWorkerIdFuture(worker.getId());
+            for (LearningDay day: learningDays) {
+                if(!tempTopics.contains(day.getTopic().getName())){
+                    tempTopics.add(day.getTopic().getName());
+                    try{
+                        learnedTopicDTOS.add(learningDayMapper.mapToLearnedTopicDTO(day));
+                    }
+                    catch (Exception e){}
+                }
             }
+            workerTopicsDTO.setTopicsFuture(learnedTopicDTOS);
 
             workerTopicsDTOS.add(workerTopicsDTO);
-
         }
         return workerTopicsDTOS;
     }

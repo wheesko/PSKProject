@@ -1,5 +1,6 @@
 package com.VU.PSKProject.Service.Model.Worker;
 
+import com.VU.PSKProject.Service.Model.LearnedTopicDTO;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvIgnore;
 import lombok.Getter;
@@ -23,9 +24,9 @@ public class WorkerTopicsDTO {
     private Long manager;
 
     @CsvBindByPosition(position = 2)
-    private List<String> topicsPast = new ArrayList<>();
+    private List<LearnedTopicDTO> topicsPast = new ArrayList<>();
     @CsvBindByPosition(position = 3)
-    private List<String> topicsFuture = new ArrayList<>();
+    private List<LearnedTopicDTO> topicsFuture = new ArrayList<>();
 
     public WorkerTopicsDTO(Long id, String name, String surname, Long manager){
         this.id = id;
@@ -33,13 +34,6 @@ public class WorkerTopicsDTO {
         this.surname = surname;
         this.manager = manager;
     }
-    public void setTopicPast(String topic){
-        topicsPast.add(topic);
-    }
-    public void setTopicFuture(String topic){
-        topicsFuture.add(topic);
-    }
-
     public WorkerTopicsDTO(){}
 
 }
