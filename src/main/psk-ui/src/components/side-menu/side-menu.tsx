@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import history from '../../history';
 import { Menu } from 'antd';
 
 import {
 	CALENDAR_MENU_ITEM_NAME,
 	CREATE_NEW_TOPIC_MENU_ITEM_NAME,
-	INFO_MENU_ITEM_NAME, MY_MANAGED_TEAM,
-	MY_TEAM_CALENDAR_MENU_ITEM_NAME, MY_WORKING_TEAM,
+	INFO_MENU_ITEM_NAME,
+	MY_MANAGED_TEAM,
+	MY_TEAM_CALENDAR_MENU_ITEM_NAME,
+	MY_WORKING_TEAM,
 	TEAMS_MENU_ITEM_NAME,
 	TOPIC_TREE_MENU_ITEM_NAME,
 	TOPICS_MENU_ITEM_NAME,
@@ -22,7 +24,8 @@ import {
 	KEY_PROFILE,
 	KEY_TEAMS,
 	KEY_TOPIC_TREE,
-	KEY_TOPICS, KEY_WORKING_TEAM
+	KEY_TOPICS,
+	KEY_WORKING_TEAM
 } from '../../constants/routeKeyConstants';
 import {
 	CalendarOutlined,
@@ -30,10 +33,10 @@ import {
 	InfoCircleOutlined,
 	PlusOutlined,
 	SolutionOutlined,
+	TableOutlined,
 	TagsOutlined,
 	TeamOutlined,
 	UserOutlined,
-	TableOutlined,
 } from '@ant-design/icons';
 
 import { Link } from 'react-router-dom';
@@ -71,12 +74,12 @@ const SideMenu: React.FunctionComponent<{}> = () => {
 					</span>
 				}
 			>
-				<Menu.Item key={KEY_CALENDAR}>
+				{user.authority === Authority.LEAD ? <Menu.Item key={KEY_CALENDAR}>
 					<Link to={`/${KEY_TEAMS}/${KEY_CALENDAR}`}>
 						<TableOutlined/>
 						<span className="nav-text">{MY_TEAM_CALENDAR_MENU_ITEM_NAME}</span>
 					</Link>
-				</Menu.Item>
+				</Menu.Item> : null}
 				<Menu.Item key={KEY_MEMBERS}>
 					<Link to={`/${KEY_TEAMS}/${KEY_MEMBERS}`}>
 						<SolutionOutlined/>

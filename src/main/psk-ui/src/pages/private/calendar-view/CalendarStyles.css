@@ -56,3 +56,7 @@
 .learned-button {
     margin-left: 6px;
 }
+
+.ant-picker-calendar-header {
+    padding-right: 24px !important;
+}
