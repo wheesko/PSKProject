@@ -33,7 +33,7 @@ class WorkerService {
 	};
 
 	public updateLimits = (limitsRequest: UpdateLimitsRequest, id: number): Promise<void> => {
-		return this.restService.put<void>(`/workers/update/${id}`, limitsRequest)
+		return this.restService.put<void>(`/workers/updateWorkerLimits/${id}`, limitsRequest)
 			.then(response => response.data);
 	};
 

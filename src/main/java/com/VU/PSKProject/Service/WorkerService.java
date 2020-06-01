@@ -127,13 +127,12 @@ public class WorkerService {
         System.out.println("Worker id: " + worker.getId());
         try {
             if (workerRepository.findById(id).isPresent()) {
-                worker.setId(id);
+                //worker.setId(id);
                 workerRepository.save(worker);
             }
         } catch (OptimisticLockException e) {
             throw new WorkerException("This worker was recently modified.");
         }
-
     }
 
     public void deleteWorker(Long id) {

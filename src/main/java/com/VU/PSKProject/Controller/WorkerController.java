@@ -4,6 +4,7 @@ import com.VU.PSKProject.Entity.UserAuthority;
 import com.VU.PSKProject.Entity.Worker;
 import com.VU.PSKProject.Service.*;
 
+import com.VU.PSKProject.Service.Exception.WorkerException;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
@@ -122,8 +123,11 @@ public class WorkerController {
             if (workerDto.getWorkingTeam() != null)
                 if (workerDto.getWorkingTeam().getId().equals(workerDto.getManagedTeam().getId()))
                     return ResponseEntity.badRequest().body("managed and working ids can't be same!");
-
-            workerService.updateWorker(id, worker.get());
+            try {
+                workerService.updateWorker(id, worker.get());
+            }catch (WorkerException wex){
+                return ResponseEntity.badRequest().body(wex.getMessage());
+            }
             return ResponseEntity.ok("Worker updated successfully");
         } else {
             HttpHeaders headers = new HttpHeaders();
@@ -133,8 +137,11 @@ public class WorkerController {
     }
 
     @PutMapping("/updateWorkerLimits/{id}")
-    public ResponseEntity<String> updateWorkerLimits(@RequestBody WorkerLimitsDTO workerLimitsDTO, @PathVariable Long id) {
+    public ResponseEntity<String> updateWorkerLimits(@RequestBody WorkerLimitsDTO workerLimitsDTO, @PathVariable Long id, Principal principal) {
         Optional<Worker> worker = workerService.getWorker(id);
+        UserDTO user = userService.getUserByEmail(principal.getName());
+        if (!userService.checkIfManager(user))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         if (worker.isPresent()) {
             PropertyUtils.customCopyProperties(workerLimitsDTO, worker.get());
 

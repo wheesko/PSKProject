@@ -136,23 +136,21 @@ public class TeamService {
         List<Team> teams = teamRepository.findAll();
         List<TeamCountDTO> teamCountDTOS = new ArrayList<>();
         for (Team team: teams) {
-            if(teamIds.contains(team.getId()) && manager.getManagedTeam().getId().equals(team.getId())){
-                TeamCountDTO teamCountDTO = new TeamCountDTO();
+            TeamCountDTO teamCountDTO = new TeamCountDTO();
 
-                teamCountDTO.setId(team.getId());
-                teamCountDTO.setName(team.getName());
+            teamCountDTO.setId(team.getId());
+            teamCountDTO.setName(team.getName());
 
-                teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager, EventDate.eventDate.PAST).size());
+            teamCountDTO.setLearnedCount(workerService.getWorkersByTopicsTeamManager
+                    (team.getId(), topicIds, manager, EventDate.eventDate.PAST).size());
 
-                teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
-                        (team.getId(), topicIds, manager, EventDate.eventDate.FUTURE).size());
+            teamCountDTO.setPlanningCount(workerService.getWorkersByTopicsTeamManager
+                    (team.getId(), topicIds, manager, EventDate.eventDate.FUTURE).size());
 
-                teamCountDTO.setGoalsCount(workerGoalService.getWorkersByGoalsTeamManager
-                        (team.getId(), topicIds, manager).size());
+            teamCountDTO.setGoalsCount(workerGoalService.getWorkersByGoalsTeamManager
+                    (team.getId(), topicIds, manager).size());
 
-                teamCountDTOS.add(teamCountDTO);
-            }
+            teamCountDTOS.add(teamCountDTO);
         }
         return teamCountDTOS;
     }
