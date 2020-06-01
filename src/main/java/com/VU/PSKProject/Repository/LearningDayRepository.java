@@ -57,4 +57,14 @@ public interface LearningDayRepository extends JpaRepository<LearningDay, Long>,
             " where d.dateTimeAt > CURRENT_TIMESTAMP" +
             " AND d.assignee.id = :workerId")
     List<Topic> findTopicsByWorkerFuture(@Param("workerId") Long workerId);
+
+
+    @Query("select d from learning_day  d where d.assignee.id = :workerId AND" +
+            " d.dateTimeAt < CURRENT_TIMESTAMP ")
+    List<LearningDay> findByWorkerPast(@Param("workerId")Long workerId);
+
+    @Query("select d from learning_day  d where d.assignee.id = :workerId AND" +
+            " d.dateTimeAt > CURRENT_TIMESTAMP ")
+    List<LearningDay> findByWorkerFuture(@Param("workerId") Long workerId);
+
 }

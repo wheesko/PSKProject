@@ -22,4 +22,12 @@ public class WorkerGoal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Topic topic;
+
+    public WorkerGoal() {
+    }
+
+    public WorkerGoal(Worker worker, Topic topic){
+        this.worker = worker;
+        this.topic = topic;
+    }
 }
