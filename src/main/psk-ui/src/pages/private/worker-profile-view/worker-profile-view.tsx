@@ -143,6 +143,7 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	} = props;
 
 	const [loading, setLoading] = useState<boolean>(false);
+	const [teamloading, setTeamLoading] = useState<boolean>(false);
 	const [worker, setWorker] = useState<WorkerResponseModel>();
 	const [isGoalModalVisible, setGoalModalVisible] = useState<boolean>(false);
 	const [isEditLimitsModalVisible, setEditLimitsModalVisible] = useState<boolean>(false);
@@ -152,11 +153,13 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	//component did mount
 	useEffect(() => {
 		loadData().then(worker => {
+
 			setWorker(worker);
 			return worker;
 		})
 			// @ts-ignore
 			.then((worker) => {
+				setTeamLoading(true);
 				return worker.managedTeam ? Promise.all([
 					learningDayService.getAllLearningDaysOfWorkersTeam(worker.id),
 					workerService.getMembersOfTeam(worker.managedTeam.id)
@@ -167,9 +170,12 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 				setTeamMembers(teamMembers);
 				setTeamLearningEvents(team);
 				setLoading(false);
+				setTeamLoading(false);
 			})
 			// @ts-ignore
 			.catch((e) => {
+				setLoading(false);
+				setTeamLoading(false);
 				notificationService.notify({
 					description: e.response ? e.response.data.message : '',
 					notificationType: NotificationType.ERROR,
@@ -200,26 +206,29 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
         			{ renderAssignedGoalsCard() }
         		</Col>
         	</Row>
-        	{ worker?.managedTeam &&
-            <>
-            	<Typography.Title className="title" level={ 2 }>
-                    Worker { worker?.name } { worker?.surname } manages team {teamMembers.name}:
-            	</Typography.Title>
-            	<Row gutter={ 12 }>
-            		<Col xs={ 24 } sm={ 24 } md={ 16 }>
-            			{ renderTeamLearningDays() }
-            		</Col>
-            		<Col xs={ 24 } sm={ 24 } md={ 8 }>
-            			{ renderTeamLearnedTopicsTable() }
-            		</Col>
-            	</Row>
-            	<Row gutter={ 12 }>
-            		<Col xs={ 24 } sm={ 24 }>
-            			{ renderTeamMembersTable() }
-            		</Col>
-            	</Row>
-            </>
-        	}
+            <Spin spinning={teamloading}>
+				{ (worker?.managedTeam && !teamloading && teamMembers ) &&
+					<>
+						<Typography.Title className="title" level={ 2 }>
+							Worker { worker?.name } { worker?.surname } manages team {teamMembers.name}:
+						</Typography.Title>
+						<Row gutter={ 12 }>
+							<Col xs={ 24 } sm={ 24 } md={ 16 }>
+								{ renderTeamLearningDays() }
+							</Col>
+							<Col xs={ 24 } sm={ 24 } md={ 8 }>
+								{ renderTeamLearnedTopicsTable() }
+							</Col>
+						</Row>
+						<Row gutter={ 12 }>
+							<Col xs={ 24 } sm={ 24 }>
+								{ renderTeamMembersTable() }
+							</Col>
+						</Row>
+					</>
+                }
+            </Spin>
+
         	{ renderAssignGoalsModal() }
         	{ renderEditLimitsModal() }
         </>

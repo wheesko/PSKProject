@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Card, Col, Row, Spin, Table, Typography } from 'antd';
+import { Button, Card, Col, Row, Spin, Table, Typography } from 'antd';
 
 import './InfoStyles.css';
 import notificationService, { NotificationType } from '../../../service/notification-service';
@@ -10,6 +10,9 @@ import learningDayService from '../../../api/learning-day-service';
 import moment from 'moment';
 import { LearningTopic } from '../../../models/learningTopic';
 import { TeamsByTopics } from "./teams-by-topics";
+import { ExportOutlined, DownloadOutlined } from '@ant-design/icons';
+import { EXPORT_TO_CSV } from "../../../constants/otherConstants";
+import { TeamResponse } from "../../../api/model/team-response";
 
 const learnedTopicsColumns = [
 	{
@@ -92,14 +95,7 @@ const InfoView: React.FunctionComponent<{}> = () => {
 					{renderLearnedTopicsTable()}
                 </Col>
             </Row>
-            <Row justify={"start"}>
-                <Typography.Title level={2}> Filter teams by topics</Typography.Title>
-            </Row>
-            <Row>
-                <Col span={24}>
-                    <TeamsByTopics/>
-                </Col>
-            </Row>
+            <TeamsByTopics/>
         </>
 		}
 	</Spin>;
@@ -108,8 +104,13 @@ const InfoView: React.FunctionComponent<{}> = () => {
 		return <Card className={'table-card'}>
 			<Typography.Title level={4}>Scheduled learning days</Typography.Title>
 			<Table
-				dataSource={teamLearningEvents.filter(learningEvent => !learningEvent.learned)}
+				dataSource={teamLearningEvents
+					.filter(learningEvent => !learningEvent.learned)
+					.map((le, i) => {
+						return { ...le, index: i }
+					})}
 				columns={workerLearningDayColumns}
+				rowKey={"index"}
 			/>
 		</Card>;
 	}
@@ -120,10 +121,11 @@ const InfoView: React.FunctionComponent<{}> = () => {
 			<Table
 				dataSource={teamLearningEvents.filter(learningEvent => learningEvent.learned)
 					//@ts-ignore
-					.filter((v,i,a)=>a.findIndex(t=>(t.topic.name === v.topic.name))===i)
+					.filter((v, i, a) => a.findIndex(t => (t.topic.name === v.topic.name)) === i)
 					//@ts-ignore
 					.map(learningEvent => learningEvent.topic)
 				}
+				rowKey="name"
 				columns={learnedTopicsColumns}
 			/>
 		</Card>;

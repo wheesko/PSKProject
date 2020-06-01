@@ -26,6 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.25.3",
     "react": "^16.13.1",
+    "react-csv": "^2.0.3",
     "react-d3-tree": "^1.16.1",
     "react-dom": "^16.13.1",
     "react-fontawesome": "^1.7.1",
@@ -64,6 +65,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-csv": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
     "eslint": "^6.6.0",

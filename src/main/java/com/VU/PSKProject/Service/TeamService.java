@@ -158,7 +158,7 @@ public class TeamService {
     }
 
     public void exportToCSV(List<TeamCountDTO> dataToExport, HttpServletResponse response) throws Exception{
-        String[] headers = {"Name,", "Learned topics count,", "Planned topics count,", "Goals count,"};
+        String[] headers = {"Name,", "Learned topics count,", "Planned topics count,", "Goals count\n"};
         CSVExporter.buildExportToCSVResponse(dataToExport, headers, response);
     }
 }

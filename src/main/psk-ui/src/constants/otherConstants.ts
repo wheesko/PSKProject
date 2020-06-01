@@ -28,7 +28,7 @@ export const INPUT_TOPIC_NAME = 'Input topic name';
 export const SUBTOPIC_EXPLAINER = 'If this is a subtopic, it should be assigned to a parent topic';
 export const DONE = 'Done';
 export const THIS_ACTION_CANNOT_BE_UNDONE = 'This action cannot be undone!';
-
+export const EXPORT_TO_CSV = 'Export to CSV';
 //ROLES
 export enum Roles {
     ROLE_LEAD = 'LEAD',

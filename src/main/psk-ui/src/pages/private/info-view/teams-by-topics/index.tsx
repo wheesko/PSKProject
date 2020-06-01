@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { Col, Form, Row, Select, Spin, Table, Tag, Tooltip, Typography } from 'antd';
+import { Col, Row, Select, Spin, Table, Tooltip, Typography, Progress } from 'antd';
 
 import { RootState } from '../../../../redux';
 import { useSelector } from 'react-redux';
-import { Employee } from '../../../../models/employee';
-import workerService from '../../../../api/worker-service';
 import notificationService, { NotificationType } from '../../../../service/notification-service';
-import { Role } from "../../../../models/role";
-import { Link } from "react-router-dom";
 import topicService from '../../../../api/topic-service';
-import { WorkerWithTopics } from '../../../../api/model/topic-by-manager-response';
 import { LearningTopic } from "../../../../models/learningTopic";
 import '../../team-members-view/worker-topic-table/WorkerTopicTableStyles.css';
 import { TeamResponse } from "../../../../api/model/team-response";
@@ -70,6 +65,25 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 	const onDeselectedTopic = (value: string) => {
 		setSelectedTopics(selectedTopics.filter(topic => topic !== value));
 	};
+
+	function renderLearnedPercentage(id: string, team: TeamResponse): React.ReactNode {
+		let learningPercentage = getLearnedCountInTeam(id, team) > 0
+			? Math.trunc((getLearnedCountInTeam(id, team) / team.workers.length) * 100)
+			: 0;
+		return selectedTopics.length === 0 ? <Progress percent={0}/> : <Progress percent={learningPercentage}/>
+	}
+
+	function getLearnedCountInTeam(id: string, team: TeamResponse) {
+		return team.workers.filter((worker) => {
+			let workersLearnedTopicNames = worker.learningDays
+				.filter(learningDay => learningDay.learned)
+				.map(learningDay => {
+					return learningDay.topic.name
+				});
+			return selectedTopics.every(selectedTopic => workersLearnedTopicNames.includes(selectedTopic));
+		}).length
+	}
+
 	const columns = [
 		{
 			title: 'Team name',
@@ -104,45 +118,25 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 							return learningDay.learned ? selectedTopics?.includes(learningDay.topic.name) : false;
 						})
 					}).length
-				// selectedTopics.length === 0
-				// ? workersWithTopics
-				// : workersWithTopics.filter(worker =>
-				// 	worker.topicsPast
-				// 		.some(workerTopic =>
-				// 			selectedTopics?.includes(workerTopic)
-				// 		))
 			}
+		},
+		{
+			title: 'Percentage of people learned selected topics',
+			dataIndex: 'id',
+			key: 'learnedPercentage',
+			render: (id: string, team: TeamResponse) =>
+				renderLearnedPercentage(id, team)
 		}
-		// {
-		// 	title: 'Learned topics',
-		// 	dataIndex: 'topicsPast',
-		// 	render: (id: string, worker: TopicByManagerResponse, index: number) => {
-		// 		return worker.topicsPast === [] ?
-		// 			null :
-		// 			worker.topicsPast.map(topic =>
-		// 				<Tag>{topic}</Tag>
-		// 			)
-		// 	},
-		// },
-		// {
-		// 	title: 'Topics to learn in the future',
-		// 	dataIndex: 'topicsFuture',
-		// 	render: (id: string, worker: TopicByManagerResponse, index: number) => {
-		// 		return worker.topicsFuture === [] ?
-		// 			null :
-		// 			worker.topicsFuture.map(topic =>
-		// 				<Tag>{topic}</Tag>
-		// 			)
-		// 	},
-		// }
 	];
 
 	return <>
 		<Spin spinning={isLoading} size="large">
+			<Row justify={"start"}>
+				<Typography.Title level={2}>Filter teams by learning topics</Typography.Title>
+			</Row>
 			<Row justify={"start"} className={"topic-row"}>
 				<Col span={24}>
 					<Select mode="tags"
-						// onChange={onTopicChange}
 							onSelect={onTopicSelected}
 							filterOption={(input, option) =>
 								option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -157,15 +151,7 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 				</Col>
 			</Row>
 			<Table
-				dataSource={allTeams
-					// selectedTopics.length === 0
-					// ? workersWithTopics
-					// : workersWithTopics.filter(worker =>
-					// 	worker.topicsPast
-					// 		.some(workerTopic =>
-					// 			selectedTopics?.includes(workerTopic)
-					// 		))
-				}
+				dataSource={allTeams}
 				columns={columns}/>
 		</Spin>
 	</>;
