@@ -9,7 +9,8 @@ import { LearningTopic } from '../../../models/learningTopic';
 import notificationService, { NotificationType } from '../../../service/notification-service';
 import workerService from '../../../api/worker-service';
 import './ProfileStyles.css';
-import { getRoleColor } from "../../../tools/roleColorPicker";
+import { getRoleColor } from '../../../tools/roleColorPicker';
+import { ProfileResponseModel } from '../../../api/model/profile-response-model';
 
 interface StateProps {
 	user: UserState;
@@ -39,11 +40,13 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 	} = props;
 	const [topics, setTopics] = useState<LearningTopic[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [profile, setProfile] = useState<ProfileResponseModel>();
 
 	useEffect(() => {
 		setLoading(true);
-		loadTopics().then(topics => {
+		loadProfile().then(([topics, profile] )=> {
 			setTopics(topics);
+			setProfile(profile);
 			setLoading(false);
 		}).catch(e => {
 			notificationService.notify({
@@ -54,12 +57,12 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 	}, []);
 
 	return <Spin spinning={ loading }>
-		<Row className={ "profile-title-row" }>
-			<Col span={ 12 } style={{textAlign: 'left'}}>
+		<Row className={ 'profile-title-row' }>
+			<Col span={ 12 } style={{ textAlign: 'left' }}>
 				<Typography.Title level={ 2 }>Hello, { name } { surname }</Typography.Title>
 			</Col>
-			<Col span={ 12 } style={{textAlign: 'right'}}>
-				<Tag color={ getRoleColor(role.name) } className={ "profile-role-tag " }>{ role.name }</Tag>
+			<Col span={ 12 } style={{ textAlign: 'right' }}>
+				<Tag color={ getRoleColor(role.name) } className={ 'profile-role-tag ' }>{ role.name }</Tag>
 			</Col>
 		</Row>
 		{ renderMyInfoCard() }
@@ -69,10 +72,26 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 	function renderMyInfoCard(): React.ReactNode {
 		return <Card size="small" className="user-info-card">
 			<Typography.Title level={ 4 }>Your info</Typography.Title>
-			<Row>
+			<Row justify="space-between">
 				<Col xs={ 24 } sm={ 8 }>
-					<Typography.Text>Email: { email }</Typography.Text>
+					<Typography.Paragraph>Email: { email }</Typography.Paragraph>
+					<Typography.Paragraph>
+						Consecutive learning day limit: {profile?.consecutiveLearningDayLimit}
+					</Typography.Paragraph>
+					<Typography.Paragraph>
+						Quarterly learning day limit: {profile?.quarterlyLearningDayLimit}
+					</Typography.Paragraph>
 				</Col>
+				{profile?.manager &&
+					<Col xs={24} sm={8}>
+						<Typography.Paragraph>
+							Your manager: {profile?.manager.name + ' ' + profile?.manager.surname + ' '}
+						</Typography.Paragraph>
+						<Typography.Paragraph>
+							Email: {profile?.manager.email}
+						</Typography.Paragraph>
+					</Col>
+				}
 			</Row>
 		</Card>;
 	}
@@ -87,8 +106,8 @@ const ProfileViewComponent: React.FunctionComponent<StateProps> = (props: StateP
 		</Card>;
 	}
 
-	function loadTopics(): Promise<LearningTopic[]> {
-		return workerService.getOwnGoals();
+	function loadProfile(): Promise<[LearningTopic[], ProfileResponseModel]> {
+		return Promise.all([workerService.getOwnGoals(), workerService.getOwnProfile()]);
 	}
 };
 

@@ -10,6 +10,7 @@ import { Employee } from '../models/employee';
 import { getRoleColor } from '../tools/roleColorPicker';
 import { EmployeeResponse } from './model/employee-response';
 import { AddEmployeeRequest } from './model/add-employee-request';
+import { ProfileResponseModel } from "./model/profile-response-model";
 
 class WorkerService {
 	private readonly restService: RestService;
@@ -24,6 +25,11 @@ class WorkerService {
 
 	public getWorker = (id: number): Promise<WorkerResponseModel> => {
 		return this.restService.get<WorkerResponseModel>(`/workers/get/${id}`)
+			.then(response => response.data);
+	};
+
+	public getOwnProfile = (): Promise<ProfileResponseModel> => {
+		return this.restService.get<ProfileResponseModel>(`/workers/get/profile`)
 			.then(response => response.data);
 	};
 
