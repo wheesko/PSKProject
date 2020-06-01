@@ -41,7 +41,6 @@ public class  WorkerGoalController {
         return ResponseEntity.ok(workerGoalService.getWorkerGoalsByWorker(user));
     }
 
-
     @GetMapping("/getAll")
     public ResponseEntity<List<WorkerGoalDTO>> getWorkerGoals(){
         List<WorkerGoal> workerGoals = workerGoalService.getAllWorkerGoals();

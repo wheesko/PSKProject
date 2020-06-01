@@ -47,6 +47,7 @@ public class TopicService{
 
     @Autowired
     private TopicMapper topicMapper;
+
     @Autowired
     private LearningDayMapper learningDayMapper;
 

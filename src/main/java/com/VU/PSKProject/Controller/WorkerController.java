@@ -8,6 +8,7 @@ import com.VU.PSKProject.Service.Exception.WorkerException;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
+import com.VU.PSKProject.Service.Model.WorkerProfileDTO;
 import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,13 @@ public class WorkerController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @GetMapping("/get/profile")
+    public ResponseEntity<WorkerProfileDTO> getWorkerOwnProfile(Principal principal) {
+        UserDTO userDTO = userService.getUserByEmail(principal.getName());
+
+        return workerService.getWorkerProfile(userDTO);
     }
 
     @GetMapping("/get/{id}")

@@ -11,6 +11,7 @@ import com.VU.PSKProject.Service.Mapper.UserMapper;
 import com.VU.PSKProject.Service.Mapper.WorkerMapper;
 import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.*;
+import com.VU.PSKProject.Service.Model.WorkerProfileDTO;
 import com.VU.PSKProject.Service.Model.WorkerRegisterDTO;
 import com.VU.PSKProject.Utils.EventDate;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -303,5 +304,24 @@ public class WorkerService {
             return false;
 
         return checkWorkerLeadRelationship(lead, tempManager);
+    }
+
+    public ResponseEntity<WorkerProfileDTO> getWorkerProfile(UserDTO user) {
+        Worker worker = getWorkerByUserId(user.getId());
+        Worker manager = worker.getWorkingTeam().getManager();
+
+        WorkerProfileDTO workerProfileDTO = new WorkerProfileDTO();
+        if (!worker.getId().equals(manager.getId())) {
+            WorkerToGetDTOManagerDTO workerToGetDTOManagerDTO = new WorkerToGetDTOManagerDTO();
+            workerToGetDTOManagerDTO.setName(manager.getName());
+            workerToGetDTOManagerDTO.setSurname(manager.getSurname());
+            workerToGetDTOManagerDTO.setId(manager.getId());
+            workerToGetDTOManagerDTO.setEmail(manager.getUser().getEmail());
+            workerProfileDTO.setManager(workerToGetDTOManagerDTO);
+        }
+        workerProfileDTO.setConsecutiveLearningDayLimit(worker.getConsecutiveLearningDayLimit());
+        workerProfileDTO.setQuarterlyLearningDayLimit(worker.getQuarterLearningDayLimit());
+
+        return ResponseEntity.ok(workerProfileDTO);
     }
 }
