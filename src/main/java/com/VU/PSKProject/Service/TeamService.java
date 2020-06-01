@@ -65,10 +65,13 @@ public class TeamService {
         Worker lead = workerService.getWorkerByUserId(userDTO.getId());
         Optional<Team> team = teamRepository.findById(id);
         if (team.isPresent()) {
-            Worker worker = team.get().getWorkers().get(0);
-            if(workerService.checkWorkerLeadRelationship(lead, worker)) {
-                return team;
+            if(team.get().getWorkers().size() != 0){
+                Worker worker = team.get().getWorkers().get(0);
+                if(workerService.checkWorkerLeadRelationship(lead, worker)) {
+                    return team;
+                }
             }
+            else throw new TeamException("The team of this employee has no workers");
         }
         return Optional.empty();
     }
