@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Col, Form, Row, Select, Spin, Table, Tag, Typography } from 'antd';
+import { Col, Form, Row, Select, Spin, Table, Tag, Tooltip, Typography } from 'antd';
 
 import { RootState } from '../../../../redux';
 import { useSelector } from 'react-redux';
@@ -10,11 +10,12 @@ import notificationService, { NotificationType } from '../../../../service/notif
 import { Role } from "../../../../models/role";
 import { Link } from "react-router-dom";
 import topicService from '../../../../api/topic-service';
-import { TopicByManagerResponse } from '../../../../api/model/topic-by-manager-response';
+import { WorkerWithTopics } from '../../../../api/model/topic-by-manager-response';
 import { LearningTopic } from "../../../../models/learningTopic";
 import '../../team-members-view/worker-topic-table/WorkerTopicTableStyles.css';
 import { TeamResponse } from "../../../../api/model/team-response";
 import teamService from '../../../../api/team-service';
+import { InfoCircleOutlined } from "@ant-design/icons/lib";
 
 const { Title } = Typography;
 
@@ -69,8 +70,6 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 	const onDeselectedTopic = (value: string) => {
 		setSelectedTopics(selectedTopics.filter(topic => topic !== value));
 	};
-	console.log("All teams: ", allTeams);
-	console.log("selected topics: ", selectedTopics)
 	const columns = [
 		{
 			title: 'Team name',
@@ -89,17 +88,20 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 			}
 		},
 		{
-			title: selectedTopics.length === 0
-				? 'Select learning topics to see amount of employees that have learned a topic'
-				: 'Employee amount with learned topics',
+			title:
+				<>
+					<Tooltip title={'Select learning topics to see amount of employees that have learned a topic'}>
+						<InfoCircleOutlined/>
+					</Tooltip>&nbsp;
+					<Typography.Text>{'Employee amount with learned topics'}</Typography.Text>
+				</>,
 			dataIndex: 'id',
 			key: 'learnedCount',
 			render: (id: string, team: TeamResponse, index: number) => {
 				return selectedTopics.length === 0 ? '' :
 					team.workers.filter((worker) => {
-						worker.learningDays.some(learningDay => {
-							console.log("Worker: ", worker.name, "\nTeam: ", team.name, "\nTopic: ", learningDay.topic.name,"\nLearned: ",learningDay.learned)
-							return learningDay.learned ? false : selectedTopics?.includes(learningDay.topic.name);
+						return worker.learningDays.some(learningDay => {
+							return learningDay.learned ? selectedTopics?.includes(learningDay.topic.name) : false;
 						})
 					}).length
 				// selectedTopics.length === 0

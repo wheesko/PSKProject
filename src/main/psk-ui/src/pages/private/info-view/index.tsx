@@ -116,10 +116,12 @@ const InfoView: React.FunctionComponent<{}> = () => {
 
 	function renderLearnedTopicsTable(): React.ReactNode {
 		return <Card className={'table-card'}>
-			<Typography.Title level={4}>Learned topics</Typography.Title>
+			<Typography.Title level={4}>Teams learned topics</Typography.Title>
 			<Table
-				dataSource={teamLearningEvents
-					.filter(learningEvent => learningEvent.learned)
+				dataSource={teamLearningEvents.filter(learningEvent => learningEvent.learned)
+					//@ts-ignore
+					.filter((v,i,a)=>a.findIndex(t=>(t.topic.name === v.topic.name))===i)
+					//@ts-ignore
 					.map(learningEvent => learningEvent.topic)
 				}
 				columns={learnedTopicsColumns}
