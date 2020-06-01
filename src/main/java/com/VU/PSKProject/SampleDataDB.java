@@ -252,6 +252,7 @@ public class SampleDataDB {
 
         ArrayList<Topic> rootChildTopics = new ArrayList<>();
         rootChildTopics.addAll(Arrays.asList(Fe, mobile));
+        rootChildTopics.add(c);
 
         rootTopic.setChildrenTopics(rootChildTopics);
 
