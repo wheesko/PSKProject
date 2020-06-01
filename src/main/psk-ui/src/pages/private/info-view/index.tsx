@@ -9,6 +9,7 @@ import { LearningEvent } from '../../../models/learningEvent';
 import learningDayService from '../../../api/learning-day-service';
 import moment from 'moment';
 import { LearningTopic } from '../../../models/learningTopic';
+import { TeamsByTopics } from "./teams-by-topics";
 
 const learnedTopicsColumns = [
 	{
@@ -79,19 +80,27 @@ const InfoView: React.FunctionComponent<{}> = () => {
 
 	return <Spin spinning={loading}>
 		{!loading &&
-		<>
-			<Row justify={"start"}>
-			<Typography.Title level={2}>Your managed team info</Typography.Title>
+        <>
+            <Row justify={"start"}>
+                <Typography.Title level={2}>Your managed team info</Typography.Title>
             </Row>
-			<Row gutter={12}>
-				<Col xs={24} sm={24} md={16}>
+            <Row gutter={[12, 24]}>
+                <Col xs={24} sm={24} md={16}>
 					{renderLearningDays()}
-				</Col>
-				<Col xs={24} sm={24} md={8}>
+                </Col>
+                <Col xs={24} sm={24} md={8}>
 					{renderLearnedTopicsTable()}
-				</Col>
-			</Row>
-		</>
+                </Col>
+            </Row>
+            <Row justify={"start"}>
+                <Typography.Title level={2}> Filter teams by topics</Typography.Title>
+            </Row>
+            <Row>
+                <Col span={24}>
+                    <TeamsByTopics/>
+                </Col>
+            </Row>
+        </>
 		}
 	</Spin>;
 
@@ -107,10 +116,12 @@ const InfoView: React.FunctionComponent<{}> = () => {
 
 	function renderLearnedTopicsTable(): React.ReactNode {
 		return <Card className={'table-card'}>
-			<Typography.Title level={4}>Learned topics</Typography.Title>
+			<Typography.Title level={4}>Teams learned topics</Typography.Title>
 			<Table
-				dataSource={teamLearningEvents
-					.filter(learningEvent => learningEvent.learned)
+				dataSource={teamLearningEvents.filter(learningEvent => learningEvent.learned)
+					//@ts-ignore
+					.filter((v,i,a)=>a.findIndex(t=>(t.topic.name === v.topic.name))===i)
+					//@ts-ignore
 					.map(learningEvent => learningEvent.topic)
 				}
 				columns={learnedTopicsColumns}

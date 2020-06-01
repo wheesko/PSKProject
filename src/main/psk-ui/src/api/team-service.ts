@@ -2,6 +2,8 @@ import { CancelSource } from './cancel-source';
 import { RestService } from './rest-service';
 import { AxiosResponse } from 'axios';
 import { CreateTeamRequest } from './model/create-team-request';
+import { LearningEvent } from "../models/learningEvent";
+import { TeamResponse } from './model/team-response';
 
 
 
@@ -13,6 +15,16 @@ class TeamService {
 	}
 	public createTeam = (createTeamRequest: CreateTeamRequest): Promise<AxiosResponse | null> => {
 		return this.restService.post<void>('/teams/create', createTeamRequest);
+	};
+
+	public getAllTeams = (): Promise<TeamResponse[]> => {
+		return this.restService
+			.get<TeamResponse[]>(
+				`/teams/getAll`
+			)
+			.then((response: AxiosResponse<TeamResponse[]>) => {
+				return response.data;
+			});
 	};
 
 }
