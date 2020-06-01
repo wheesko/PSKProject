@@ -11,12 +11,12 @@ import '../../team-members-view/worker-topic-table/WorkerTopicTableStyles.css';
 import { TeamResponse } from '../../../../api/model/team-response';
 import teamService from '../../../../api/team-service';
 import { InfoCircleOutlined, DownloadOutlined } from '@ant-design/icons/lib';
-import { CSVDownload, CSVLink } from "react-csv";
+import { CSVDownload, CSVLink } from 'react-csv';
 
 const { Title } = Typography;
 
 interface CsvTeam {
-	id: number;
+	index: number;
 	teamName: string;
 	employeeAmount: number;
 	learnedEmployeeAmount: number;
@@ -52,9 +52,9 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 	useEffect(() => {
 		getWorkersTopicsByManager();
 		loadTopics().then(topics => {
-				setAllTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
-				setIsLoading(false);
-			}
+			setAllTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
+			setIsLoading(false);
+		}
 		).catch(e => {
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
@@ -65,18 +65,18 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 
 	useEffect(() => {
 		setCsvData(selectedTopics.length === 0
-			? allTeams.map(team => {
+			? allTeams.map((team, i) => {
 				return {
-					id: team.id,
+					index: i,
 					teamName: team.name,
 					employeeAmount: team.workers.length,
 					learnedEmployeeAmount: 0,
 					percentageOfLearnedEmployees: '0%'
 				};
 			})
-			: allTeams.map(team => {
+			: allTeams.map((team, i) => {
 				return {
-					id: team.id,
+					index: i,
 					teamName: team.name,
 					employeeAmount: team.workers.length,
 					learnedEmployeeAmount: selectedTopics.length === 0 ? 0 : getLearnedCountInTeam(team.id, team),
@@ -177,7 +177,7 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 					target="_blank"
 				>
 					<Button disabled={selectedTopics.length === 0}
-							icon={<DownloadOutlined/>}>Export to
+						icon={<DownloadOutlined/>}>Export to
 						CSV</Button>
 				</CSVLink>
 			</Row>
@@ -186,12 +186,12 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 			<Row justify={'start'} className={'topic-row'}>
 				<Col span={24}>
 					<Select mode="tags"
-							onSelect={onTopicSelected}
-							filterOption={(input, option) =>
+						onSelect={onTopicSelected}
+						filterOption={(input, option) =>
 								option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-							}
-							placeholder="Type in topics to filter by"
-							onDeselect={onDeselectedTopic}
+						}
+						placeholder="Type in topics to filter by"
+						onDeselect={onDeselectedTopic}
 					>
 						{allTopics.map(topic => {
 							return <Select.Option key={topic.id} value={topic.name}>{topic.name}</Select.Option>;
