@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import './TeamMembersStyles.css';
-import {Button, Col, Modal, Row, Spin, Typography, Card} from 'antd';
+import { Button, Col, Modal, Row, Spin, Typography, Card, Table } from 'antd';
 
 import {DONE} from '../../../constants/otherConstants';
 import {PlusOutlined,} from '@ant-design/icons';
@@ -23,6 +23,10 @@ import notificationService, {NotificationType} from '../../../service/notificati
 import {Authority} from '../../../models/authority';
 import {NewTeamForm} from './new-team-form';
 import { WorkerTopicTable } from "./worker-topic-table";
+import { LearningEvent } from "../../../models/learningEvent";
+import learningDayService from "../../../api/learning-day-service";
+import moment from "moment";
+import { LearningTopic } from "../../../models/learningTopic";
 
 const {Title} = Typography;
 
@@ -32,6 +36,8 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 	const currentWorker = useSelector((state: RootState) => state.user);
 	const [isLoading, setLoading] = useState<boolean>(false);
 	const [myEmployees, setMyEmployees] = useState<Employee[]>([]);
+	const [teamLearningEvents, setTeamLearningEvents] = useState<LearningEvent[]>([]);
+
 
 	function getManagedTeam() {
 		setLoading(true);
@@ -49,6 +55,18 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 	}
 
 	useEffect(() => {
+		loadData().then(events => {
+			setTeamLearningEvents(events);
+			setLoading(false);
+			return teamLearningEvents;
+		})
+			.catch((e) => {
+				notificationService.notify({
+					description: e.response ? e.response.data.message : '',
+					notificationType: NotificationType.ERROR,
+					message: 'Could not load team events'
+				});
+			});
 		getManagedTeam();
 	}, [currentWorker.managedTeamId]);
 
@@ -92,6 +110,17 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 
 	function renderLeadAuthority(): React.ReactNode {
 		return <>
+			<Row justify={"start"}>
+				<Typography.Title level={2}>Your managed team info</Typography.Title>
+			</Row>
+			<Row gutter={[12, 24]}>
+				<Col xs={24} sm={24} md={16}>
+					{renderLearningDays()}
+				</Col>
+				<Col xs={24} sm={24} md={8}>
+					{renderLearnedTopicsTable()}
+				</Col>
+			</Row>
 			<Title level={2} className={'teamMembersTitle'}>
 				{YOUR_EMPLOYEES}
 			</Title>
@@ -108,6 +137,42 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			<Title level={2} className={'teamMembersTitle'}>{FILTER_TEAM_MEMBERS_BY_TOPIC}</Title>
 			<WorkerTopicTable/>
 		</>;
+	}
+
+	function renderLearningDays(): React.ReactNode {
+		return <Card className={'table-card'}>
+			<Typography.Title level={4}>Scheduled learning days</Typography.Title>
+			<Table
+				dataSource={teamLearningEvents
+					.filter(learningEvent => !learningEvent.learned)
+					.map((le, i) => {
+						return { ...le, index: i }
+					})}
+				columns={workerLearningDayColumns}
+				rowKey={"index"}
+			/>
+		</Card>;
+	}
+
+	function renderLearnedTopicsTable(): React.ReactNode {
+		return <Card className={'table-card'}>
+			<Typography.Title level={4}>Teams learned topics</Typography.Title>
+			<Table
+				dataSource={teamLearningEvents.filter(learningEvent => learningEvent.learned)
+					//@ts-ignore
+					.filter((v, i, a) => a.findIndex(t => (t.topic.name === v.topic.name)) === i)
+					//@ts-ignore
+					.map(learningEvent => learningEvent.topic)
+				}
+				rowKey="name"
+				columns={learnedTopicsColumns}
+			/>
+		</Card>;
+	}
+
+	function loadData(): Promise<LearningEvent[]> {
+		setLoading(true);
+		return learningDayService.getAllLearningDaysOfTeam();
 	}
 
 	return <>
@@ -139,5 +204,50 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 
 	</>;
 };
+const learnedTopicsColumns = [
+	{
+		title: 'Name',
+		dataIndex: 'name',
+		key: 'name',
+	},
+	{
+		title: 'Description',
+		dataIndex: 'description',
+		key: 'description',
+	}
+];
 
+const workerLearningDayColumns = [
+	{
+		title: 'Assignee',
+		dataIndex: 'assignee',
+		key: 'assignee',
+		render: (assignee: any) => {
+			return assignee.name + ' ' + assignee.surname;
+		}
+	},
+	{
+		title: 'Name',
+		dataIndex: 'name',
+		key: 'name',
+	},
+	{
+		title: 'Date',
+		dataIndex: 'dateTimeAt',
+		key: 'dateTimeAt',
+		render: (date: string) => moment(date).format('yyyy-MM-DD')
+	},
+	{
+		title: 'Topic',
+		dataIndex: 'topic',
+		key: 'topic',
+		render: (topic: LearningTopic) => topic.name
+	},
+	{
+		title: 'Topic description',
+		dataIndex: 'topic',
+		key: 'topic',
+		render: (topic: LearningTopic) => topic.description
+	}
+];
 export {TeamMembersView};
