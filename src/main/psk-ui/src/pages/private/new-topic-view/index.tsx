@@ -24,7 +24,7 @@ const { Title } = Typography;
 
 const formItemLayout = {
 	labelCol: {
-		xs: { span: 24 },
+		xs: { span: 24, gutter: 12 },
 		sm: { span: 8 }
 	},
 	wrapperCol: {
@@ -55,9 +55,9 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 	useEffect(() => {
 		setLoading(true);
 		loadTopics().then(topics => {
-			setTopics(topics);
-			setLoading(false);
-		}
+				setTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
+				setLoading(false);
+			}
 		).catch(e => {
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
@@ -65,7 +65,7 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 			});
 		});
 	}, []);
-	
+
 	function loadTopics(): Promise<LearningTopic[]> {
 		return topicService.getAllTopics();
 	}
@@ -202,7 +202,7 @@ const NewTopicView: React.FunctionComponent<{}> = () => {
 		}).then(() => {
 			return loadTopics();
 		}).then((learningTopics) => {
-			setTopics(learningTopics);
+			setTopics(learningTopics.sort((a, b) => a.name > b.name ? 1 : -1));
 			setSelectedTopic(learningTopics[learningTopics.findIndex(topic =>
 				topic.id === topicCreateRequest.parentTopicId)]
 			);

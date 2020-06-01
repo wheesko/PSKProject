@@ -63,7 +63,7 @@ const NewEventForm: React.FunctionComponent<NewEventFormProps> = (props: NewEven
 	}, []);
 
 	return (
-		<Card title={ADD_NEW_LEARNING_EVENT}>
+		<Card>
 			<Spin spinning={loading}>
 				<Form.Provider
 					onFormFinish={() => {

@@ -53,7 +53,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 	}
 
 	const edit = (record: Employee) => {
-		form.setFieldsValue({ quarterConstraint: 0, goals: [], ...record });
+		form.setFieldsValue({ quarterConstraint: 0,  ...record });
 		setEditingKey(record.id);
 	};
 
@@ -150,30 +150,6 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = (props: Edita
 				return <Tag color={role.color}>{role.name}</Tag>
 
 			}
-		},
-		{
-			title: 'Goals',
-			key: 'goals',
-			dataIndex: 'goals',
-			editable: false,
-			// TODO: fix displaying goals (need to create usable state interfaces)
-			// render: (goals: Goal[]): React.ReactNode => (
-			// 	<span>
-			// 		{goals.map((goal: Goal) => {
-			// 			let color = goals.length > 5 ? 'geekblue' : 'green';
-			//
-			// 			if (goal.name === 'loser') {
-			// 				color = 'volcano';
-			// 			}
-			//
-			// 			return (
-			// 				<Tag color={color} key={goal.id}>
-			// 					{goal.name.toUpperCase()}
-			// 				</Tag>
-			// 			);
-			// 		})}
-			// 	</span>
-			// ),
 		},
 		{
 			title: 'Action',

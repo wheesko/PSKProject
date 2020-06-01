@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Calendar, Divider, Modal, Spin, Tag, Tooltip, Typography } from 'antd';
 import moment from 'moment';
 
-import { DAY_EVENT_LIST_EMPTY, MY_CALENDAR } from '../../../constants/otherConstants';
+import { ADD_NEW_LEARNING_EVENT, DAY_EVENT_LIST_EMPTY, MY_CALENDAR } from '../../../constants/otherConstants';
 import { EventForm } from './form/EventForm';
 import { LearningEvent } from '../../../models/learningEvent';
 import calendarService from '../../../api/calendar-service';
@@ -271,6 +271,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				onCancel={handleOnAddEventCancel}
 				onOk={handleOnAddEventOk}
 				footer={null}
+				title={ADD_NEW_LEARNING_EVENT}
 			>
 				<NewEventForm onCreateDay={onCreateDay}/>
 			</Modal>

@@ -45,9 +45,9 @@ const Routes: React.FunctionComponent<{}> = () => {
 				path={`/${KEY_PROFILE}`}
 				component={ProfileView}
 			/>
-			<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`} component={TeamCalendarView}/>
 			<Route exact path={'/register'} component={RegisterPage}/>
 			{/*ROUTES REQUIRE LEAD AUTHORITY*/}
+			{user.authority === Authority.LEAD ?<Route exact path={`/${KEY_TEAMS}/${KEY_CALENDAR}`} component={TeamCalendarView}/> : null}
 			{user.authority === Authority.LEAD ?
 				<Route exact path={`/${KEY_TEAMS}/${KEY_INFO}`} component={InfoView}/> : null}
 			<Route exact path={`/${KEY_TEAMS}/${KEY_MEMBERS}`} component={TeamMembersView}/>
