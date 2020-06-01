@@ -84,7 +84,7 @@ public class TeamController {
                           @PathVariable List<Long> teamIds,
                           HttpServletResponse response, Principal principal) throws Exception {
         UserDTO user = userService.getUserByEmail(principal.getName());
-        List<TeamCountDTO> teams = teamService.getTeamsCountDTOByTopics(topicIds, teamIds, user);
+            List<TeamCountDTO> teams = teamService.getTeamsCountDTOByTopics(topicIds, teamIds, user);
         teamService.exportToCSV(teams, response);
     }
 
