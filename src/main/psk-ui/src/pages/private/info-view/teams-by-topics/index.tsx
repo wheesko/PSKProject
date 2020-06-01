@@ -145,7 +145,8 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 			</Row>
 			<Table
 				dataSource={allTeams}
-				columns={columns}/>
+				columns={columns}
+				rowKey="id" />
 		</Spin>
 	</>;
 };
