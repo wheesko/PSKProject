@@ -10,7 +10,7 @@ import calendarService from '../../../api/calendar-service';
 
 import './CalendarStyles.css';
 import notificationService, { NotificationType } from '../../../service/notification-service';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons';
 import { NewEventForm } from './form/AddEventForm';
 import { EditEventForm } from './form/EditEventForm';
 import learningDayService from '../../../api/learning-day-service';
@@ -221,11 +221,15 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 				</Button>
 		  		:<div>
 					<Button onClick={openEditForm} type="primary">
+						<EditOutlined/>
 						Edit event
 					</Button>
-					<Button className="learned-button" onClick={setTopicLearned} type="primary">
-						Mark as learned
-					</Button>
+					{(selectedDate?.isBefore(moment()) && !modalListData[0].learned) &&
+						<Button className="learned-button" onClick={setTopicLearned} type="primary">
+							<CheckOutlined />
+							Mark as learned
+						</Button>
+					}
 				</div>;
 	}
 
@@ -240,7 +244,7 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 					}}
 					disabled={modalListData.length !== 0}
 				>
-					Add event
+					<PlusOutlined/> Add event
 				</Button>
 			);
 	}

@@ -1,28 +1,28 @@
-import React, {useEffect, useState} from 'react';
-import {Card, Col, Row, Spin, Typography, Table, Button, Modal, Tag} from 'antd';
-import {Link, RouteComponentProps} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Card, Col, Row, Spin, Typography, Table, Button, Modal, Tag } from 'antd';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
-import {WorkerResponseModel} from '../../../api/model/worker-response-model';
+import { WorkerResponseModel } from '../../../api/model/worker-response-model';
 import workerService from '../../../api/worker-service';
 import learningDayService from '../../../api/learning-day-service';
 
-import notificationService, {NotificationType} from '../../../service/notification-service';
+import notificationService, { NotificationType } from '../../../service/notification-service';
 import moment from 'moment';
-import {LearningTopic} from '../../../models/learningTopic';
+import { LearningTopic } from '../../../models/learningTopic';
 
-import {EditOutlined, PlusOutlined} from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import history from '../../../history';
 
 import './WorkerProfileStyles.css';
-import {connect} from 'react-redux';
-import {RootState} from '../../../redux';
-import {UserState} from '../../../redux/user/types';
-import {UserGoalForm} from './form/user-goal-form';
-import {UserLimitsForm} from './form/user-limits-form';
-import {LearningEvent} from '../../../models/learningEvent';
-import {Employee} from "../../../models/employee";
-import {Role} from "../../../models/role";
-import {getRoleColor} from "../../../tools/roleColorPicker";
+import { connect } from 'react-redux';
+import { RootState } from '../../../redux';
+import { UserState } from '../../../redux/user/types';
+import { UserGoalForm } from './form/user-goal-form';
+import { UserLimitsForm } from './form/user-limits-form';
+import { LearningEvent } from '../../../models/learningEvent';
+import { Employee } from '../../../models/employee';
+import { Role } from '../../../models/role';
+import { getRoleColor } from '../../../tools/roleColorPicker';
 
 interface WorkerProfileViewProps extends RouteComponentProps {
 	workerId?: string | undefined;
@@ -181,47 +181,47 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	return <Spin spinning={ loading }>
 		{ !loading &&
         <>
-            <Row className={ "profile-title-row" }>
-                <Col span={ 12 } style={ { textAlign: 'left' } }>
-                    <Typography.Title level={ 2 }>Profile of { worker?.name } { worker?.surname }</Typography.Title>
-                </Col>
-                <Col span={ 12 } style={ { textAlign: 'right' } }>
-                    <Tag color={ getRoleColor(worker?.role.name) }
-                         className={ "profile-role-tag " }>{ worker?.role.name }</Tag>
-                </Col>
-            </Row>
-			{ renderInfoCard() }
-            <Row gutter={ 12 }>
-                <Col xs={ 24 } sm={ 24 } md={ 16 }>
-					{ renderLearningDays() }
-                </Col>
-                <Col xs={ 24 } sm={ 24 } md={ 8 }>
-					{ renderLearnedTopicsTable() }
-					{ renderAssignedGoalsCard() }
-                </Col>
-            </Row>
-			{ worker?.managedTeam &&
+        	<Row className={ 'profile-title-row' }>
+        		<Col span={ 12 } style={ { textAlign: 'left' } }>
+        			<Typography.Title level={ 2 }>Profile of { worker?.name } { worker?.surname }</Typography.Title>
+        		</Col>
+        		<Col span={ 12 } style={ { textAlign: 'right' } }>
+        			<Tag color={ getRoleColor(worker?.role.name) }
+        				className={ 'profile-role-tag ' }>{ worker?.role.name }</Tag>
+        		</Col>
+        	</Row>
+        	{ renderInfoCard() }
+        	<Row gutter={ 12 }>
+        		<Col xs={ 24 } sm={ 24 } md={ 16 }>
+        			{ renderLearningDays() }
+        		</Col>
+        		<Col xs={ 24 } sm={ 24 } md={ 8 }>
+        			{ renderLearnedTopicsTable() }
+        			{ renderAssignedGoalsCard() }
+        		</Col>
+        	</Row>
+        	{ worker?.managedTeam &&
             <>
-                <Typography.Title className="title" level={ 2 }>
-                    Team info of { worker?.name } { worker?.surname }
-                </Typography.Title>
-                <Row gutter={ 12 }>
-                    <Col xs={ 24 } sm={ 24 } md={ 16 }>
-						{ renderTeamLearningDays() }
-                    </Col>
-                    <Col xs={ 24 } sm={ 24 } md={ 8 }>
-						{ renderTeamLearnedTopicsTable() }
-                    </Col>
-                </Row>
-                <Row gutter={ 12 }>
-                    <Col xs={ 24 } sm={ 24 }>
-						{ renderTeamMembersTable() }
-                    </Col>
-                </Row>
+            	<Typography.Title className="title" level={ 2 }>
+                    Worker { worker?.name } { worker?.surname } manages team {teamMembers.name}:
+            	</Typography.Title>
+            	<Row gutter={ 12 }>
+            		<Col xs={ 24 } sm={ 24 } md={ 16 }>
+            			{ renderTeamLearningDays() }
+            		</Col>
+            		<Col xs={ 24 } sm={ 24 } md={ 8 }>
+            			{ renderTeamLearnedTopicsTable() }
+            		</Col>
+            	</Row>
+            	<Row gutter={ 12 }>
+            		<Col xs={ 24 } sm={ 24 }>
+            			{ renderTeamMembersTable() }
+            		</Col>
+            	</Row>
             </>
-			}
-			{ renderAssignGoalsModal() }
-			{ renderEditLimitsModal() }
+        	}
+        	{ renderAssignGoalsModal() }
+        	{ renderEditLimitsModal() }
         </>
 		}
 	</Spin>;
@@ -351,27 +351,27 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 			</Row>
 			{ (worker?.manager !== null && worker?.manager.email !== email) &&
             <Row>
-                <Col xs={ 24 } sm={ 8 }>
-                    <Link
-                        type="link"
-                        className="manager-link"
-                        onClick={ () => history.push('/') }
-                        to={ `profile/${ worker?.manager.id }` }
-                    >
+            	<Col xs={ 24 } sm={ 8 }>
+            		<Link
+            			type="link"
+            			className="manager-link"
+            			onClick={ () => history.push('/') }
+            			to={ `profile/${ worker?.manager.id }` }
+            		>
                         Manager:
-                    </Link>
-                    <Typography.Text>
-						{ ' ' + worker?.manager.name + ' ' + worker?.manager.surname }
-                    </Typography.Text>
-                </Col>
-                <Col xs={ 24 } sm={ 8 }>
-                    <Typography.Text className="bolded-text">
+            		</Link>
+            		<Typography.Text>
+            			{ ' ' + worker?.manager.name + ' ' + worker?.manager.surname }
+            		</Typography.Text>
+            	</Col>
+            	<Col xs={ 24 } sm={ 8 }>
+            		<Typography.Text className="bolded-text">
                         Manager email:
-                    </Typography.Text>
-                    <Typography.Text>
-						{ ' ' + worker?.manager.email }
-                    </Typography.Text>
-                </Col>
+            		</Typography.Text>
+            		<Typography.Text>
+            			{ ' ' + worker?.manager.email }
+            		</Typography.Text>
+            	</Col>
             </Row>
 			}
 		</Card>;
@@ -408,9 +408,9 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 	function renderEditLimitsModal(): React.ReactNode {
 		return <Modal footer={ null } visible={ isEditLimitsModalVisible } onCancel={ modalClose }>
 			<UserLimitsForm workerId={ workerId }
-							limitsQuarterly={ worker?.quarterLearningDayLimit ? worker?.quarterLearningDayLimit : 0 }
-							limitsSequence={ worker?.consecutiveLearningDayLimit ? worker?.consecutiveLearningDayLimit : 0 }
-							onSubmit={ onSubmitGoal }/>
+				limitsQuarterly={ worker?.quarterLearningDayLimit ? worker?.quarterLearningDayLimit : 0 }
+				limitsSequence={ worker?.consecutiveLearningDayLimit ? worker?.consecutiveLearningDayLimit : 0 }
+				onSubmit={ onSubmitGoal }/>
 		</Modal>;
 	}
 
@@ -440,4 +440,4 @@ const mapStateToProps = (state: RootState) => {
 
 const WorkerProfileView = connect(mapStateToProps)(WorkerProfileViewComponent);
 
-export {WorkerProfileView};
+export { WorkerProfileView };

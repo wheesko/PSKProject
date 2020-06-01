@@ -1,8 +1,6 @@
 import React from 'react';
 import { Button, Layout } from 'antd';
 
-import { TEAM_NAME, } from './constants/otherConstants';
-
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux';
@@ -15,7 +13,7 @@ import notificationService, { NotificationType } from './service/notification-se
 import { Authority } from './models/authority';
 import { RegisterPage } from './pages/public/register';
 
-const { Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 const App: React.FunctionComponent<{}> = () => {
 	// TS infers `isOn` is boolean
@@ -51,7 +49,6 @@ const App: React.FunctionComponent<{}> = () => {
 							<Content>
 								<Routes/>
 							</Content>
-							<Footer>Powered By: {TEAM_NAME}</Footer>
 						</Layout>
 					</Layout>
 				</div>
