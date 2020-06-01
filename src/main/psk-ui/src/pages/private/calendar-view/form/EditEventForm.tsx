@@ -17,6 +17,7 @@ import moment from 'moment';
 import { LearningDayUpdateRequest } from '../../../../api/model/learning-day-update-request';
 
 import './EventFormStyles.css';
+import { DeleteOutlined } from '@ant-design/icons/lib';
 
 const formItemLayout = {
 	labelCol: {
@@ -189,7 +190,7 @@ const EditEventForm: React.FunctionComponent<EditEventFormProps> = (props: EditE
 										type="primary"
 										onClick={handleClickDelete}
 									>
-										Delete event
+										<DeleteOutlined/> Delete event
 									</Button>
 								</>
 							}
