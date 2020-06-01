@@ -71,7 +71,9 @@ public class TeamService {
                     return team;
                 }
             }
-            else throw new TeamException("The team of this employee has no workers");
+            else {
+                throw new TeamException("The team of this employee has no workers");
+            }
         }
         return Optional.empty();
     }
