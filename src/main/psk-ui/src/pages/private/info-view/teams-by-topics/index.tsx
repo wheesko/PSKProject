@@ -159,12 +159,7 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 			dataIndex: 'id',
 			key: 'learnedCount',
 			render: (id: number, team: TeamResponse, index: number) => {
-				return selectedTopics.length === 0 ? '' :
-					team.workers.filter((worker) => {
-						return worker.learningDays.some(learningDay => {
-							return learningDay.learned ? selectedTopics?.includes(learningDay.topic.name) : false;
-						});
-					}).length;
+				return selectedTopics.length === 0 ? 0 : getLearnedCountInTeam(team.id, team);
 			}
 		},
 		{
