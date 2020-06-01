@@ -18,6 +18,7 @@ const { Title } = Typography;
 interface CsvTeam {
 	index: number;
 	teamName: string;
+	teamLead: string;
 	employeeAmount: number;
 	learnedEmployeeAmount: number;
 	percentageOfLearnedEmployees: string;
@@ -69,6 +70,7 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 				return {
 					index: i,
 					teamName: team.name,
+					teamLead: `${team.TeamLead.name} ${team.TeamLead.surname}`,
 					employeeAmount: team.workers.length,
 					learnedEmployeeAmount: 0,
 					percentageOfLearnedEmployees: '0%'
@@ -78,6 +80,7 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 				return {
 					index: i,
 					teamName: team.name,
+					teamLead: `${team.TeamLead.name} ${team.TeamLead.surname}`,
 					employeeAmount: team.workers.length,
 					learnedEmployeeAmount: selectedTopics.length === 0 ? 0 : getLearnedCountInTeam(team.id, team),
 					percentageOfLearnedEmployees: selectedTopics.length === 0 ? '0%' : getLearnedCountInTeam(team.id, team) > 0
@@ -124,9 +127,17 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 		{
 			title: 'Team name',
 			dataIndex: 'id',
-			key: 'id',
+			key: 'name',
 			render: (id: number, team: TeamResponse, index: number) => {
 				return <Typography.Text>{team.name}</Typography.Text>;
+			},
+		},
+		{
+			title: 'Team Lead',
+			dataIndex: 'id',
+			key: 'teamLead',
+			render: (id: number, team: TeamResponse, index: number) => {
+				return <Typography.Text>{`${team.TeamLead.name} ${team.TeamLead.surname}`}</Typography.Text>;
 			},
 		},
 		{
