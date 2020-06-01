@@ -8,10 +8,8 @@ import {
 import './editable-table/EditableTableStyles.css';
 import workerService from '../../../api/worker-service';
 import notificationService, { NotificationType } from '../../../service/notification-service';
-import { LearningTopic } from "../../../models/learningTopic";
-import { Role } from "../../../models/role";
+import { Role } from '../../../models/role';
 import roleService from '../../../api/role-service';
-import { getRoleColor } from "../../../tools/roleColorPicker";
 
 const formItemLayout = {
 	labelCol: {
@@ -32,15 +30,13 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 	const [isSending, setIsSending] = useState<boolean>(false);
 
 	const [form] = Form.useForm();
-	const [selectedRole, setSelectedRole] = useState<Role>();
 	const [roles, setRoles] = useState<Role[]>([]);
-	const [autoCompleteResult, setAutoCompleteResult] = useState<Role[]>([]);
 
 	useEffect(() => {
 		// sort role by role names in ascending order
 		roleService.getAllRoles().then(roles => {
-				setRoles(roles.sort((a, b) => a.name > b.name ? 1 : -1));
-			}
+			setRoles(roles.sort((a, b) => a.name > b.name ? 1 : -1));
+		}
 		).catch(e => {
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
@@ -117,7 +113,7 @@ const NewTeamMemberForm: React.FunctionComponent<NewTeamMemberFormProps> = (prop
 						>
 							<AutoComplete
 								options={roles.map(role => {
-									return { value: role.name }
+									return { value: role.name };
 								})}
 								placeholder="eg. Business Analyst"
 								filterOption={(inputValue, option) =>

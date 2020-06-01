@@ -6,11 +6,11 @@ import { RootState } from '../../../../redux';
 import { useSelector } from 'react-redux';
 import notificationService, { NotificationType } from '../../../../service/notification-service';
 import topicService from '../../../../api/topic-service';
-import { LearningTopic } from "../../../../models/learningTopic";
+import { LearningTopic } from '../../../../models/learningTopic';
 import '../../team-members-view/worker-topic-table/WorkerTopicTableStyles.css';
-import { TeamResponse } from "../../../../api/model/team-response";
+import { TeamResponse } from '../../../../api/model/team-response';
 import teamService from '../../../../api/team-service';
-import { InfoCircleOutlined } from "@ant-design/icons/lib";
+import { InfoCircleOutlined } from '@ant-design/icons/lib';
 
 const { Title } = Typography;
 
@@ -42,9 +42,9 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 	useEffect(() => {
 		getWorkersTopicsByManager();
 		loadTopics().then(topics => {
-				setAllTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
-				setIsLoading(false);
-			}
+			setAllTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
+			setIsLoading(false);
+		}
 		).catch(e => {
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
@@ -67,21 +67,23 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 	};
 
 	function renderLearnedPercentage(id: string, team: TeamResponse): React.ReactNode {
-		let learningPercentage = getLearnedCountInTeam(id, team) > 0
+		const learningPercentage = getLearnedCountInTeam(id, team) > 0
 			? Math.trunc((getLearnedCountInTeam(id, team) / team.workers.length) * 100)
 			: 0;
-		return selectedTopics.length === 0 ? <Progress percent={0}/> : <Progress percent={learningPercentage}/>
+
+		return selectedTopics.length === 0 ? <Progress percent={0}/> : <Progress percent={learningPercentage}/>;
 	}
 
 	function getLearnedCountInTeam(id: string, team: TeamResponse) {
 		return team.workers.filter((worker) => {
-			let workersLearnedTopicNames = worker.learningDays
+			const workersLearnedTopicNames = worker.learningDays
 				.filter(learningDay => learningDay.learned)
 				.map(learningDay => {
-					return learningDay.topic.name
+					return learningDay.topic.name;
 				});
+
 			return selectedTopics.every(selectedTopic => workersLearnedTopicNames.includes(selectedTopic));
-		}).length
+		}).length;
 	}
 
 	const columns = [
@@ -90,7 +92,7 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 			dataIndex: 'id',
 			key: 'id',
 			render: (id: string, team: TeamResponse, index: number) => {
-				return <Typography.Text>{team.name}</Typography.Text>
+				return <Typography.Text>{team.name}</Typography.Text>;
 			},
 		},
 		{
@@ -116,8 +118,8 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 					team.workers.filter((worker) => {
 						return worker.learningDays.some(learningDay => {
 							return learningDay.learned ? selectedTopics?.includes(learningDay.topic.name) : false;
-						})
-					}).length
+						});
+					}).length;
 			}
 		},
 		{
@@ -131,18 +133,18 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 
 	return <>
 		<Spin spinning={isLoading} size="large">
-			<Row justify={"start"}>
+			<Row justify={'start'}>
 				<Typography.Title level={2}>Filter teams by learning topics</Typography.Title>
 			</Row>
-			<Row justify={"start"} className={"topic-row"}>
+			<Row justify={'start'} className={'topic-row'}>
 				<Col span={24}>
 					<Select mode="tags"
-							onSelect={onTopicSelected}
-							filterOption={(input, option) =>
+						onSelect={onTopicSelected}
+						filterOption={(input, option) =>
 								option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-							}
-							placeholder="Type in topics to filter by"
-							onDeselect={onDeselectedTopic}
+						}
+						placeholder="Type in topics to filter by"
+						onDeselect={onDeselectedTopic}
 					>
 						{allTopics.map(topic => {
 							return <Select.Option key={topic.id} value={topic.name}>{topic.name}</Select.Option>;
