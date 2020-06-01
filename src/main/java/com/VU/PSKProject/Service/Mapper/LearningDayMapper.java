@@ -57,7 +57,7 @@ public class LearningDayMapper {
     public LearnedTopicDTO mapToLearnedTopicDTO(LearningDay day){
         LearnedTopicDTO topicDTO = new LearnedTopicDTO();
         topicDTO.setId(day.getTopic().getId());
-        topicDTO.setTopic(day.getTopic().getName());
+        topicDTO.setName(day.getTopic().getName());
         topicDTO.setDescription(day.getTopic().getDescription());
         topicDTO.setLearned(day.isLearned());
         return topicDTO;

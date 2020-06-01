@@ -3,7 +3,7 @@ import { RestService } from './rest-service';
 import { AxiosResponse } from 'axios';
 import { LearningTopic } from '../models/learningTopic';
 import { TopicCreateRequest } from './model/topic-create-request';
-import { TopicByManagerResponse } from "./model/topic-by-manager-response";
+import { WorkerWithTopics } from "./model/topic-by-manager-response";
 
 class TopicService {
     private readonly restService: RestService;
@@ -32,12 +32,12 @@ class TopicService {
 			});
 	};
 
-	public getWorkersTopicsByManager = (): Promise<TopicByManagerResponse[]> =>{
+	public getWorkersTopicsByManager = (): Promise<WorkerWithTopics[]> =>{
 		return this.restService
-			.get<TopicByManagerResponse[]>(
+			.get<WorkerWithTopics[]>(
 				'/topics/getWorkersTopics'
 			)
-			.then((response: AxiosResponse<TopicByManagerResponse[]>) => {
+			.then((response: AxiosResponse<WorkerWithTopics[]>) => {
 				return response.data;
 			})
 	}

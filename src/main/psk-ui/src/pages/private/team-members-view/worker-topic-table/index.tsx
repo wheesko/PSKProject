@@ -7,13 +7,11 @@ import { useSelector } from 'react-redux';
 import { Employee } from '../../../../models/employee';
 import workerService from '../../../../api/worker-service';
 import notificationService, { NotificationType } from '../../../../service/notification-service';
-import { Role } from "../../../../models/role";
 import { Link } from "react-router-dom";
 import topicService from '../../../../api/topic-service';
-import { TopicByManagerResponse } from '../../../../api/model/topic-by-manager-response';
+import { WorkerWithTopics } from '../../../../api/model/topic-by-manager-response';
 import { LearningTopic } from "../../../../models/learningTopic";
 import './WorkerTopicTableStyles.css';
-import learningDayService from "../../../../api/learning-day-service";
 
 const { Title } = Typography;
 
@@ -23,15 +21,12 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-	const [workersWithTopics, setWorkersWithTopics] = useState<TopicByManagerResponse[]>([]);
-
-
+	const [workersWithTopics, setWorkersWithTopics] = useState<WorkerWithTopics[]>([]);
 
 	function getWorkersTopicsByManager() {
 		setIsLoading(true);
-		topicService.getWorkersTopicsByManager().then((response: TopicByManagerResponse[]) => {
+		topicService.getWorkersTopicsByManager().then((response: WorkerWithTopics[]) => {
 			setWorkersWithTopics(response);
-			// setMyColleagues(response);
 			setIsLoading(false);
 		}).catch((error) => {
 			setIsLoading(false);
@@ -76,7 +71,7 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 			title: 'Full name',
 			dataIndex: 'id',
 			key: 'id',
-			render: (id: string, worker: TopicByManagerResponse, index: number) => {
+			render: (id: string, worker: WorkerWithTopics, index: number) => {
 				return worker.name === null ?
 					<Typography.Text disabled>Worker has not finished registration</Typography.Text> :
 					<Link
@@ -86,22 +81,22 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 		{
 			title: 'Learned topics',
 			dataIndex: 'topicsPast',
-			render: (id: string, worker: TopicByManagerResponse, index: number) => {
+			render: (id: string, worker: WorkerWithTopics, index: number) => {
 				return worker.topicsPast === [] ?
 					null :
 					worker.topicsPast.map(topic =>
-						<Tag>{topic}</Tag>
+						<Tag>{topic.name}</Tag>
 					)
 			},
 		},
 		{
 			title: 'Topics to learn in the future',
 			dataIndex: 'topicsFuture',
-			render: (id: string, worker: TopicByManagerResponse, index: number) => {
+			render: (id: string, worker: WorkerWithTopics, index: number) => {
 				return worker.topicsFuture === [] ?
 					null :
 					worker.topicsFuture.map(topic =>
-						<Tag>{topic}</Tag>
+						<Tag>{topic.name}</Tag>
 					)
 			},
 		}
@@ -132,7 +127,7 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 					: workersWithTopics.filter(worker =>
 						worker.topicsPast
 							.some(workerTopic =>
-								selectedTopics?.includes(workerTopic)
+								selectedTopics?.includes(workerTopic.name)
 							))}
 				columns={columns}/>
 		</Spin>

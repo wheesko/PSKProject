@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class LearnedTopicDTO {
     private long id;
-    private String topic;
+    private String name;
     private String description;
     private boolean learned;
 }

@@ -31,4 +31,4 @@ export const TEAM_NAME_REQUIRED = 'Team name is required';
 export const TEAM_GOALS_LABEL = 'Team goals';
 export const TEAM_GOALS_EXPLAINER = 'What goals should the team members have set ?';
 export const CREATE_TEAM = 'Create team';
-export const FILTER_TEAM_MEMBERS_BY_TOPIC = 'Filter team members by topic';
+export const FILTER_TEAM_MEMBERS_BY_TOPIC = 'Filter team members by learned topic';
