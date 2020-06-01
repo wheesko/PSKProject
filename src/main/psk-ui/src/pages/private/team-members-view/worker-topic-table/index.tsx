@@ -125,10 +125,15 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 				dataSource={selectedTopics.length === 0
 					? workersWithTopics
 					: workersWithTopics.filter(worker =>
-						worker.topicsPast
-							.some(workerTopic =>
-								selectedTopics?.includes(workerTopic.name)
-							))}
+						// return workers who have learned selected topics in the past
+						selectedTopics.every(selectedTopic => worker.topicsPast.map(topic => {
+							return topic.name
+						}).includes(selectedTopic)) ||
+						// return workers who will learn selected topics later
+						selectedTopics.every(selectedTopic => worker.topicsFuture.map(topic => {
+							return topic.name
+						}).includes(selectedTopic))
+					)}
 				columns={columns}/>
 		</Spin>
 	</>;

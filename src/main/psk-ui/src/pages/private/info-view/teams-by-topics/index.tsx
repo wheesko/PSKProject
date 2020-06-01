@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Col, Form, Row, Select, Spin, Table, Tag, Tooltip, Typography, Progress } from 'antd';
+import { Col, Row, Select, Spin, Table, Tooltip, Typography, Progress } from 'antd';
 
 import { RootState } from '../../../../redux';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ const { Title } = Typography;
 const TeamsByTopics: React.FunctionComponent<{}> = () => {
 	const currentWorker = useSelector((state: RootState) => state.user);
 	const [allTopics, setAllTopics] = useState<LearningTopic[]>([]);
+
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 	const [allTeams, setAllTeams] = useState<TeamResponse[]>([]);
@@ -39,10 +40,10 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 	}
 
 	useEffect(() => {
-		setIsLoading(true)
 		getWorkersTopicsByManager();
 		loadTopics().then(topics => {
 				setAllTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
+				setIsLoading(false);
 			}
 		).catch(e => {
 			notificationService.notify({
@@ -110,9 +111,13 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 				</>,
 			dataIndex: 'id',
 			key: 'learnedCount',
-			render: (id: string, team: TeamResponse) => {
+			render: (id: string, team: TeamResponse, index: number) => {
 				return selectedTopics.length === 0 ? '' :
-					getLearnedCountInTeam(id, team)
+					team.workers.filter((worker) => {
+						return worker.learningDays.some(learningDay => {
+							return learningDay.learned ? selectedTopics?.includes(learningDay.topic.name) : false;
+						})
+					}).length
 			}
 		},
 		{
@@ -126,27 +131,28 @@ const TeamsByTopics: React.FunctionComponent<{}> = () => {
 
 	return <>
 		<Spin spinning={isLoading} size="large">
+			<Row justify={"start"}>
+				<Typography.Title level={2}>Filter teams by learning topics</Typography.Title>
+			</Row>
 			<Row justify={"start"} className={"topic-row"}>
 				<Col span={24}>
-						<Select mode="tags"
-							// onChange={onTopicChange}
-								onSelect={onTopicSelected}
-								filterOption={(input, option) =>
-									option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-								}
-								placeholder="Type in topics to filter by"
-								onDeselect={onDeselectedTopic}
-						>
-							{allTopics.map(topic => {
-								return <Select.Option key={topic.id} value={topic.name}>{topic.name}</Select.Option>;
-							})}
-						</Select>
+					<Select mode="tags"
+							onSelect={onTopicSelected}
+							filterOption={(input, option) =>
+								option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+							}
+							placeholder="Type in topics to filter by"
+							onDeselect={onDeselectedTopic}
+					>
+						{allTopics.map(topic => {
+							return <Select.Option key={topic.id} value={topic.name}>{topic.name}</Select.Option>;
+						})}
+					</Select>
 				</Col>
 			</Row>
 			<Table
 				dataSource={allTeams}
-				columns={columns}
-				rowKey="id" />
+				columns={columns}/>
 		</Spin>
 	</>;
 };
