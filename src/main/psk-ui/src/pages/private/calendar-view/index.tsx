@@ -223,9 +223,11 @@ const CalendarView: React.FunctionComponent<{}> = () => {
 					<Button onClick={openEditForm} type="primary">
 						Edit event
 					</Button>
-					<Button className="learned-button" onClick={setTopicLearned} type="primary">
-						Mark as learned
-					</Button>
+					{selectedDate?.isBefore(moment()) &&
+						<Button className="learned-button" onClick={setTopicLearned} type="primary">
+							Mark as learned
+						</Button>
+					}
 				</div>;
 	}
 
