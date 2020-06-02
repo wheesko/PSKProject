@@ -164,9 +164,9 @@ public class SampleDataDB {
     }
 
     public void saveTeamGoals(){
-        teamGoals.add(new TeamGoal(teams.get(0), topics.get(2)));
-        teamGoals.add(new TeamGoal(teams.get(0), topics.get(3)));
-        teamGoals.add(new TeamGoal(teams.get(1), topics.get(4)));
+        teamGoals.add(new TeamGoal(teams.get(0), topics.get(8)));
+        teamGoals.add(new TeamGoal(teams.get(0), topics.get(7)));
+        teamGoals.add(new TeamGoal(teams.get(1), topics.get(7)));
         teamGoalRepository.saveAll(teamGoals);
     }
 
@@ -237,6 +237,7 @@ public class SampleDataDB {
         fe.add(Angular);
         fe.add(React);
         fe.add(Vue);
+        topics.addAll(fe);
         Topic Fe = new Topic("Learn Frontend", fe, "Frontend study", null);
 
         Topic ios = new Topic("Learn ios", null, "ios study", null);
@@ -246,6 +247,7 @@ public class SampleDataDB {
         mob.add(ios);
         mob.add(android);
         mob.add(nativePlatform);
+        topics.addAll(mob);
         Topic mobile = new Topic("Learn mobile", mob, "Frontend mobile", null);
 
         Topic rootTopic = new Topic("Devbridge development",null, "Devbridge development", null);
