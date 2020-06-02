@@ -4,8 +4,6 @@ package com.VU.PSKProject.Service.Model;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.VU.PSKProject.Entity.Worker;
-import com.VU.PSKProject.Entity.WorkerGoal;
 import com.opencsv.bean.CsvIgnore;
 import lombok.Getter;
 import lombok.Setter;

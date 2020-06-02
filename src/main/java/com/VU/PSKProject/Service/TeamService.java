@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -153,6 +154,21 @@ public class TeamService {
             teamCountDTOS.add(teamCountDTO);
         }
         return teamCountDTOS;
+    }
+
+    public String getTeamsLearnedTopicCount(List<Long> topicIds, UserDTO user) {
+        Worker manager = workerService.getWorkerByUserId(user.getId());
+
+        List<Team> teams = teamRepository.findAll();
+        List<String> teamsToReturn = new ArrayList<>();
+        for (Team team: teams) {
+
+           if (workerService.getWorkersByTopicsTeamManager
+                    (team.getId(), topicIds, manager, EventDate.eventDate.PAST).size() == team.getWorkers().size()) {
+               teamsToReturn.add(team.getName());
+           }
+        }
+        return String.join(", ", teamsToReturn);
     }
 
     public void exportToCSV(List<TeamCountDTO> dataToExport, HttpServletResponse response) throws Exception{

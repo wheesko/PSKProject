@@ -41,6 +41,10 @@ public class LearningDayService {
     @Autowired
     private LearningDayMapper learningDayMapper;
 
+    public List<LearningDay> findAll() {
+        return learningDayRepository.findAll();
+    }
+
     public List<LearningDay> getAllLearningDaysByWorkerId(Long workerId) {
         return learningDayRepository.findAllByAssigneeId(workerId);
     }
