@@ -5,6 +5,10 @@ import { Spin } from 'antd';
 
 import './tree-styles.css';
 
+interface TreeData {
+	attributes: {teams: string; workers: string;};
+
+}
 
 const TopicTreeView: React.FunctionComponent<{}> = () => {
 
@@ -13,9 +17,10 @@ const TopicTreeView: React.FunctionComponent<{}> = () => {
 
 	useEffect(() => {
 		setLoading(true);
-		treeService.getTree().then(response =>{
+		treeService.getTree().then(response => {
 			//@ts-ignore
-			setTreeData(response);
+			setTreeData(response)
+			console.log(treeData)
 			setLoading(false);
 		});
 	}, []);
@@ -24,10 +29,9 @@ const TopicTreeView: React.FunctionComponent<{}> = () => {
 	return <Spin spinning={loading}>
 		{treeData &&
 		<div className="treeWrapper">
-			<Tree data={treeData} />
+			<Tree data={treeData}/>
 		</div>
 		}
 	</Spin>;
 };
-
 export { TopicTreeView };
