@@ -206,8 +206,8 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
         			{ renderAssignedGoalsCard() }
         		</Col>
         	</Row>
-            <Spin spinning={teamloading}>
-				{ (worker?.managedTeam && !teamloading && teamMembers ) &&
+        	{worker?.managedTeam && <Spin spinning={teamloading}>
+        		{ (worker?.managedTeam && !teamloading && teamMembers ) &&
 					<>
 						<Typography.Title className="title" level={ 2 }>
 							Worker { worker?.name } { worker?.surname } manages team {teamMembers.name}:
@@ -226,8 +226,9 @@ const WorkerProfileViewComponent: React.FunctionComponent<Props> = (props: Props
 							</Col>
 						</Row>
 					</>
-                }
-            </Spin>
+        		}
+        	</Spin>
+        	}
 
         	{ renderAssignGoalsModal() }
         	{ renderEditLimitsModal() }
