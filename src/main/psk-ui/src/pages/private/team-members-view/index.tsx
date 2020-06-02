@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './TeamMembersStyles.css';
-import {Button, Col, Modal, Row, Spin, Typography, Card} from 'antd';
+import { Button, Col, Modal, Row, Spin, Typography, Card, Table } from 'antd';
 
-import {DONE} from '../../../constants/otherConstants';
-import {PlusOutlined,} from '@ant-design/icons';
-import {NewTeamMemberForm} from './NewTeamMemberForm';
+import { DONE } from '../../../constants/otherConstants';
+import { PlusOutlined, } from '@ant-design/icons';
+import { NewTeamMemberForm } from './NewTeamMemberForm';
 import {
 	ADD_NEW_EMPLOYEE,
 	ADD_NEW_EMPLOYEES,
@@ -14,17 +14,23 @@ import {
 	YOUR_EMPLOYEES_WORKER,
 	YOU_HAVE_NO_MANAGED_TEAM, FILTER_TEAM_MEMBERS_BY_TOPIC
 } from '../../../constants/employeeConstants';
-import {EditableTable} from './editable-table/EditableTable';
-import {RootState} from '../../../redux';
-import {useSelector} from 'react-redux';
-import {Employee} from '../../../models/employee';
+import { EditableTable } from './editable-table/EditableTable';
+import { RootState } from '../../../redux';
+import { useSelector } from 'react-redux';
+import { Employee } from '../../../models/employee';
 import workerService from '../../../api/worker-service';
-import notificationService, {NotificationType} from '../../../service/notification-service';
-import {Authority} from '../../../models/authority';
-import {NewTeamForm} from './new-team-form';
-import { WorkerTopicTable } from "./worker-topic-table";
+import notificationService, { NotificationType } from '../../../service/notification-service';
+import { Authority } from '../../../models/authority';
+import { NewTeamForm } from './new-team-form';
+import { WorkerTopicTable } from './worker-topic-table';
+import { LearningEvent } from '../../../models/learningEvent';
+import learningDayService from '../../../api/learning-day-service';
+import moment from 'moment';
+import { LearningTopic } from '../../../models/learningTopic';
+import { ScheduledLearningDays } from './scheduled-learning-days';
+import { LearnedTopicsTable } from './learned-topics-table';
 
-const {Title} = Typography;
+const { Title } = Typography;
 
 const TeamMembersView: React.FunctionComponent<{}> = () => {
 	const [newTeamMemberModalVisibility, setNewTeamMemberModalVisibility] = useState<boolean>(false);
@@ -32,6 +38,8 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 	const currentWorker = useSelector((state: RootState) => state.user);
 	const [isLoading, setLoading] = useState<boolean>(false);
 	const [myEmployees, setMyEmployees] = useState<Employee[]>([]);
+	const [teamLearningEvents, setTeamLearningEvents] = useState<LearningEvent[]>([]);
+
 
 	function getManagedTeam() {
 		setLoading(true);
@@ -49,6 +57,18 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 	}
 
 	useEffect(() => {
+		loadData().then(events => {
+			setTeamLearningEvents(events);
+			setLoading(false);
+			return teamLearningEvents;
+		})
+			.catch((e) => {
+				notificationService.notify({
+					description: e.response ? e.response.data.message : '',
+					notificationType: NotificationType.ERROR,
+					message: 'Could not load team events'
+				});
+			});
 		getManagedTeam();
 	}, [currentWorker.managedTeamId]);
 
@@ -92,6 +112,17 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 
 	function renderLeadAuthority(): React.ReactNode {
 		return <>
+			<Row justify={'start'}>
+				<Typography.Title level={2}>Your managed team info</Typography.Title>
+			</Row>
+			<Row gutter={[12, 24]}>
+				<Col xs={24} sm={24} md={16}>
+					<ScheduledLearningDays teamLearningEvents={teamLearningEvents}/>
+				</Col>
+				<Col xs={24} sm={24} md={8}>
+					<LearnedTopicsTable teamLearningEvents={teamLearningEvents}/>
+				</Col>
+			</Row>
 			<Title level={2} className={'teamMembersTitle'}>
 				{YOUR_EMPLOYEES}
 			</Title>
@@ -109,6 +140,10 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			<WorkerTopicTable/>
 		</>;
 	}
+	function loadData(): Promise<LearningEvent[]> {
+		setLoading(true);
+		return learningDayService.getAllLearningDaysOfTeam();
+	}
 
 	return <>
 		{currentWorker.authority === Authority.LEAD ? renderLeadAuthority() : null}
@@ -119,19 +154,19 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 			onOk={handleOnOk}
 			onCancel={handleOnCancel}
 			destroyOnClose
-			cancelButtonProps={{style: {display: 'none'}}}
+			cancelButtonProps={{ style: { display: 'none' } }}
 			okText={DONE}
 			afterClose={getManagedTeam}
 		>
 			<NewTeamMemberForm managerId={currentWorker.workerId}/>
 		</Modal>
 		<Modal
-			title={"Creating a team"}
+			title={'Creating a team'}
 			visible={newTeamModalVisibility}
 			onOk={handleOnOk}
 			onCancel={handleOnCancel}
 			destroyOnClose
-			cancelButtonProps={{style: {display: 'none'}}}
+			cancelButtonProps={{ style: { display: 'none' } }}
 			okText={DONE}
 		>
 			<NewTeamForm id={currentWorker.workerId}/>
@@ -140,4 +175,4 @@ const TeamMembersView: React.FunctionComponent<{}> = () => {
 	</>;
 };
 
-export {TeamMembersView};
+export { TeamMembersView };

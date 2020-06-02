@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 import { Employee } from '../../../../models/employee';
 import workerService from '../../../../api/worker-service';
 import notificationService, { NotificationType } from '../../../../service/notification-service';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import topicService from '../../../../api/topic-service';
 import { WorkerWithTopics } from '../../../../api/model/topic-by-manager-response';
-import { LearningTopic } from "../../../../models/learningTopic";
+import { LearningTopic } from '../../../../models/learningTopic';
 import './WorkerTopicTableStyles.css';
 
 const { Title } = Typography;
@@ -33,7 +33,7 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
-				message: 'Failed to colleagues',
+				message: 'Failed to Employees',
 				description: error.toString()
 			});
 		});
@@ -42,9 +42,9 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 	useEffect(() => {
 		getWorkersTopicsByManager();
 		loadTopics().then(topics => {
-				setAllTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
-				setIsLoading(false);
-			}
+			setAllTopics(topics.sort((a, b) => a.name > b.name ? 1 : -1));
+			setIsLoading(false);
+		}
 		).catch(e => {
 			notificationService.notify({
 				notificationType: NotificationType.ERROR,
@@ -85,8 +85,8 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 				return worker.topicsPast === [] ?
 					null :
 					worker.topicsPast.map(topic =>
-						<Tag>{topic.name}</Tag>
-					)
+						<Tag key={topic.name}>{topic.name}</Tag>
+					);
 			},
 		},
 		{
@@ -96,24 +96,24 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 				return worker.topicsFuture === [] ?
 					null :
 					worker.topicsFuture.map(topic =>
-						<Tag>{topic.name}</Tag>
-					)
+						<Tag key={topic.name}>{topic.name}</Tag>
+					);
 			},
 		}
 	];
 
 	return <>
 		<Spin spinning={isLoading} size="large">
-			<Row justify={"start"} className={"topic-row"}>
+			<Row justify={'start'} className={'topic-row'}>
 				<Col span={24}>
 					<Select mode="tags"
 						// onChange={onTopicChange}
-							onSelect={onTopicSelected}
-							filterOption={(input, option) =>
+						onSelect={onTopicSelected}
+						filterOption={(input, option) =>
 								option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-							}
-							placeholder="Type in topics to filter by"
-							onDeselect={onDeselectedTopic}
+						}
+						placeholder="Type in topics to filter by"
+						onDeselect={onDeselectedTopic}
 					>
 						{allTopics.map(topic => {
 							return <Select.Option key={topic.id} value={topic.name}>{topic.name}</Select.Option>;
@@ -127,11 +127,11 @@ const WorkerTopicTable: React.FunctionComponent<{}> = () => {
 					: workersWithTopics.filter(worker =>
 						// return workers who have learned selected topics in the past
 						selectedTopics.every(selectedTopic => worker.topicsPast.map(topic => {
-							return topic.name
+							return topic.name;
 						}).includes(selectedTopic)) ||
 						// return workers who will learn selected topics later
 						selectedTopics.every(selectedTopic => worker.topicsFuture.map(topic => {
-							return topic.name
+							return topic.name;
 						}).includes(selectedTopic))
 					)}
 				columns={columns}/>
