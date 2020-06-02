@@ -45,4 +45,8 @@ public class TeamGoalService {
             return true;
         else return false;
     }
+
+    public List<TeamGoal> findTeamGoalsByTopicId(Long topicId) {
+        return teamGoalRepository.findByTopicId(topicId);
+    }
 }
