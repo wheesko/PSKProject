@@ -68,7 +68,7 @@ public class TopicService{
 
         if (topicCreateRequest.getParentTopicId() != null) {
            Topic parentTopic = getTopic(topicCreateRequest.getParentTopicId()).orElseThrow(() -> {
-              throw new TopicServiceException("Topic not found");
+              throw new RuntimeException("Topic not found");
            });
 
            List<Topic> childTopics = parentTopic.getChildrenTopics();
