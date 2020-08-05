@@ -9,11 +9,8 @@ import com.VU.PSKProject.Service.Exception.TopicServiceException;
 import com.VU.PSKProject.Service.LearningTree.LearningTreeService;
 import com.VU.PSKProject.Service.Mapper.LearningDayMapper;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
-import com.VU.PSKProject.Service.Model.CoveredTopicDTO;
-import com.VU.PSKProject.Service.Model.LearnedTopicDTO;
+import com.VU.PSKProject.Service.Model.*;
 import com.VU.PSKProject.Service.Model.Team.TeamTopicsDTO;
-import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
-import com.VU.PSKProject.Service.Model.UserDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerToExportDTO;
 import com.VU.PSKProject.Service.Model.Worker.WorkerTopicsDTO;
 import com.VU.PSKProject.Utils.EventDate;
@@ -40,6 +37,12 @@ public class TopicService{
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private WorkerGoalService workerGoalService;
+
+    @Autowired
+    private TeamGoalService teamGoalService;
 
     @Autowired
     @Qualifier("TimedLearningTree")
@@ -119,8 +122,23 @@ public class TopicService{
 
     public List<CoveredTopicDTO> getFullTree() {
         return getAll().stream().filter(topic -> topic.getName().equals("Devbridge development"))
-                .map(topic -> topicMapper.toTreeNodeDTO(topic)).collect(Collectors.toList());
+                .map(topic -> {
+                    CoveredTopicDTO coveredTopicDTO = topicMapper.toTreeNodeDTO(topic);
+                    coveredTopicDTO.flattened().forEach(t -> {
+                        String teams = teamGoalService.findTeamGoalsByTopicId(t.getId())
+                                .stream()
+                                .map(e -> e.getTopic().getName())
+                                .collect(Collectors.joining(", "));
+                        String workers = workerGoalService.findWokerGoalsByTopicId(t.getId())
+                                .stream()
+                                .map(e -> e.getName() + " " + e.getSurname())
+                                .collect(Collectors.joining(", "));
+                        t.setAttributes(new CoveredTopicAttributesDTO(teams, workers));
+                    });
+                    return coveredTopicDTO;
+                }).collect(Collectors.toList());
     }
+
     public List<Topic> getTeamTopicsAndGoals(Worker manager, EventDate.eventDate time){
         List<Topic> topics = null;
         if(time.equals(EventDate.eventDate.PAST))
@@ -129,7 +147,6 @@ public class TopicService{
             topics = learningDayService.getTopicsByTeamFuture(manager.getManagedTeam().getId());
         return topics;
     }
-    
 
     public List<Topic> getWorkerTopicsAndGoals(Long workerId, EventDate.eventDate time){
         List<Topic> topics = null;

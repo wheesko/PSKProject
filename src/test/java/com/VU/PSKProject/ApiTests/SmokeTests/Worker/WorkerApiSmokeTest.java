@@ -7,9 +7,10 @@ import com.google.gson.JsonObject;
 import org.junit.Assert;
 import org.testng.annotations.AfterGroups;
 import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
-
+@Ignore
 public class WorkerApiSmokeTest extends BaseTest {
 
     private int testWorkerId = 1234;

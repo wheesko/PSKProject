@@ -8,8 +8,6 @@ import com.VU.PSKProject.Repository.WorkerRepository;
 import com.VU.PSKProject.Service.Mapper.TopicMapper;
 import com.VU.PSKProject.Service.Model.TopicToReturnDTO;
 import com.VU.PSKProject.Service.Model.UserDTO;
-import com.VU.PSKProject.Service.Model.Worker.WorkerGoalDTO;
-import com.VU.PSKProject.Service.Model.WorkerGoalDTOtoGet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +29,10 @@ public class WorkerGoalService {
     private WorkerRepository workerService;
     @Autowired
     private TopicMapper topicMapper;
+
+    public List<Worker> findWokerGoalsByTopicId(Long topicId) {
+        return workerGoalRepository.findWorkersByTopicIds(Collections.singletonList(topicId));
+    }
 
     public List<WorkerGoal> getAllWorkerGoals() { return workerGoalRepository.findAll();
     }
