@@ -166,6 +166,21 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.16.0</version>
+				<configuration>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.8</targetJdk>
+					<rulesets>
+						<ruleset>
+							category/java/design.xml/LawOfDemeter
+						</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
